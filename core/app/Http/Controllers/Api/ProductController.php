@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use App\Traits\ProductManager;
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Product;
 use App\Traits\ProductVariantManager;
 
 class ProductController extends Controller
 {
-    
+
 
     protected function seller()
     {
@@ -30,19 +31,39 @@ class ProductController extends Controller
     public function index()
     {
         $product = Product::get();
+        $topSellingProducts = Product::topSales(9);
+        $featuredProducts   = Product::active()->featured()->where('status', 1)->inRandomOrder()->take(6)->get();
+        $latestProducts     = Product::active()->latest()->where('status', 1)->inRandomOrder()->take(12)->get();
+        $topBrands          = Brand::top()->inRandomOrder()->take(16)->get();
         return response()->json([
-			'code'=>200,
-			'status'=>'ok',
-	        'message'=>['success'=> 'working'],
-	        'data'=>['products'=>$product]
-	    ]);
+            'code' => 200,
+            'status' => 'ok',
+            'message' => ['success' => 'working'],
+            'data' => [
+                'products' => $product,
+                'topSellingProducts' => $topSellingProducts,
+                'featuredProducts' => $featuredProducts,
+                'latestProducts' => $latestProducts,
+                'topBrand' => $topBrands
+            ]
+        ]);
     }
-    public function productByCat($param){
+    public function single($id){
+        $product = Product::where('id', $id)->first();
+        $recommend_products = 3;
         return response()->json([
-			'code'=>200,
-			'status'=>'ok',
-	        'message'=>['success'=> $param]
-	    ]);
+            'single product' => $product,
+            'recommended products' => $recommend_products,
+        ]);
+    }
+
+    public function productByCat($param)
+    {
+        return response()->json([
+            'code' => 200,
+            'status' => 'ok',
+            'message' => ['success' => $param]
+        ]);
     }
 
     public function trashed()
@@ -60,7 +81,8 @@ class ProductController extends Controller
         return view('seller.products.create', $this->editProduct($id, $this->id()));
     }
 
-    public function store(Request $request, $id){
+    public function store(Request $request, $id)
+    {
         return back()->withNotify(
             $this->storeProduct($request, $id, $this->id())
         );
@@ -110,9 +132,9 @@ class ProductController extends Controller
 
     public function reviewSearch(Request $request)
     {
-        if($request->key != null) {
+        if ($request->key != null) {
             return view('seller.products.reviews', $this->productReviewSearch($request->key, $this->id()));
-        }else{
+        } else {
             return redirect()->route('seller.product.reviews');
         }
     }
@@ -129,6 +151,4 @@ class ProductController extends Controller
 
         return redirect()->back()->withNotify($storeImages);
     }
-
-
 }

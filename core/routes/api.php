@@ -13,7 +13,8 @@ Route::namespace('Api')->name('api.')->group(function () {
 	Route::get('language-data/{code}', 'BasicController@languageData');
 
 	//products
-	Route::get('product', 'ProductController@index');
+	Route::get('products', 'ProductController@index');
+	Route::get('product/{id}', 'ProductController@single');
 	Route::get('productByCat/{param}', 'ProductController@productByCat');
 
 	Route::namespace('Auth')->group(function () {
