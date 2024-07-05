@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Traits;
 
 use App\Models\Brand;
@@ -13,12 +14,12 @@ trait ProductManager
 {
     protected function pageTitle($isTrashed, $searchKey)
     {
-        if($isTrashed)
-        $title  =  "All Trashed Products";
+        if ($isTrashed)
+            $title  =  "All Trashed Products";
         else
-        $title  =  "All Products";
-        if($searchKey)
-        $title  ="Product Search : '$searchKey'";
+            $title  =  "All Products";
+        if ($searchKey)
+            $title  = "Product Search : '$searchKey'";
 
         return $title;
     }
@@ -27,13 +28,43 @@ trait ProductManager
     {
         $search = trim(strtolower(request()->search));
         $query  = Product::query();
-        if($sellerId)
-        $query  = $query->sellers();
-        $query  = $query->with(['categories','brand', 'stocks'])->whereHas('categories')->whereHas('brand');
-        if($isTrashed)
-        $query  = $query->onlyTrashed();
-        if($search)
-        $query  = $query->where('name', 'like', "%$search%");
+        if ($sellerId) {
+            $query  = $query->sellers();
+        }
+
+        if (request()->has('recommeded')) {
+            $query->inRandomOrder();
+        }
+
+        $query  = $query->with(['categories', 'brand', 'stocks'])->whereHas('categories', function ($query) {
+            if (request()->category) {
+                $category = strtolower(request()->category);
+                $query->where('categories.name', 'LIKE', "%$category%");
+            }
+        })->whereHas('brand', function ($query) {
+            if (request()->brand) {
+                $brand = strtolower(request()->brand);
+                $query->where('brands.name', 'LIKE', "%$brand%");
+            }
+        });
+
+        if ($min_price = request()->min_price) {
+            $query->where('base_price', '>=',  (int) $min_price);
+        }
+
+        if ($max_price = request()->max_price) {
+            $query->where('base_price', '<=',  (int) $max_price);
+        }
+
+        if ($sort_by = strtolower(request()->sort_by)) {
+            $query->orderBy($sort_by, request()->has('asc') ? 'ASC' : 'DESC');
+        }
+
+
+        if ($isTrashed)
+            $query  = $query->onlyTrashed();
+        if ($search)
+            $query  = $query->where('name', 'like', "%$search%");
 
         $data['products']       = $query->orderByDesc('id')->paginate(getPaginate());
         $data['pageTitle']      = $this->pageTitle($isTrashed, $search);
@@ -46,16 +77,16 @@ trait ProductManager
         $search = trim(strtolower(request()->search));
 
         $query  = Product::query();
-        if($sellerId){
-        $query  = $query->sellers();
-        $query  = $query->with(['categories','brand', 'stocks'])->whereHas('categories')->whereHas('brand');
+        if ($sellerId) {
+            $query  = $query->sellers();
+            $query  = $query->with(['categories', 'brand', 'stocks'])->whereHas('categories')->whereHas('brand');
         }
-        if($isTrashed)
-        $query  = $query->onlyTrashed();
-        if($search)
-        $query  = $query->where('name', 'like', "%$search%");
+        if ($isTrashed)
+            $query  = $query->onlyTrashed();
+        if ($search)
+            $query  = $query->where('name', 'like', "%$search%");
 
-        $data['products']       = $query->where('status',0)->orderByDesc('id')->paginate(getPaginate());
+        $data['products']       = $query->where('status', 0)->orderByDesc('id')->paginate(getPaginate());
         $data['pageTitle']      = 'Pending Products';
         $data['emptyMessage']   = "No product found";
         return $data;
@@ -65,16 +96,16 @@ trait ProductManager
         $search = trim(strtolower(request()->search));
 
         $query  = Product::query();
-        if($isTrashed)
-        $query  = $query->onlyTrashed();
-        if($search)
-        $query  = $query->where('name', 'like', "%$search%");
-        if($admin){
+        if ($isTrashed)
+            $query  = $query->onlyTrashed();
+        if ($search)
+            $query  = $query->where('name', 'like', "%$search%");
+        if ($admin) {
             $data['pageTitle']      = 'Products By Admin';
-            $query = $query->where('seller_id',0);
-        }else{
+            $query = $query->where('seller_id', 0);
+        } else {
             $data['pageTitle']      = 'Products By Seller';
-            $query = $query->where('seller_id','!=',0);
+            $query = $query->where('seller_id', '!=', 0);
         }
 
         $data['products']       = $query->orderByDesc('id')->paginate(getPaginate());
@@ -90,19 +121,19 @@ trait ProductManager
         return $data;
     }
 
-    public function editProduct($id, $sellerId =0)
+    public function editProduct($id, $sellerId = 0)
     {
-        if($sellerId)
-        $data['product']        = Product::where('seller_id', $sellerId)->where('id', $id)->firstOrFail();
+        if ($sellerId)
+            $data['product']        = Product::where('seller_id', $sellerId)->where('id', $id)->firstOrFail();
         else
-        $data['product']        = Product::whereId($id)->first();
+            $data['product']        = Product::whereId($id)->first();
 
         $data['categories']     = Category::with('allSubcategories')->where('parent_id', null)->get();
         $data['brands']         = Brand::orderBy('name')->get();
         $data['images']         = [];
-        foreach($data['product']->productPreviewImages as $key=>$image){
+        foreach ($data['product']->productPreviewImages as $key => $image) {
             $img['id'] = $image->id;
-            $img['src'] = getImage(imagePath()['product']['path']. '/' . $image->image);
+            $img['src'] = getImage(imagePath()['product']['path'] . '/' . $image->image);
             $data['images'][] = $img;
         }
 
@@ -120,66 +151,65 @@ trait ProductManager
         ]);
 
         //Check if the sku is already taken
-        if($request->sku && $this->checkSKU($request->sku, $id)){
-            $notify[]=['error','This SKU has already been taken'];
+        if ($request->sku && $this->checkSKU($request->sku, $id)) {
+            $notify[] = ['error', 'This SKU has already been taken'];
             return $notify;
         }
 
         $product = new Product();
 
-        if($id){
+        if ($id) {
             $product                = Product::findOrFail($id);
             $prev_track_inventory   = $product->track_inventory;
             $prev_has_variants      = $product->has_variants;
 
-            if($sellerId && $product->seller_id != $sellerId){
-                $notify[]=['error','This product doesn\'t belong to this seller'];
+            if ($sellerId && $product->seller_id != $sellerId) {
+                $notify[] = ['error', 'This product doesn\'t belong to this seller'];
                 return $notify;
             }
 
             $sellerId = $product->seller_id;
-            $product->status        = 1 ;
-        }else{
+            $product->status        = 1;
+        } else {
             $product->status        = $sellerId == 0 ? 1 : 0;
         }
 
         if ($request->hasFile('main_image')) {
             try {
-                $request->merge(['image' => uploadImage($request->main_image, imagePath()['product']['path'], imagePath()['product']['size'], @$product->main_image ,imagePath()['product']['thumb'])]);
+                $request->merge(['image' => uploadImage($request->main_image, imagePath()['product']['path'], imagePath()['product']['size'], @$product->main_image, imagePath()['product']['thumb'])]);
             } catch (\Exception $exp) {
-                $notify[]=['error','Could not upload the main image'];
+                $notify[] = ['error', 'Could not upload the main image'];
                 return $notify;
             }
-        }else{
-            $request->merge(['image'=>$product->main_image]);
-
+        } else {
+            $request->merge(['image' => $product->main_image]);
         }
 
         $product->seller_id         = $sellerId;
         $product->brand_id          = $request->brand_id;
-        $product->sku               = $request->has_variants?null:$request->sku;
+        $product->sku               = $request->has_variants ? null : $request->sku;
         $product->name              = $request->name;
         $product->model             = $request->model;
-        $product->has_variants      = $request->has_variants??0;
-        $product->track_inventory   = $request->track_inventory??0;
-        $product->show_in_frontend  = $request->show_in_frontend??0;
+        $product->has_variants      = $request->has_variants ?? 0;
+        $product->track_inventory   = $request->track_inventory ?? 0;
+        $product->show_in_frontend  = $request->show_in_frontend ?? 0;
         $product->main_image        = $request->image;
         $product->video_link        = $request->video_link;
         $product->description       = $request->description;
         $product->summary           = $request->summary;
-        $product->specification     = $request->specification??null;
-        $product->extra_descriptions= $request->extra??null;
+        $product->specification     = $request->specification ?? null;
+        $product->extra_descriptions = $request->extra ?? null;
         $product->base_price        = $request->base_price;
         $product->meta_title        = $request->meta_title;
         $product->meta_description  = $request->meta_description;
-        $product->meta_keywords     = $request->meta_keywords??null;
+        $product->meta_keywords     = $request->meta_keywords ?? null;
         $product->save();
 
         //Check Old Images
         $previous_images = $product->productPreviewImages->pluck('id')->toArray();
-        $image_to_remove = array_values(array_diff($previous_images, $request->old??[]));
+        $image_to_remove = array_values(array_diff($previous_images, $request->old ?? []));
 
-        foreach($image_to_remove as $item){
+        foreach ($image_to_remove as $item) {
             $productImage   = ProductImage::find($item);
             $location       = imagePath()['product']['path'];
 
@@ -188,11 +218,11 @@ trait ProductManager
         }
 
         if ($request->hasFile('photos')) {
-            foreach($request->photos as $image){
+            foreach ($request->photos as $image) {
                 try {
-                    $product_img = uploadImage($image, imagePath()['product']['path'], imagePath()['product']['size'],null, imagePath()['product']['thumb']);
-                }catch (\Exception $exp) {
-                    $notify[]=['error','Could not upload additional images'];
+                    $product_img = uploadImage($image, imagePath()['product']['path'], imagePath()['product']['size'], null, imagePath()['product']['thumb']);
+                } catch (\Exception $exp) {
+                    $notify[] = ['error', 'Could not upload additional images'];
                     return $notify;
                 }
                 $productImage = new ProductImage();
@@ -204,46 +234,52 @@ trait ProductManager
 
         $type = 'Added';
 
-        if($id){
+        if ($id) {
             $product->categories()->sync($request->categories);
             $type = 'Updated';
 
             //If the value of track_inventory or has_variants is changed then delete the prev inventory
-            if(($prev_has_variants != $product->has_variants) || $prev_track_inventory != $product->track_inventory){
+            if (($prev_has_variants != $product->has_variants) || $prev_track_inventory != $product->track_inventory) {
                 $product_stocks = $product->stocks();
-                foreach($product_stocks->get() as $st){
+                foreach ($product_stocks->get() as $st) {
                     $st->stockLogs()->delete();
                 }
                 $product_stocks->delete();
             }
 
             // Check stock table to update the sku in stock table
-            if($product->sku){
+            if ($product->sku) {
                 $stock = ProductStock::where('id', $product->id)->first();
-                if($stock){
+                if ($stock) {
                     $stock->sku = $product->sku;
                     $stock->save();
                 }
             }
-        }else $product->categories()->attach($request->categories);
+        } else $product->categories()->attach($request->categories);
 
-        $message = "Product $type Successfully";
-        $notify[]=['success', $message];
+        return $product;
+    }
+
+    public function storeProductAndReturnNotification($request, $id, $sellerId = 0)
+    {
+        $this->storeProduct($request, $id, $sellerId);
+        $message = "Product saved Successfully";
+        $notify[] = ['success', $message];
         return $notify;
     }
 
     public function deleteProduct($id, $sellerId = 0)
     {
         $query    = Product::where('id', $id);
-        if($sellerId)
-        $query    = $query->where('seller_id', $sellerId);
+        if ($sellerId)
+            $query    = $query->where('seller_id', $sellerId);
         $product  = $query->withTrashed()->firstOrFail();
         $type     = 'Deleted';
 
-        if ($product->trashed()){
+        if ($product->trashed()) {
             $product->restore();
             $type =  'Restored';
-        }else $product->delete();
+        } else $product->delete();
 
         $notify[] = ['success', "Product $type Successfully"];
         return $notify;
@@ -278,9 +314,9 @@ trait ProductManager
             'photos.*'              => ['image', new FileTypeValidate(['jpeg', 'jpg', 'png'])],
         ];
 
-        if($id ==0){
+        if ($id == 0) {
             $validation_rule['main_image']  = ['required', 'image', new FileTypeValidate(['jpeg', 'jpg', 'png'])];
-        }else{
+        } else {
             $validation_rule['main_image']  = ['nullable', 'image', new FileTypeValidate(['jpeg', 'jpg', 'png'])];
         }
 
@@ -289,21 +325,21 @@ trait ProductManager
 
     protected function checkSKU($sku, $id)
     {
-        Product::where('sku', $sku)->where('id', '!=', $id)->with('stocks')->orWhereHas('stocks', function($q)use($sku, $id){
+        Product::where('sku', $sku)->where('id', '!=', $id)->with('stocks')->orWhereHas('stocks', function ($q) use ($sku, $id) {
             $q->where('sku', $sku)->where('product_id', '!=', $id);
         })->first();
     }
 
 
-    public function productReviews($sellerId=0)
+    public function productReviews($sellerId = 0)
     {
-        $query = ProductReview::with(['product','user']);
+        $query = ProductReview::with(['product', 'user']);
 
-        if($sellerId){
-            $query = $query->whereHas('product',function($q) use($sellerId){
+        if ($sellerId) {
+            $query = $query->whereHas('product', function ($q) use ($sellerId) {
                 $q->where('seller_id', $sellerId);
             });
-        }else{
+        } else {
             $query = $query->whereHas('product');
         }
 
@@ -319,25 +355,25 @@ trait ProductManager
     {
         $query = ProductReview::query();
 
-        if($sellerId){
-            $query = $query->whereHas('product', function($q) use($sellerId){
+        if ($sellerId) {
+            $query = $query->whereHas('product', function ($q) use ($sellerId) {
                 $q->where('seller_id', $sellerId);
             });
-        }else{
+        } else {
             $query->whereHas('product');
         }
 
         $query = $query->with('product', 'user');
 
-        $query = $query->where(function($q) use($key){
+        $query = $query->where(function ($q) use ($key) {
             $q->where('review', 'like', "%$key%")
-            ->orWhere('rating', 'like', "%$key%")
+                ->orWhere('rating', 'like', "%$key%")
 
-            ->orWhereHas('user', function ($user) use ($key) {
-                $user->where('username', 'like', "%$key%");
-            })->orWhereHas('product', function ($product) use ($key) {
-                $product->where('name', 'like', "%$key%");
-            });
+                ->orWhereHas('user', function ($user) use ($key) {
+                    $user->where('username', 'like', "%$key%");
+                })->orWhereHas('product', function ($product) use ($key) {
+                    $product->where('name', 'like', "%$key%");
+                });
         });
 
         $data['reviews']        = $query->whereHas('user')->latest()->paginate(getPaginate());
@@ -345,7 +381,5 @@ trait ProductManager
         $data['emptyMessage']   = "No Review Yet";
 
         return $data;
-
     }
-
 }

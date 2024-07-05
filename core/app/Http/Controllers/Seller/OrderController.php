@@ -13,8 +13,9 @@ class OrderController extends Controller
     public function allOrders()
     {
         $pageTitle      = "All Orders";
-        $emptyMessage   = 'No order found';
+        $emptyMessage   = "No order found";
         $orders         = $this->filterOrders(OrderDetail::orders());
+
         return view('seller.order.index', compact('pageTitle', 'orders', 'emptyMessage'));
     }
 
@@ -78,18 +79,18 @@ class OrderController extends Controller
         $pageTitle      = 'Order Details';
         $order          = Order::findOrFail($orderID);
         $orderDetails   = OrderDetail::where('order_id', $orderID)
-                            ->where('seller_id', seller()->id)
-                            ->with('order.deposit','order.appliedCoupon')
-                            ->get();
-        return view('seller.order.details', compact('order','pageTitle','orderDetails'));
+            ->where('seller_id', seller()->id)
+            ->with('order.deposit', 'order.appliedCoupon')
+            ->get();
+
+        return view('seller.order.details', compact('order', 'pageTitle', 'orderDetails'));
     }
 
     function filterOrders($data)
     {
-        return $data->where('seller_id',seller()->id)
-        ->with(['order','order.user','order.deposit.gateway'])
-        ->orderBy('id', 'DESC')
-        ->paginate(getPaginate());;
+        return $data->where('seller_id', seller()->id)
+            ->with(['order', 'order.user', 'order.deposit.gateway'])
+            ->orderBy('id', 'DESC')
+            ->paginate(getPaginate());
     }
-
 }

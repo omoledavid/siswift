@@ -16,36 +16,37 @@ use Illuminate\Support\Facades\Validator;
 class PaymentController extends Controller
 {
 
-	public function depositMethods()
+    public function depositMethods()
     {
         $gatewayCurrency = GatewayCurrency::whereHas('method', function ($gate) {
             $gate->where('status', 1);
         })->with('method')->orderby('method_code')->get();
         $notify[] = 'Payment Methods';
         return response()->json([
-            'code'=>200,
-            'status'=>'ok',
-            'message'=>['error'=>$notify],
-            'data'=>[
-            	'methods'=>$gatewayCurrency,
-            	'image_path'=>imagePath()['gateway']['path']
+            'code' => 200,
+            'status' => 'ok',
+            'message' => ['error' => $notify],
+            'data' => [
+                'methods' => $gatewayCurrency,
+                'image_path' => imagePath()['gateway']['path']
             ],
         ]);
     }
 
-    public function depositInsert(Request $request){
-    	$validator = Validator::make($request->all(),[
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'amount' => 'required|numeric|gt:0',
             'method_code' => 'required',
             'currency' => 'required',
         ]);
 
         if ($validator->fails()) {
-        	return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-        		'message'=>['error'=>$validator->errors()->all()],
-        	]);
+            return response()->json([
+                'code' => 200,
+                'status' => 'ok',
+                'message' => ['error' => $validator->errors()->all()],
+            ]);
         }
 
         $user = auth()->user();
@@ -55,19 +56,19 @@ class PaymentController extends Controller
         if (!$gate) {
             $notify[] = 'Invalid gateway';
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-        		'message'=>['error'=>$notify],
-        	]);
+                'code' => 200,
+                'status' => 'ok',
+                'message' => ['error' => $notify],
+            ]);
         }
 
         if ($gate->min_amount > $request->amount || $gate->max_amount < $request->amount) {
             $notify[] = 'Please follow deposit limit';
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-        		'message'=>['error'=>$notify],
-        	]);
+                'code' => 200,
+                'status' => 'ok',
+                'message' => ['error' => $notify],
+            ]);
         }
 
         $charge = $gate->fixed_charge + ($request->amount * $gate->percent_charge / 100);
@@ -92,96 +93,101 @@ class PaymentController extends Controller
 
         $notify[] = 'Deposit Created';
         return response()->json([
-            'code'=>202,
-            'status'=>'created',
-        	'message'=>['success'=>$notify],
-        	'data'=>[
-        		'deposit'=>$data
-        	],
+            'code' => 202,
+            'status' => 'created',
+            'message' => ['success' => $notify],
+            'data' => [
+                'deposit' => $data
+            ],
         ]);
     }
 
-    public function depositConfirm(Request $request){
-    	$validator = Validator::make($request->all(),[
+    public function depositConfirm(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'transaction' => 'required',
         ]);
 
         if ($validator->fails()) {
-        	return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-        		'message'=>['error'=>$validator->errors()->all()],
-        	]);
+            return response()->json([
+                'code' => 200,
+                'status' => 'ok',
+                'message' => ['error' => $validator->errors()->all()],
+            ]);
         }
-    	$deposit = Deposit::where('trx', $request->transaction)->where('status',0)->orderBy('id', 'DESC')->with('gateway')->first();
+        $deposit = Deposit::where('trx', $request->transaction)->where('status', 0)->orderBy('id', 'DESC')->with('gateway')->first();
         if (!$deposit) {
             $notify[] = 'Deposit not found';
             return response()->json([
-                'code'=>404,
-                'status'=>'error',
-                'message'=>['error'=>$notify],
+                'code' => 404,
+                'status' => 'error',
+                'message' => ['error' => $notify],
             ]);
         }
-    	$dirName = $deposit->gateway->alias;
-        $new = substr(__NAMESPACE__,0,-4).'\\Gateway'. '\\' . $dirName . '\\ProcessController';
+        $dirName = $deposit->gateway->alias;
+        $new = substr(__NAMESPACE__, 0, -4) . '\\Gateway' . '\\' . $dirName . '\\ProcessController';
         $data = (array)json_decode($new::process($deposit));
         if (array_key_exists('view', $data)) {
-        	unset($data['view']);
+            unset($data['view']);
         }
         return response()->json([
-            'code'=>200,
-            'status'=>'ok',
-        	'data'=>[
-        		'gateway_data'=>$data
-        	],
+            'code' => 200,
+            'status' => 'ok',
+            'data' => [
+                'gateway_data' => $data
+            ],
         ]);
     }
 
 
     public function manualDepositConfirm(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'transaction' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-                'message'=>['error'=>$validator->errors()->all()],
+                'code' => 200,
+                'status' => 'ok',
+                'message' => ['error' => $validator->errors()->all()],
             ]);
         }
-        $data = Deposit::with('gateway')->where('status', 0)->where('trx', $request->transaction)->where('method_code','>=',1000)->first();
+        $data = Deposit::with('gateway')->where('status', 0)->where('trx', $request->transaction)->where('method_code', '>=', 1000)->first();
         if (!$data) {
             $notify[] = 'Deposit not found';
             return response()->json([
-                'code'=>404,
-                'status'=>'error',
-                'message'=>['error'=>$notify],
+                'code' => 404,
+                'status' => 'error',
+                'message' => ['error' => $notify],
             ]);
         }
         $method = $data->gatewayCurrency();
         $notify[] = 'Manual payment details';
         return response()->json([
-            'code'=>200,
-            'status'=>'ok',
-            'message'=>['success'=>$notify],
-            'data'=>[
-                'deposit'=>$data,
-                'payment_method'=>$method
+            'code' => 200,
+            'status' => 'ok',
+            'message' => ['success' => $notify],
+            'data' => [
+                'deposit' => $data,
+                'payment_method' => $method
             ]
         ]);
     }
 
     public function manualDepositUpdate(Request $request)
     {
-        $data = Deposit::with('gateway')->where('status', 0)->where('trx', $request->transaction)->where('method_code','>=',1000)->first();
+        $data = Deposit::with('gateway')->where('status', 0)
+            ->where('trx', $request->transaction)
+            ->where('method_code', '>=', 1000)
+            ->first();
+
         if (!$data) {
             $notify[] = 'Deposit not found';
             return response()->json([
-                'code'=>404,
-                'status'=>'error',
-                'message'=>['error'=>$notify],
+                'code' => 404,
+                'status' => 'error',
+                'message' => ['error' => $notify],
             ]);
         }
 
@@ -196,7 +202,7 @@ class PaymentController extends Controller
                 $rules[$key] = [$custom->validation];
                 if ($custom->type == 'file') {
                     array_push($rules[$key], 'image');
-                    array_push($rules[$key], new FileTypeValidate(['jpg','jpeg','png']));
+                    array_push($rules[$key], new FileTypeValidate(['jpg', 'jpeg', 'png']));
                     array_push($rules[$key], 'max:2048');
 
                     array_push($verifyImages, $key);
@@ -210,18 +216,18 @@ class PaymentController extends Controller
                 $inputField[] = $key;
             }
         }
-        $validator = Validator::make($request->all(),$rules);
+        $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-                'message'=>['error'=>$validator->errors()->all()],
+                'code' => 200,
+                'status' => 'ok',
+                'message' => ['error' => $validator->errors()->all()],
             ]);
         }
 
 
-        $directory = date("Y")."/".date("m")."/".date("d");
-        $path = imagePath()['verify']['deposit']['path'].'/'.$directory;
+        $directory = date("Y") . "/" . date("m") . "/" . date("d");
+        $path = imagePath()['verify']['deposit']['path'] . '/' . $directory;
         $collection = collect($request);
         $reqField = [];
         if ($params != null) {
@@ -234,7 +240,7 @@ class PaymentController extends Controller
                             if ($request->hasFile($inKey)) {
                                 try {
                                     $reqField[$inKey] = [
-                                        'field_name' => $directory.'/'.uploadImage($request[$inKey], $path),
+                                        'field_name' => $directory . '/' . uploadImage($request[$inKey], $path),
                                         'type' => $inVal->type,
                                     ];
                                 } catch (\Exception $exp) {
@@ -265,8 +271,8 @@ class PaymentController extends Controller
 
         $adminNotification = new AdminNotification();
         $adminNotification->user_id = $data->user->id;
-        $adminNotification->title = 'Deposit request from '.$data->user->username;
-        $adminNotification->click_url = urlPath('admin.deposit.details',$data->id);
+        $adminNotification->title = 'Deposit request from ' . $data->user->username;
+        $adminNotification->click_url = urlPath('admin.deposit.details', $data->id);
         $adminNotification->save();
 
         $general = GeneralSetting::first();
@@ -283,10 +289,9 @@ class PaymentController extends Controller
 
         $notify[] = 'Deposit request sent successfully';
         return response()->json([
-            'code'=>200,
-            'status'=>'ok',
-            'message'=>['error'=>$notify],
+            'code' => 200,
+            'status' => 'ok',
+            'message' => ['error' => $notify],
         ]);
     }
-
 }

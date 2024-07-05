@@ -4,7 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Closure;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+
 class Authenticate extends  Middleware
 {
     /**
@@ -14,7 +15,7 @@ class Authenticate extends  Middleware
      * @return string|null
      */
 
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, ...$guard)
     {
         if (Auth::check()) {
             return $next($request);
@@ -22,7 +23,4 @@ class Authenticate extends  Middleware
 
         return redirect()->route('user.login');
     }
-
-
-
 }

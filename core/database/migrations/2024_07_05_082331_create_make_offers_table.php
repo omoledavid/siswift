@@ -13,13 +13,12 @@ class CreateMakeOffersTable extends Migration
      */
     public function up()
     {
-        Schema::create('make_offers', function (Blueprint $table) {
-            $table->id();
-            $table->tinyInteger('buyer_id');
-            $table->tinyInteger('seller_id');
-            $table->tinyInteger('product_id');
-            $table->integer('amount');
-            $table->timestamps();
+        Schema::table('order_details', function (Blueprint $table) {
+            $table->decimal('offer_price')->nullable();
+        });
+
+        Schema::table('carts', function (Blueprint $table) {
+            $table->decimal('offer_price')->nullable();
         });
     }
 
@@ -30,6 +29,12 @@ class CreateMakeOffersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('make_offers');
+        Schema::table('order_details', function (Blueprint $table) {
+            $table->dropColumn('offer_price');
+        });
+
+        Schema::table('carts', function (Blueprint $table) {
+            $table->dropColumn('offer_price');
+        });
     }
 }

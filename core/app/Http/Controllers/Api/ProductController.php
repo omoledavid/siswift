@@ -9,14 +9,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Traits\ProductVariantManager;
+use Laravel\Ui\Presets\React;
 
 class ProductController extends Controller
 {
-
+    use ProductManager;
 
     protected function seller()
     {
-        return auth()->guard('seller')->user();
+        return request()->user();
     }
 
     protected function id()
@@ -30,30 +31,33 @@ class ProductController extends Controller
 
     public function index()
     {
-        $product = Product::get();
-        $topSellingProducts = Product::topSales(9);
-        $featuredProducts   = Product::active()->featured()->where('status', 1)->inRandomOrder()->take(6)->get();
-        $latestProducts     = Product::active()->latest()->where('status', 1)->inRandomOrder()->take(12)->get();
-        $topBrands          = Brand::top()->inRandomOrder()->take(16)->get();
         return response()->json([
-            'code' => 200,
-            'status' => 'ok',
-            'message' => ['success' => 'working'],
-            'data' => [
-                'products' => $product,
-                'topSellingProducts' => $topSellingProducts,
-                'featuredProducts' => $featuredProducts,
-                'latestProducts' => $latestProducts,
-                'topBrand' => $topBrands
-            ]
+            'status' => 'success',
+            'data' => $this->products()
         ]);
     }
-    public function single($id){
-        $product = Product::where('id', $id)->first();
-        $recommend_products = 3;
+
+    public function show(Product $product)
+    {
         return response()->json([
-            'single product' => $product,
-            'recommended products' => $recommend_products,
+            'status' => 'success',
+            'data' => $product
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $this->storeProduct($request, null, $this->id())
+        ]);
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $this->storeProduct($request, $product->id, $this->id())
         ]);
     }
 
@@ -81,18 +85,10 @@ class ProductController extends Controller
         return view('seller.products.create', $this->editProduct($id, $this->id()));
     }
 
-    public function store(Request $request, $id)
-    {
-        return back()->withNotify(
-            $this->storeProduct($request, $id, $this->id())
-        );
-    }
-
     public function delete($id)
     {
-        return back()->withNotify(
-            $this->deleteProduct($id, $this->id())
-        );
+        $this->deleteProduct($id, $this->id());
+        return response()->noContent();
     }
 
     /*

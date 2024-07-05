@@ -52,38 +52,36 @@ class LoginController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-                'message'=>['error'=>$validator->errors()->all()],
+                'code' => 200,
+                'status' => 'ok',
+                'message' => ['error' => $validator->errors()->all()],
             ]);
         }
 
         $credentials = request([$this->username, 'password']);
-        if(!Auth::attempt($credentials)){
+        if (!Auth::guard('api')->attempt($credentials)) {
             $response[] = 'Unauthorized user';
             return response()->json([
-                'code'=>401,
-                'status'=>'unauthorized',
-                'message'=>['error'=>$response],
+                'code' => 401,
+                'status' => 'unauthorized',
+                'message' => ['error' => $response],
             ]);
         }
 
-        $user = $request->user();
+        $user = auth()->guard('api')->user();
         $tokenResult = $user->createToken('auth_token')->plainTextToken;
-        $this->authenticated($request,$user);
+        $this->authenticated($request, $user);
         $response[] = 'Login Succesfull';
         return response()->json([
-            'code'=>200,
-            'status'=>'ok',
-            'message'=>['success'=>$response],
-            'data'=>[
+            'code' => 200,
+            'status' => 'ok',
+            'message' => ['success' => $response],
+            'data' => [
                 'user' => auth()->user(),
-                'access_token'=>$tokenResult,
-                'token_type'=>'Bearer'
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer'
             ]
         ]);
-
-        
     }
 
     public function findUsername()
@@ -107,9 +105,8 @@ class LoginController extends Controller
             'password' => 'required|string',
         ];
 
-        $validate = Validator::make($request->all(),$validation_rule);
+        $validate = Validator::make($request->all(), $validation_rule);
         return $validate;
-
     }
 
     public function logout()
@@ -118,9 +115,9 @@ class LoginController extends Controller
 
         $notify[] = 'Logout Succesfull';
         return response()->json([
-            'code'=>200,
-            'status'=>'ok',
-            'message'=>['success'=>$notify],
+            'code' => 200,
+            'status' => 'ok',
+            'message' => ['success' => $notify],
         ]);
     }
 
@@ -130,18 +127,18 @@ class LoginController extends Controller
             auth()->user()->tokens()->delete();
             $notify[] = 'Your account has been deactivated';
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-                'message'=>['success'=>$notify],
+                'code' => 200,
+                'status' => 'ok',
+                'message' => ['success' => $notify],
             ]);
         }
 
 
-        $user = auth()->user();
+        $user = auth('api')->user();
         $user->tv = $user->ts == 1 ? 0 : 1;
         $user->save();
         $ip = $_SERVER["REMOTE_ADDR"];
-        $exist = UserLogin::where('user_ip',$ip)->first();
+        $exist = UserLogin::where('user_ip', $ip)->first();
         $userLogin = new UserLogin();
         if ($exist) {
             $userLogin->longitude =  $exist->longitude;
@@ -149,23 +146,21 @@ class LoginController extends Controller
             $userLogin->city =  $exist->city;
             $userLogin->country_code = $exist->country_code;
             $userLogin->country =  $exist->country;
-        }else{
+        } else {
             $info = json_decode(json_encode(getIpInfo()), true);
-            $userLogin->longitude =  @implode(',',$info['long']);
-            $userLogin->latitude =  @implode(',',$info['lat']);
-            $userLogin->city =  @implode(',',$info['city']);
-            $userLogin->country_code = @implode(',',$info['code']);
+            $userLogin->longitude =  @implode(',', $info['long']);
+            $userLogin->latitude =  @implode(',', $info['lat']);
+            $userLogin->city =  @implode(',', $info['city']);
+            $userLogin->country_code = @implode(',', $info['code']);
             $userLogin->country =  @implode(',', $info['country']);
         }
 
         $userAgent = osBrowser();
         $userLogin->user_id = $user->id;
         $userLogin->user_ip =  $ip;
-        
+
         $userLogin->browser = @$userAgent['browser'];
         $userLogin->os = @$userAgent['os_platform'];
         $userLogin->save();
     }
-
-
 }

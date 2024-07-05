@@ -48,7 +48,7 @@ class Product extends Model
     }
     public function seller()
     {
-        return $this->belongsTo(Seller::class,'seller_id');
+        return $this->belongsTo(Seller::class, 'seller_id');
     }
 
     public function assignAttributes()
@@ -94,7 +94,7 @@ class Product extends Model
 
     public function productVariantImages()
     {
-        return $this->hasMany(ProductImage::class)->where('assign_product_attribute_id', '!=' ,0);
+        return $this->hasMany(ProductImage::class)->where('assign_product_attribute_id', '!=', 0);
     }
 
     public function scopeSellers()
@@ -116,16 +116,16 @@ class Product extends Model
     }
 
 
-    public static function topSales($limit = 6){
-        return self::leftJoin('order_details','products.id','=','order_details.product_id')
-        ->leftJoin('orders','order_details.order_id','=','orders.id')
-        ->selectRaw('products.*, COALESCE(sum(order_details.quantity),0) total')
-        ->where('orders.payment_status', '!=', '0')
-        ->groupBy('products.id')
-        ->with('reviews')
-        ->orderBy('total','desc')
-        ->limit($limit)
-        ->get();
+    public static function topSales($limit = 6)
+    {
+        return self::leftJoin('order_details', 'products.id', '=', 'order_details.product_id')
+            ->leftJoin('orders', 'order_details.order_id', '=', 'orders.id')
+            ->selectRaw('products.*, COALESCE(sum(order_details.quantity),0) total')
+            ->where('orders.payment_status', '!=', '0')
+            ->groupBy('products.id')
+            ->with('reviews')
+            ->orderBy('total', 'desc')
+            ->limit($limit)
+            ->get();
     }
-
 }

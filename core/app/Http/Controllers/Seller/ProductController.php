@@ -52,7 +52,7 @@ class ProductController extends Controller
 
     public function store(Request $request, $id){
         return back()->withNotify(
-            $this->storeProduct($request, $id, $this->id())
+            $this->storeProductAndReturnNotification($request, $id, $this->id())
         );
     }
 

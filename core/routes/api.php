@@ -6,16 +6,24 @@ Route::get('/clear', function () {
 	\Illuminate\Support\Facades\Artisan::call('optimize:clear');
 });
 
-Route::namespace('Api')->name('api.')->group(function () {
+Route::group([], function () {
 	Route::get('general-setting', 'BasicController@generalSetting');
 	Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
 	Route::get('languages', 'BasicController@languages');
 	Route::get('language-data/{code}', 'BasicController@languageData');
 
 	//products
-	Route::get('products', 'ProductController@index');
-	Route::get('product/{id}', 'ProductController@single');
+	Route::resource('products', 'ProductController')->only('index');
 	Route::get('productByCat/{param}', 'ProductController@productByCat');
+
+	Route::group(['middleware' => 'auth.api:sanctum'], function () {
+		Route::apiResource('products', 'ProductController')->except('index');
+		Route::apiResource('carts', 'CartController');
+		Route::apiResource('checkout', 'CheckoutController');
+		Route::apiResource('pay', 'PaymentController')->only('store');
+		Route::post('pay/confirm', 'PaymentController@depositConfirm');
+	});
+
 
 	Route::namespace('Auth')->group(function () {
 		Route::post('login', 'LoginController@login');

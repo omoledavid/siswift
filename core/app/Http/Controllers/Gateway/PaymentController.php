@@ -27,9 +27,9 @@ class PaymentController extends Controller
     {
         $order = Order::where('order_number', session('order_number'))->first();
 
-        if($order){
-            if($order->payment_status ==1)
-            return redirect('/');
+        if ($order) {
+            if ($order->payment_status == 1)
+                return redirect('/');
         }
         $gatewayCurrency = GatewayCurrency::whereHas('method', function ($gate) {
             $gate->where('status', 1);
@@ -49,7 +49,7 @@ class PaymentController extends Controller
 
         $order = Order::where('order_number', session('order_number'))->first();
 
-        if($order->payment_status == 1){
+        if ($order->payment_status == 1) {
             $notify[] = ['error', 'Payment is already completed'];
             return redirect('/')->withNotify($notify);
         }
@@ -67,7 +67,7 @@ class PaymentController extends Controller
         $final_amo  = $payable * $gate->rate;
         $deposit    = Deposit::where('order_id', $order->id)->first();
 
-        if(!$deposit){
+        if (!$deposit) {
             $deposit               = new Deposit();
         }
 
@@ -92,7 +92,7 @@ class PaymentController extends Controller
     public function depositPreview()
     {
         $track      = session()->get('Track');
-        $data       = Deposit::where('trx', $track)->where('status',0)->orderBy('id', 'DESC')->firstOrFail();
+        $data       = Deposit::where('trx', $track)->where('status', 0)->orderBy('id', 'DESC')->firstOrFail();
         $pageTitle  = 'Payment Preview';
         return view($this->activeTemplate . 'user.payment.preview', compact('data', 'pageTitle'));
     }
@@ -102,10 +102,10 @@ class PaymentController extends Controller
     {
         $track      = session()->get('Track');
         $deposit    = Deposit::where('trx', $track)
-                        ->where('status',0)
-                        ->orderBy('id', 'DESC')
-                        ->with('gateway')
-                        ->firstOrFail();
+            ->where('status', 0)
+            ->orderBy('id', 'DESC')
+            ->with('gateway')
+            ->firstOrFail();
 
         if ($deposit->method_code >= 1000) {
             $this->userDataUpdate($deposit);
@@ -128,7 +128,7 @@ class PaymentController extends Controller
         }
 
         // for Stripe V3
-        if(@$data->session){
+        if (@$data->session) {
             $deposit->btc_wallet = $data->session->id;
             $deposit->save();
         }
@@ -157,12 +157,12 @@ class PaymentController extends Controller
             $transaction->save();
 
             $order = Order::where('id', $data->order_id)->first();
-            $order->payment_status= 1;
+            $order->payment_status = 1;
             $order->save();
 
             $adminNotification = new AdminNotification();
             $adminNotification->user_id = $user->id;
-            $adminNotification->title = 'Payment successful via '.$data->gatewayCurrency()->name;
+            $adminNotification->title = 'Payment successful via ' . $data->gatewayCurrency()->name;
             $adminNotification->click_url = urlPath('admin.deposit.successful');
             $adminNotification->save();
 
@@ -177,8 +177,6 @@ class PaymentController extends Controller
                 'trx' => $data->trx,
                 'order_id' => $order->order_number
             ]);
-
-
         }
     }
 
@@ -217,7 +215,7 @@ class PaymentController extends Controller
                 $rules[$key] = [$custom->validation];
                 if ($custom->type == 'file') {
                     array_push($rules[$key], 'image');
-                    array_push($rules[$key], new FileTypeValidate(['jpg','jpeg','png']));
+                    array_push($rules[$key], new FileTypeValidate(['jpg', 'jpeg', 'png']));
                     array_push($rules[$key], 'max:2048');
 
                     array_push($verifyImages, $key);
@@ -234,8 +232,8 @@ class PaymentController extends Controller
         $this->validate($request, $rules);
 
 
-        $directory = date("Y")."/".date("m")."/".date("d");
-        $path = imagePath()['verify']['deposit']['path'].'/'.$directory;
+        $directory = date("Y") . "/" . date("m") . "/" . date("d");
+        $path = imagePath()['verify']['deposit']['path'] . '/' . $directory;
         $collection = collect($request);
         $reqField = [];
         if ($params != null) {
@@ -248,7 +246,7 @@ class PaymentController extends Controller
                             if ($request->hasFile($inKey)) {
                                 try {
                                     $reqField[$inKey] = [
-                                        'field_name' => $directory.'/'.uploadImage($request[$inKey], $path),
+                                        'field_name' => $directory . '/' . uploadImage($request[$inKey], $path),
                                         'type' => $inVal->type,
                                     ];
                                 } catch (\Exception $exp) {
@@ -276,12 +274,12 @@ class PaymentController extends Controller
         $data->status = 2; // pending
         $data->save();
 
-        Cart::where('user_id', auth()->user()->id??null)->delete();
+        Cart::where('user_id', auth()->user()->id ?? null)->delete();
 
         $adminNotification = new AdminNotification();
         $adminNotification->user_id = $data->user->id;
-        $adminNotification->title = 'Deposit request from '.$data->user->username;
-        $adminNotification->click_url = urlPath('admin.deposit.details',$data->id);
+        $adminNotification->title = 'Deposit request from ' . $data->user->username;
+        $adminNotification->click_url = urlPath('admin.deposit.details', $data->id);
         $adminNotification->save();
 
         $general = GeneralSetting::first();
@@ -301,6 +299,4 @@ class PaymentController extends Controller
         $notify[] = ['success', 'You have order request has been taken.'];
         return redirect()->route('user.deposit.history')->withNotify($notify);
     }
-
-
 }
