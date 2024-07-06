@@ -77,7 +77,7 @@ class LoginController extends Controller
             'status' => 'ok',
             'message' => ['success' => $response],
             'data' => [
-                'user' => auth()->user(),
+                'user' => $user,
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer'
             ]
