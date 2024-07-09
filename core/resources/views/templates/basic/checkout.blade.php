@@ -24,17 +24,6 @@
 
                                         <div class="row">
                                             <div class="col-lg-12 mb-20">
-                                                <label for="shipping-method" class="billing-label">@lang('Shipping Method')</label>
-                                                <div class="billing-select">
-                                                    <select name="shipping_method" class="select-bar false px-2" required>
-                                                        <option value="">@lang('Select One')</option>
-                                                        @foreach ($shipping_methods as $sm)
-                                                            <option data-shipping="{{$sm->description}}" data-charge="{{$sm->charge}}" value="{{$sm->id}}">{{$sm->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-12 mb-20">
                                                 <label  class="billing-label">@lang('Payment Method')</label>
                                                 <div class="billing-select">
                                                     <select name="payment" class="select-bar false px-2" required>

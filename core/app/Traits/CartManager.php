@@ -64,12 +64,12 @@ trait CartManager
         }
 
         //Check Stock Status
-        if ($product->track_inventory) {
-            $stock_qty = ProductStock::showAvailableStock($request->product_id, $selected_attr);
-            if ($request->quantity > $stock_qty) {
-                return response()->json(['error' => 'Quantity exceeded availability']);
-            }
-        }
+//        if ($product->track_inventory) {
+//            $stock_qty = ProductStock::showAvailableStock($request->product_id, $selected_attr);
+//            if ($request->quantity > $stock_qty) {
+//                return response()->json(['error' => 'Quantity exceeded availability']);
+//            }
+//        }
 
         if ($cart) {
             $request->quantity > 0 ? $cart->quantity  += $request->quantity : $cart->quantity  += max($request->quantity, ($cart->quantity * -1) + 1);
@@ -127,7 +127,7 @@ trait CartManager
                 'attributes.required' => 'Product variants must be selected',
                 'attributes.min' => 'All product variants must be selected'
             ]);
-            
+
         }
 
         if ($validator->fails()) {

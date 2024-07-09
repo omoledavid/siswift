@@ -53,6 +53,7 @@ Route::namespace('Admin')->name('admin.')->group(function () {
         Route::post('user/add-sub-balance/{id}', 'ManageUsersController@addSubBalance')->name('users.add.sub.balance');
         Route::get('user/send-email/{id}', 'ManageUsersController@showEmailSingleForm')->name('users.email.single');
         Route::post('user/send-email/{id}', 'ManageUsersController@sendEmailSingle')->name('users.email.single');
+        Route::get('user/delete-user/{id}', 'ManageUsersController@deleteUser')->name('users.delete_user');
         Route::get('user/login/{id}', 'ManageUsersController@login')->name('users.login');
         Route::get('user/transactions/{id}', 'ManageUsersController@transactions')->name('users.transactions');
         Route::get('user/deposits/{id}', 'ManageUsersController@deposits')->name('users.deposits');

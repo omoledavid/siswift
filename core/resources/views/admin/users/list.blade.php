@@ -33,7 +33,7 @@
                                 <tr>
                                     <td data-label="@lang('Customer')">
                                         <span class="font-weight-bold d-block">{{$user->fullname}}</span>
-                                        <a href="{{ route('admin.users.detail', $user->id) }}">{{ $user->username }}</a>
+                                        <a href="{{ route('admin.users.detail', $user->id) }}">{{ $user->fullname }}</a>
                                     </td>
 
                                     <td data-label="@lang('Email') | @lang('Mobile')">
@@ -64,22 +64,16 @@
                                             </button>
 
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                <a href="{{route('admin.users.login',$user->id)}}" target="_blank" class="dropdown-item">
-                                                    @lang('Login as User')
-                                                </a>
 
-                                                <a href="{{ route('admin.users.login.history.single', $user->id) }}"
-                                                    class="dropdown-item">
-                                                     @lang('Login Logs')
-                                                 </a>
                                                  <a href="{{route('admin.users.email.single',$user->id)}}"
                                                     class="dropdown-item">
                                                      @lang('Send Email')
                                                  </a>
-
-                                                 <a href="{{route('admin.users.email.log',$user->id)}}" class="dropdown-item">
-                                                     @lang('Email Log')
+                                                <a href="{{route('admin.users.delete_user',$user->id)}}"
+                                                    class="dropdown-item">
+                                                     @lang('Delete user')
                                                  </a>
+
                                             </div>
                                         </div>
                                     </td>

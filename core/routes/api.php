@@ -14,7 +14,6 @@ Route::group([], function () {
 
 	//products
 	Route::resource('products', 'ProductController')->only('index');
-	Route::get('productByCat/{param}', 'ProductController@productByCat');
 
 	Route::group(['middleware' => 'auth.api:sanctum'], function () {
 		Route::apiResource('products', 'ProductController')->except('index');
@@ -27,6 +26,7 @@ Route::group([], function () {
 
 	Route::namespace('Auth')->group(function () {
 		Route::post('login', 'LoginController@login');
+        Route::post('logout', 'LoginController@logout');
 		Route::post('register', 'RegisterController@register');
 
 		Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');

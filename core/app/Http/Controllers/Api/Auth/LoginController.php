@@ -31,7 +31,7 @@ class LoginController extends Controller
      * @var string
      */
 
-    protected $username;
+    protected $email;
 
     /**
      * Create a new controller instance.
@@ -42,7 +42,7 @@ class LoginController extends Controller
 
     public function __construct()
     {
-        $this->username = $this->findUsername();
+        $this->email = $this->findUserEmail();
     }
 
     public function login(Request $request)
@@ -58,7 +58,7 @@ class LoginController extends Controller
             ]);
         }
 
-        $credentials = request([$this->username, 'password']);
+        $credentials = request([$this->email, 'password']);
         if (!Auth::guard('api')->attempt($credentials)) {
             $response[] = 'Unauthorized user';
             return response()->json([
@@ -71,11 +71,11 @@ class LoginController extends Controller
         $user = auth()->guard('api')->user();
         $tokenResult = $user->createToken('auth_token')->plainTextToken;
         $this->authenticated($request, $user);
-        $response[] = 'Login Succesfull';
+        $response = 'Login Successfully';
         return response()->json([
             'code' => 200,
             'status' => 'ok',
-            'message' => ['success' => $response],
+            'message' => [$response],
             'data' => [
                 'user' => $user,
                 'access_token' => $tokenResult,
@@ -84,24 +84,24 @@ class LoginController extends Controller
         ]);
     }
 
-    public function findUsername()
+    public function findUserEmail()
     {
-        $login = request()->input('username');
+        $login = request()->input('email');
 
         $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         request()->merge([$fieldType => $login]);
         return $fieldType;
     }
 
-    public function username()
+    public function email()
     {
-        return $this->username;
+        return $this->email;
     }
 
     protected function validateLogin(Request $request)
     {
         $validation_rule = [
-            $this->username() => 'required|string',
+            $this->email() => 'required|string',
             'password' => 'required|string',
         ];
 
@@ -111,13 +111,13 @@ class LoginController extends Controller
 
     public function logout()
     {
-        auth()->user()->tokens()->delete();
+        auth('sanctum')->user()->tokens()->delete();
 
-        $notify[] = 'Logout Succesfull';
+        $notify = 'Logout Succesfull';
         return response()->json([
             'code' => 200,
             'status' => 'ok',
-            'message' => ['success' => $notify],
+            'message' =>  $notify,
         ]);
     }
 

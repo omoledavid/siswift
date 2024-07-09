@@ -24,7 +24,7 @@ trait OrderManager
         /* Type 1 (Order for Customer) Type 2 (Order as Gift) */
 
         $request->validate([
-            'shipping_method'   => 'required|integer',
+//            'shipping_method'   => 'required|integer',
             'firstname'         => 'required|max:50',
             'lastname'          => 'required|max:50',
             'mobile'            => 'required|max:50',
@@ -156,8 +156,7 @@ trait OrderManager
         $order->order_number        = getTrx();
         $order->user_id             = auth()->user()->id;
         $order->shipping_address    = json_encode($shipping_address);
-        $order->shipping_method_id  = $request->shipping_method;
-        $order->shipping_charge     = $shipping_data->charge;
+        $order->shipping_method_id  = 0;
         $order->order_type          = $type;
         $order->payment_status      = $payment_status ?? 0;
         $order->save();
@@ -193,7 +192,7 @@ trait OrderManager
             $od->save();
         }
 
-        $order->total_amount =  getAmount($cart_total - $coupon_amount + $shipping_data->charge);
+        $order->total_amount =  getAmount($cart_total - $coupon_amount);
         $order->save();
         session()->put('order_number', $order->order_number);
 

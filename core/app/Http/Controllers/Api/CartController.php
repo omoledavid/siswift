@@ -20,7 +20,7 @@ class CartController extends Controller
             'data' => $cart
         ]);
     }
-    
+
     public function update(Request $request)
     {
         $cart = $this->updateCartItem($request);
@@ -34,6 +34,9 @@ class CartController extends Controller
     public function destroy(Cart $cart)
     {
         $this->deleteCartItem($cart->id);
-        return response()->noContent();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'cart item deleted successfully'
+        ]);
     }
 }

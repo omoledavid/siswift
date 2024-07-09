@@ -160,7 +160,7 @@ class ManageUsersController extends Controller
     public function showEmailSingleForm($id)
     {
         $user = User::findOrFail($id);
-        $pageTitle = 'Send Email To: ' . $user->username;
+        $pageTitle = 'Send Email To: ' . $user->email;
         return view('admin.users.email_single', compact('pageTitle', 'user'));
     }
 
@@ -173,7 +173,7 @@ class ManageUsersController extends Controller
 
         $user = User::findOrFail($id);
         sendGeneralEmail($user->email, $request->subject, $request->message, $user->username);
-        $notify[] = ['success', $user->username . ' will receive an email shortly.'];
+        $notify[] = ['success', $user->email . ' will receive an email shortly.'];
         return back()->withNotify($notify);
     }
 
@@ -318,6 +318,13 @@ class ManageUsersController extends Controller
         $email = EmailLog::findOrFail($id);
         $pageTitle = 'Email details';
         return view('admin.users.email_details', compact('pageTitle','email'));
+    }
+    public function deleteUser($id){
+        $user = User::findorFail($id);
+        $user->delete();
+        $notify[] = ['success', 'User has been deleted successfully.'];
+        return back()->withNotify($notify);
+
     }
 
 }

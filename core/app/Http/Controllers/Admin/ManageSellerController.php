@@ -176,7 +176,7 @@ class ManageSellerController extends Controller
     public function showEmailSingleForm($id)
     {
         $user = Seller::findOrFail($id);
-        $pageTitle = 'Send Email To: ' . $user->username;
+        $pageTitle = 'Send Email To: ' . $user->email;
         return view('admin.seller.email_single', compact('pageTitle', 'user'));
     }
 

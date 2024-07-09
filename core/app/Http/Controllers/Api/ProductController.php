@@ -31,9 +31,16 @@ class ProductController extends Controller
 
     public function index()
     {
+        $allProducts = $this->products();
+        if($allProducts['products'][0] == null){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'No products found',
+            ]);
+        }
         return response()->json([
             'status' => 'success',
-            'data' => $this->products()
+            'data' => $allProducts
         ]);
     }
 

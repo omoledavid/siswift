@@ -72,10 +72,7 @@ class User extends Authenticatable
 
     // SCOPES
 
-    public function getFullnameAttribute()
-    {
-        return $this->firstname . ' ' . $this->lastname;
-    }
+
 
     public function scopeActive()
     {

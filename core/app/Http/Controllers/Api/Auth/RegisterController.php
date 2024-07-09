@@ -59,7 +59,7 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:90|unique:users',
             'mobile' => 'required|string|max:50|unique:users',
             'password' => ['required','confirmed',$password_validation],
-            'state' => 'required|max:50|string'
+            'address' => 'required|max:50|string'
         ]);
         return $validate;
     }
@@ -70,8 +70,8 @@ class RegisterController extends Controller
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
+                'code'=>401,
+                'status'=>'error',
                 'message'=>['error'=>$validator->errors()->all()],
             ]);
         }
@@ -116,16 +116,11 @@ class RegisterController extends Controller
 
         //User Create
         $user = new User();
-        $user->firstname = isset($data['fullname']) ? $data['fullname'] : null;
+        $user->fullname = $data['fullname'];
         $user->email = strtolower(trim($data['email']));
         $user->password = Hash::make($data['password']);
         $user->mobile = $data['mobile'];
-        $user->address = [
-            'address' => '',
-            'state' => '',
-            'zip' => '',
-            'city' => ''
-        ];
+        $user->address = $data['address'];
         $user->status = 1;
         $user->ev = $general->ev ? 0 : 1;
         $user->sv = $general->sv ? 0 : 1;

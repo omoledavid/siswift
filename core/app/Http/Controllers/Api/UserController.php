@@ -19,8 +19,7 @@ class UserController extends Controller
 {
 	public function submitProfile(Request $request){
 		$validator = Validator::make($request->all(),[
-            'firstname' => 'required|string|max:50',
-            'lastname' => 'required|string|max:50',
+            'fullname' => 'required|string|max:50',
             'address' => 'sometimes|required|max:80',
             'state' => 'sometimes|required|max:80',
             'zip' => 'sometimes|required|max:40',
