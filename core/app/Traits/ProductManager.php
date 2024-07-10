@@ -36,7 +36,7 @@ trait ProductManager
             $query->inRandomOrder();
         }
 
-        $query  = $query->with(['categories', 'brand', 'stocks'])->whereHas('categories', function ($query) {
+        $query  = $query->with(['categories', 'brand'])->whereHas('categories', function ($query) {
             if (request()->category) {
                 $category = strtolower(request()->category);
                 $query->where('categories.name', 'LIKE', "%$category%");
@@ -150,17 +150,12 @@ trait ProductManager
             'specification.*.value'           =>  'All specification value is required',
         ]);
 
-        //Check if the sku is already taken
-        if ($request->sku && $this->checkSKU($request->sku, $id)) {
-            $notify[] = ['error', 'This SKU has already been taken'];
-            return $notify;
-        }
+
 
         $product = new Product();
 
         if ($id) {
             $product                = Product::findOrFail($id);
-            $prev_track_inventory   = $product->track_inventory;
             $prev_has_variants      = $product->has_variants;
 
             if ($sellerId && $product->seller_id != $sellerId) {
@@ -171,6 +166,7 @@ trait ProductManager
             $sellerId = $product->seller_id;
             $product->status        = 1;
         } else {
+            //adding admin id
             $product->status        = $sellerId == 0 ? 1 : 0;
         }
 
@@ -187,22 +183,12 @@ trait ProductManager
 
         $product->seller_id         = $sellerId;
         $product->brand_id          = $request->brand_id;
-        $product->sku               = $request->has_variants ? null : $request->sku;
         $product->name              = $request->name;
         $product->model             = $request->model;
-        $product->has_variants      = $request->has_variants ?? 0;
-        $product->track_inventory   = $request->track_inventory ?? 0;
-        $product->show_in_frontend  = $request->show_in_frontend ?? 0;
         $product->main_image        = $request->image;
-        $product->video_link        = $request->video_link;
+        $product->location        = $request->location;
         $product->description       = $request->description;
-        $product->summary           = $request->summary;
-        $product->specification     = $request->specification ?? null;
-        $product->extra_descriptions = $request->extra ?? null;
         $product->base_price        = $request->base_price;
-        $product->meta_title        = $request->meta_title;
-        $product->meta_description  = $request->meta_description;
-        $product->meta_keywords     = $request->meta_keywords ?? null;
         $product->save();
 
         //Check Old Images
@@ -233,28 +219,16 @@ trait ProductManager
         }
 
         $type = 'Added';
+        //product branch
 
         if ($id) {
             $product->categories()->sync($request->categories);
             $type = 'Updated';
 
             //If the value of track_inventory or has_variants is changed then delete the prev inventory
-            if (($prev_has_variants != $product->has_variants) || $prev_track_inventory != $product->track_inventory) {
-                $product_stocks = $product->stocks();
-                foreach ($product_stocks->get() as $st) {
-                    $st->stockLogs()->delete();
-                }
-                $product_stocks->delete();
-            }
+
 
             // Check stock table to update the sku in stock table
-            if ($product->sku) {
-                $stock = ProductStock::where('id', $product->id)->first();
-                if ($stock) {
-                    $stock->sku = $product->sku;
-                    $stock->save();
-                }
-            }
         } else $product->categories()->attach($request->categories);
 
         return $product;
@@ -298,7 +272,8 @@ trait ProductManager
             'show_in_frontend'      => 'sometimes|required|numeric|min:1|max:1',
             'description'           => 'nullable|string',
             'summary'               => 'nullable|string|max:360',
-            'sku'                   => 'nullable|required_without:has_variants|string|max:100',
+            'sku'                   => 'nullable',
+//          'sku'                   => 'nullable|required_without:has_variants|string|max:100',
             'extra'                 => 'sometimes|required|array',
             'extra.*.key'           => 'required_with:extra',
             'extra.*.value'         => 'required_with:extra',

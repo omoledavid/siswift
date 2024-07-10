@@ -40,15 +40,19 @@ class ProductController extends Controller
         }
         return response()->json([
             'status' => 'success',
-            'data' => $allProducts
+            'data' => $allProducts,
+            'se'
         ]);
     }
 
     public function show(Product $product)
     {
+        $seller = $this->seller();
         return response()->json([
             'status' => 'success',
-            'data' => $product
+            'data' => $product,
+            'other_images' => $product->productImages,
+            'seller' => $seller
         ]);
     }
 
