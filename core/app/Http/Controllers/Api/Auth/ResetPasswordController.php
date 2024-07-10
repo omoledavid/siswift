@@ -45,8 +45,8 @@ class ResetPasswordController extends Controller
         $validator = Validator::make($request->all(),$this->rules());
         if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
+                'code'=>409,
+                'status'=>'failed',
                 'message'=>['error'=>$validator->errors()->all()],
                 'data'=>null
             ]);

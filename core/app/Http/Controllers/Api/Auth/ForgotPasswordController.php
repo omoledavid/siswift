@@ -32,9 +32,9 @@ class ForgotPasswordController extends Controller
 
     public function sendResetCodeEmail(Request $request)
     {
-        if ($request->type == 'email') {
+        if ($request->email) {
             $validationRule = [
-                'value'=>'required|email'
+                'email'=>'required|email'
             ];
             $validationMessage = [
                 'value.required'=>'Email field is required',
@@ -47,28 +47,28 @@ class ForgotPasswordController extends Controller
             $validationMessage = ['value.required'=>'Username field is required'];
         }else{
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-                'message'=>['error'=>['Invalid selection']],
+                'code'=>409,
+                'status'=>'Failed',
+                'message'=>'Invalid request',
             ]);
         }
         $validator = Validator::make($request->all(),$validationRule,$validationMessage);
         if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
+                'code'=>409,
+                'status'=>'Failed',
                 'message'=>['error'=>$validator->errors()->all()],
             ]);
         }
 
-        $user = User::where($request->type, $request->value)->first();
-        
+        $user = User::where('email', $request->email)->first();
+
         if (!$user) {
             $notify[] = 'User not found.';
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
-                'message'=>['error'=>$notify],
+                'code'=>409,
+                'status'=>'Failed',
+                'message'=>$notify,
             ]);
         }
 
@@ -108,8 +108,8 @@ class ForgotPasswordController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
+                'code'=>409,
+                'status'=>'Failed',
                 'message'=>['error'=>$validator->errors()->all()]
             ]);
         }

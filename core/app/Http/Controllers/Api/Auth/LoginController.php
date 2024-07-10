@@ -52,15 +52,15 @@ class LoginController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'code' => 200,
-                'status' => 'ok',
+                'code' => 409,
+                'status' => 'Failed',
                 'message' => ['error' => $validator->errors()->all()],
             ]);
         }
 
         $credentials = request([$this->email, 'password']);
         if (!Auth::guard('api')->attempt($credentials)) {
-            $response[] = 'Unauthorized user';
+            $response[] = 'Email or Password is not correct';
             return response()->json([
                 'code' => 401,
                 'status' => 'unauthorized',
