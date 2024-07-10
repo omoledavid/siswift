@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\GeneralSetting;
 use App\Models\Language;
 use Illuminate\Http\Request;
@@ -11,12 +13,16 @@ class BasicController extends Controller
 {
     public function generalSetting(){
     	$general = GeneralSetting::first();
+        $brands = Brand::all();
+        $categories = Category::all();
 		$notify[] = 'General setting data';
 		return response()->json([
 			'code'=>200,
-			'status'=>'ok',
-	        'message'=>['success'=>$notify],
-	        'data'=>['general_setting'=>$general]
+			'status'=>'Success',
+	        'message'=>$notify,
+//	        'data'=>['general_setting'=>$general]
+            'brands' => $brands,
+            'categories' => $categories,
 	    ]);
     }
 
