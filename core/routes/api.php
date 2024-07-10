@@ -21,6 +21,26 @@ Route::group([], function () {
 		Route::apiResource('checkout', 'CheckoutController');
 		Route::apiResource('pay', 'PaymentController')->only('store');
 		Route::post('pay/confirm', 'PaymentController@depositConfirm');
+
+        // Deposit
+        Route::get('deposit/methods', 'PaymentController@depositMethods');
+        Route::post('deposit/insert', 'PaymentController@store');
+        Route::get('deposit/confirm', 'PaymentController@depositConfirm');
+
+        Route::get('deposit/manual', 'PaymentController@manualDepositConfirm');
+        Route::post('deposit/manual', 'PaymentController@manualDepositUpdate');
+
+        Route::get('deposit/history', 'UserController@depositHistory');
+
+        Route::get('transactions', 'UserController@transactions');
+
+        //support ticket
+        Route::post('support/create', 'SupportTicketController@createTicket');
+
+
+        Route::apiResource('shops', 'ShopController');
+        Route::apiResource('messages', 'MessagesController');
+
 	});
 
 
@@ -59,17 +79,7 @@ Route::group([], function () {
 			Route::get('withdraw/history', 'UserController@withdrawLog');
 
 
-			// Deposit
-			Route::get('deposit/methods', 'PaymentController@depositMethods');
-			Route::post('deposit/insert', 'PaymentController@depositInsert');
-			Route::get('deposit/confirm', 'PaymentController@depositConfirm');
 
-			Route::get('deposit/manual', 'PaymentController@manualDepositConfirm');
-			Route::post('deposit/manual', 'PaymentController@manualDepositUpdate');
-
-			Route::get('deposit/history', 'UserController@depositHistory');
-
-			Route::get('transactions', 'UserController@transactions');
 		});
 	});
 });

@@ -26,6 +26,16 @@ class Seller extends Authenticatable
        return $this->firstname.' '.$this->lastname;
     }
 
+    public function setFullnameAttribute($value)
+    {
+        $names = explode(' ', $value);
+
+        $this->firstname = $names[0];
+        if(count($names) > 1){
+            $this->lastname = implode(' ', array_slice($names, 1));
+        }
+    }
+
     public function shop()
     {
         return $this->hasOne(Shop::class);

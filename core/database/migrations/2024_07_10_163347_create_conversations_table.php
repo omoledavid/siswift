@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnToTableName extends Migration
+class CreateConversationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class AddColumnToTableName extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->string('location')->nullable();
+        Schema::create('conversations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('sender_id');
+            $table->string('hash');
+            $table->text('message');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AddColumnToTableName extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('location');
-        });
+        Schema::dropIfExists('conversations');
     }
 }

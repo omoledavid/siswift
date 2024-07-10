@@ -9,6 +9,7 @@ use App\Models\SellLog;
 use App\Models\EmailLog;
 use App\Models\Withdrawal;
 use App\Models\Transaction;
+use App\Traits\ShopManager;
 use Illuminate\Http\Request;
 use App\Models\GeneralSetting;
 use App\Models\WithdrawMethod;
@@ -17,6 +18,8 @@ use App\Http\Controllers\Controller;
 
 class ManageSellerController extends Controller
 {
+    use ShopManager;
+
     public function allSeller()
     {
         $pageTitle      = 'All Sellers';
@@ -304,68 +307,7 @@ class ManageSellerController extends Controller
 
     public function shopUpdate(Request $request)
     {
-        $seller         = Seller::findOrFail($request->seller_id);
-        $shop           = Shop::where('seller_id', $seller->id)->first();
-        $logoValidation = $coverValidation = 'required';
-
-        if($shop){
-            $logoValidation     = $shop->logo?'nullable':'required';
-            $coverValidation    = $shop->cover?'nullable':'required';
-        }
-
-        $request->validate([
-            'name'                  => 'required|string|max:40',
-            'phone'                 => 'required|string|max:40',
-            'address'               => 'required|string|max:600',
-            'opening_time'          => 'nullable|date_format:H:i',
-            'closing_time'          => 'nullable|date_format:H:i',
-            'meta_title'            => 'nullable|string|max:191',
-            'meta_description'      => 'nullable|string|max:191',
-            'meta_keywords'         => 'nullable|array',
-            'meta_keywords.array.*' => 'string',
-            'social_links'          => 'nullable|array',
-            'social_links.*.name'   => 'required_with:social_links|string',
-            'social_links.*.icon'   => 'required_with:social_links|string',
-            'social_links.*.link'   => 'required_with:social_links|string',
-
-            'image'                 => [$logoValidation, 'image',new FileTypeValidate(['jpg','jpeg','png'])],
-            'cover_image'           => [$coverValidation, 'image',new FileTypeValidate(['jpg','jpeg','png'])]
-        ],[
-            'firstname.required'                  => 'First name field is required',
-            'lastname.required'                   => 'Last name field is required',
-            'social_links.*.name.required_with'   => 'All specification name is required',
-            'social_links.*.icon.required_with'   => 'All specification icon is required',
-            'social_links.*.link.required_with'   => 'All specification link is required',
-            'image.required'                      => 'Logo is required',
-            'cover_image.required'                => 'Cover is required'
-        ]);
-
-        if(!$shop) $shop = new Shop();
-
-
-        if ($request->hasFile('image')) {
-            $location       = imagePath()['seller']['shop_logo']['path'];
-            $size           = imagePath()['seller']['shop_logo']['size'];
-            $shop->logo     = uploadImage($request->image, $location, $size, @$shop->logo);
-        }
-
-        if($request->hasFile('cover_image')){
-            $location       = imagePath()['seller']['shop_cover']['path'];
-            $size           = imagePath()['seller']['shop_cover']['size'];
-            $shop->cover    = uploadImage($request->cover_image, $location, $size, @$seller->cover_image);
-        }
-
-        $shop->name              = $request->name;
-        $shop->seller_id         = $seller->id;
-        $shop->phone             = $request->phone;
-        $shop->address           = $request->address;
-        $shop->opens_at          = $request->opening_time;
-        $shop->closed_at         = $request->closing_time;
-        $shop->meta_title        = $request->meta_title;
-        $shop->meta_description  = $request->meta_description;
-        $shop->meta_keywords     = $request->meta_keywords??null;
-        $shop->social_links      = $request->social_links??null;
-        $shop->save();
+        $this->updateShop($request);
 
         $notify[]=['success','Updated successfully'];
         return back()->withNotify($notify);

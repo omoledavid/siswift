@@ -43,8 +43,8 @@ class PaymentController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'code' => 200,
-                'status' => 'ok',
+                'code' => 409,
+                'status' => 'Failed',
                 'message' => ['error' => $validator->errors()->all()],
             ]);
         }
@@ -56,8 +56,8 @@ class PaymentController extends Controller
         if (!$gate) {
             $notify[] = 'Invalid gateway';
             return response()->json([
-                'code' => 200,
-                'status' => 'ok',
+                'code' => 409,
+                'status' => 'Failed',
                 'message' => ['error' => $notify],
             ]);
         }
@@ -65,8 +65,8 @@ class PaymentController extends Controller
         if ($gate->min_amount > $request->amount || $gate->max_amount < $request->amount) {
             $notify[] = 'Please follow deposit limit';
             return response()->json([
-                'code' => 200,
-                'status' => 'ok',
+                'code' => 409,
+                'status' => 'Failed',
                 'message' => ['error' => $notify],
             ]);
         }
@@ -110,8 +110,8 @@ class PaymentController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'code' => 200,
-                'status' => 'ok',
+                'code' => 408,
+                'status' => 'Failed',
                 'message' => ['error' => $validator->errors()->all()],
             ]);
         }

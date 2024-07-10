@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -40,6 +41,16 @@ class User extends Authenticatable
     protected $data = [
         'data'=>1
     ];
+
+    public function setFullnameAttribute($value)
+    {
+        $names = explode(' ', $value);
+
+        $this->firstname = $names[0];
+        if(count($names) > 1){
+            $this->lastname = implode(' ', array_slice($names, 1));
+        }
+    }
 
 
 
@@ -101,6 +112,11 @@ class User extends Authenticatable
     public function scopeSmsVerified()
     {
         return $this->where('sv', 1);
+    }
+
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(Seller::class);
     }
 
 }
