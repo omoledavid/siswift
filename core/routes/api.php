@@ -35,7 +35,7 @@ Route::group([], function () {
         Route::get('transactions', 'UserController@transactions');
 
         //support ticket
-        Route::post('support/create', 'SupportTicketController@createTicket');
+        Route::apiResource('support', 'SupportTicketController');
 
 
         Route::apiResource('shops', 'ShopController');

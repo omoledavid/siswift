@@ -60,7 +60,7 @@ trait SupportTicketManager {
             }
         }
 
-        $notify[] = ['success', 'Ticket created successfully'];
+        $notify[] = 'Ticket created successfully';
 
         return [
             'ticket' => $ticketNumber,
