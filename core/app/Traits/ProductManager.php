@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\ProductImage;
 use App\Models\ProductReview;
 use App\Models\ProductStock;
+use App\Models\User;
 use App\Rules\FileTypeValidate;
 
 trait ProductManager
@@ -149,6 +150,11 @@ trait ProductManager
             'specification.*.name.required'   =>  'All specification name is required',
             'specification.*.value'           =>  'All specification value is required',
         ]);
+        $seller = auth()->user();
+        if($seller->seller_id == null){
+            return false;
+        }
+
 
 
 
@@ -181,7 +187,7 @@ trait ProductManager
             $request->merge(['image' => $product->main_image]);
         }
 
-        $product->seller_id         = $sellerId;
+        $product->seller_id         = $seller->seller_id;
         $product->brand_id          = $request->brand_id;
         $product->name              = $request->name;
         $product->model             = $request->model;
@@ -230,6 +236,12 @@ trait ProductManager
 
             // Check stock table to update the sku in stock table
         } else $product->categories()->attach($request->categories);
+//        $seller = User::findorFail(auth()->user()->id);
+//        if($seller->seller_id == null){
+//            $seller->seller_id = $sellerId;
+//            $seller->save();
+//        }
+
 
         return $product;
     }

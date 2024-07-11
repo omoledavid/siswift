@@ -19,8 +19,7 @@ Route::group([], function () {
 		Route::apiResource('products', 'ProductController')->except('index');
 		Route::apiResource('carts', 'CartController');
 		Route::apiResource('checkout', 'CheckoutController');
-		Route::apiResource('pay', 'PaymentController')->only('store');
-		Route::post('pay/confirm', 'PaymentController@depositConfirm');
+		Route::post('pay', 'HandlePaymentController');
 
         // Deposit
         Route::get('deposit/methods', 'PaymentController@depositMethods');

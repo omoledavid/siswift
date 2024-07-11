@@ -3,6 +3,7 @@
 namespace App\Models;
 
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -29,6 +30,14 @@ class Order extends Model
     {
         return $this->hasManyThrough(Product::class, OrderDetail::class, 'order_id', 'id');
     }
+
+    public function product(): Attribute
+    {
+        return new Attribute(
+            fn () => $this->products()->first(),
+        );
+    }
+
 
     public function orderDetail()
     {

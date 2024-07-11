@@ -52,12 +52,20 @@ class ProductController extends Controller
             'status' => 'success',
             'data' => $product,
             'other_images' => $product->productImages,
-            'seller' => $seller
+            'seller' => $seller,
+            'reviews' => $product->reviews()
         ]);
     }
 
     public function store(Request $request)
     {
+        $data = $this->storeProduct($request, null, $this->id());
+        if(!$data){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Create shop to continue',
+            ]);
+        }
         return response()->json([
             'status' => 'success',
             'data' => $this->storeProduct($request, null, $this->id())
@@ -69,15 +77,6 @@ class ProductController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $this->storeProduct($request, $product->id, $this->id())
-        ]);
-    }
-
-    public function productByCat($param)
-    {
-        return response()->json([
-            'code' => 200,
-            'status' => 'ok',
-            'message' => ['success' => $param]
         ]);
     }
 

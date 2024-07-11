@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\CheckoutException;
 use App\Http\Controllers\Controller;
+use App\Models\Escrow;
 use App\Traits\OrderManager;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,10 @@ class CheckoutController extends Controller
 
         try {
             $order = $this->checkout($request, $request->type);
+            $escrow = Escrow::start(
+                $request->user(),
+                $order
+            );
 
             if ($request->payment === 1) {
                 return response()->json([
@@ -30,7 +35,7 @@ class CheckoutController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => $order
+                'data' => compact('order', 'escrow')
             ]);
         } catch (CheckoutException $e) {
             return response(status: 400)->json([

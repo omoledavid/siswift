@@ -11,6 +11,7 @@ class ProfileController extends Controller
 {
     public function index(){
         $user = auth()->user();
+        $user->escrow_wallet->deposit(100);
         return response()->json([
             'status' => 'sucess',
             'profile' => $user

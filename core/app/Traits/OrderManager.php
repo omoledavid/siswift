@@ -24,16 +24,7 @@ trait OrderManager
         /* Type 1 (Order for Customer) Type 2 (Order as Gift) */
 
         $request->validate([
-//            'shipping_method'   => 'required|integer',
-            'firstname'         => 'required|max:50',
-            'lastname'          => 'required|max:50',
-            'mobile'            => 'required|max:50',
-            'email'             => 'required|max:90',
             'address'           => 'required|max:50',
-            'city'              => 'required|max:50',
-            'state'             => 'required|max:50',
-            'zip'               => 'required|max:50',
-            'country'           => 'required|max:50',
             'payment'           => 'required|in:1,2'
         ]);
 
@@ -65,17 +56,17 @@ trait OrderManager
                 $offer_amount       = 0;
             }
 
-            if ($cart->attributes != null) {
-                $attr_item                   = AssignProductAttribute::productAttributesDetails($cart->attributes);
-                $attr_item['offer_amount'] = $offer_amount;
-                $sub_total                   = (($cart->product->base_price + $attr_item['extra_price']) - $offer_amount) * $cart->quantity;
-                unset($attr_item['extra_price']);
-            } else {
-                $details['variants']        = null;
-                $details['offer_amount']    = $offer_amount;
-                $sub_total                  = ($cart->product->base_price  - $offer_amount) * $cart->quantity;
-            }
-            $cart_total += $sub_total;
+//            if ($cart->attributes != null) {
+//                $attr_item                   = AssignProductAttribute::productAttributesDetails($cart->attributes);
+//                $attr_item['offer_amount'] = $offer_amount;
+//                $sub_total                   = (($cart->product->base_price + $attr_item['extra_price']) - $offer_amount) * $cart->quantity;
+//                unset($attr_item['extra_price']);
+//            } else {
+//                $details['variants']        = null;
+//                $details['offer_amount']    = $offer_amount;
+//                $sub_total                  = ($cart->product->base_price  - $offer_amount) * $cart->quantity;
+//            }
+            $cart_total += $cart->product->base_price * $cart->quantity ;
         }
 
         if (session('coupon')) {
@@ -142,13 +133,6 @@ trait OrderManager
         $shipping_data      = ShippingMethod::find($request->shipping_method);
 
         $shipping_address   = [
-            'firstname' => $request->firstname,
-            'lastname'  => $request->lastname,
-            'mobile'    => $request->mobile,
-            'country'   => $request->country,
-            'city'      => $request->city,
-            'state'     => $request->state,
-            'zip'       => $request->zip,
             'address'   => $request->address,
         ];
 
@@ -175,20 +159,20 @@ trait OrderManager
             } else $offer_amount = 0;
 
 
-            if ($cart->attributes != null) {
-                $attr_item                   = AssignProductAttribute::productAttributesDetails($cart->attributes);
-                $attr_item['offer_amount']   = $offer_amount;
-                $sub_total                   = (($cart->product->base_price + $attr_item['extra_price']) - $offer_amount) * $cart->quantity;
-                $od->total_price             = $sub_total;
-                unset($attr_item['extra_price']);
-                $od->details                 = json_encode($attr_item);
-            } else {
-                $details['variants']        = null;
-                $details['offer_amount']    = $offer_amount;
-                $sub_total                  = ($cart->product->base_price  - $offer_amount) * $cart->quantity;
-                $od->total_price            = $sub_total;
-                $od->details                = json_encode($details);
-            }
+//            if ($cart->attributes != null) {
+//                $attr_item                   = AssignProductAttribute::productAttributesDetails($cart->attributes);
+//                $attr_item['offer_amount']   = $offer_amount;
+//                $sub_total                   = (($cart->product->base_price + $attr_item['extra_price']) - $offer_amount) * $cart->quantity;
+//                $od->total_price             = $sub_total;
+////                unset($attr_item['extra_price']);
+//                $od->details                 = json_encode($attr_item);
+//            } else {
+//                $details['variants']        = null;
+//                $details['offer_amount']    = $offer_amount;
+//                $sub_total                  = ($cart->product->base_price  - $offer_amount) * $cart->quantity;
+//                $od->total_price            = $sub_total;
+//                $od->details                = json_encode($details);
+//            }
             $od->save();
         }
 

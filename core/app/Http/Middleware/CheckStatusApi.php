@@ -20,6 +20,6 @@ class CheckStatusApi
         } else {
             return redirect()->route('api.user.authorization');
         }
-        
+
     }
 }

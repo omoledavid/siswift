@@ -10,6 +10,7 @@ class Product extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $with = ['seller'];
 
     protected $casts = [
         'extra_descriptions' => 'array',

@@ -116,3 +116,6 @@ Route::get('placeholder-image/{size}', 'SiteController@placeholderImage')->name(
 
 Route::get('/{slug}', 'SiteController@pages')->name('pages');
 Route::get('/', 'SiteController@index')->name('home');
+
+Route::get('pay/{payment:reference}', 'VerifyPaymentController')->name('payment.confirm');
+

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c9e46c04151e10cb2f8bbe6c021e56a9",
+    "content-hash": "5905693966b8e340873fc7bf2d842c32",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2495,6 +2495,81 @@
                 "source": "https://github.com/mailjet/mailjet-apiv3-php/tree/v1.6.3"
             },
             "time": "2023-12-10T11:13:26+00:00"
+        },
+        {
+            "name": "mannikj/laravel-wallet",
+            "version": "v11.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/MannikJ/laravel-wallet.git",
+                "reference": "05f268ae49ea77a30f712e36bb087bc90e33c54f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/MannikJ/laravel-wallet/zipball/05f268ae49ea77a30f712e36bb087bc90e33c54f",
+                "reference": "05f268ae49ea77a30f712e36bb087bc90e33c54f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^4.0",
+                "larastan/larastan": "^2.9",
+                "laravel/pint": "1.16.1",
+                "orchestra/testbench": "^9.1.1",
+                "phpunit/phpunit": "^11.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "MannikJ\\Laravel\\Wallet\\WalletServiceProvider"
+                    ],
+                    "aliases": {
+                        "Wallet": "MannikJ\\Laravel\\Wallet\\Facades\\WalletFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "MannikJ\\Laravel\\Wallet\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jannik Malken",
+                    "email": "mannikj@web.de",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Simon Depelchin",
+                    "email": "simon@webartisan.be",
+                    "homepage": "https://webartisan.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easy to use virtual wallet for your app",
+            "homepage": "https://github.com/mannikj/laravel-wallet",
+            "keywords": [
+                "credits",
+                "currency",
+                "depsimon",
+                "laravel-wallet",
+                "mannikj",
+                "payment",
+                "virtual",
+                "wallet"
+            ],
+            "support": {
+                "issues": "https://github.com/MannikJ/laravel-wallet/issues",
+                "source": "https://github.com/MannikJ/laravel-wallet/tree/v11.0.0"
+            },
+            "time": "2024-07-01T13:03:02+00:00"
         },
         {
             "name": "messagebird/php-rest-api",

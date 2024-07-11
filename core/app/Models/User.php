@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use MannikJ\Laravel\Wallet\Traits\HasWallet;
 
+/**
+ * @property Wallet $wallet
+ */
 class User extends Authenticatable
 {
     use Notifiable, HasApiTokens;
@@ -17,6 +22,8 @@ class User extends Authenticatable
      */
 
     protected $guarded = ['id'];
+    protected $with = ['accounts'];
+    protected $appends = ['wallet', 'escrow_wallet'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -41,6 +48,47 @@ class User extends Authenticatable
     protected $data = [
         'data'=>1
     ];
+
+    public function wallet(): Attribute
+    {
+        return new Attribute(
+            function () {
+                $account = $this->accounts->where('name', 'main')->first();
+
+                if (!$account) {
+                    $account = $this->accounts()->create([
+                        'user_id' => $this->getKey(),
+                        'name' => 'main',
+                    ]);
+                }
+
+                return $account->wallet;
+            }
+        );
+    }
+
+    public function escrowWallet(): Attribute
+    {
+        return new Attribute(
+            function () {
+                $account = $this->accounts->where('name', 'escrow')->first();
+
+                if (!$account) {
+                    $account = $this->accounts()->create([
+                        'user_id' => $this->getKey(),
+                        'name' => 'escrow',
+                    ]);
+                }
+
+                return $account->wallet;
+            }
+        );
+    }
+
+    public function accounts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Account::class);
+    }
 
     public function setFullnameAttribute($value)
     {
@@ -121,6 +169,10 @@ class User extends Authenticatable
     public function seller(): BelongsTo
     {
         return $this->belongsTo(Seller::class);
+    }
+    public function payments()
+    {
+        return $this->morphMany(Payment::class, 'payable');
     }
 
 }

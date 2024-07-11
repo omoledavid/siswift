@@ -93,6 +93,29 @@ trait CartManager
         return $cart;
     }
 
+    public function getCartItems($request)
+    {
+        $user_id    = auth()->user()->id;
+        if ($user_id != null) {
+            $data = Cart::where('user_id', $user_id)->with(['product', 'product.stocks', 'product.categories', 'product.offer'])
+                ->whereHas('product', function ($q) {
+                    return $q->whereHas('categories')->whereHas('brand');
+                })
+                ->orderBy('id', 'desc')
+                ->get();
+        } else {
+            $s_id       = session()->get('session_id');
+            $data = Cart::where('session_id', $s_id)
+                ->with(['product', 'product.stocks', 'product.categories', 'product.offer'])
+                ->whereHas('product', function ($q) {
+                    return $q->whereHas('categories')->whereHas('brand');
+                })
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+        return $data;
+    }
+
     public function deleteCartItem($id)
     {
         if (session()->has('coupon')) {

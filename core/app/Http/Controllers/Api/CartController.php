@@ -11,10 +11,21 @@ class CartController extends Controller
 {
     use CartManager;
 
+    public function index()
+    {
+        return response()->json(Cart::all());
+    }
+
     public function store(Request $request)
     {
         $cart = $this->addProductToCart($request);
 
+        return response()->json([
+            'status' => 'success',
+            'data' => $cart
+        ]);
+    }
+    public function show(Cart $cart){
         return response()->json([
             'status' => 'success',
             'data' => $cart
