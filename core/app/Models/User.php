@@ -46,11 +46,15 @@ class User extends Authenticatable
     {
         $names = explode(' ', $value);
 
-        $this->firstname = $names[0];
-        if(count($names) > 1){
-            $this->lastname = implode(' ', array_slice($names, 1));
+        // Ensure $names is an array
+        if(is_array($names) && count($names) > 0) {
+            $this->firstname = $names[0];
+            if (count($names) > 1) {
+                $this->lastname = implode(' ', array_slice($names, 1));
+            }
         }
     }
+
 
 
 
