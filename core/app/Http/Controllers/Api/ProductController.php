@@ -47,13 +47,9 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $seller = $this->seller();
         return response()->json([
             'status' => 'success',
             'data' => $product,
-            'other_images' => $product->productImages,
-            'seller' => $seller,
-            'reviews' => $product->reviews()
         ]);
     }
 

@@ -29,7 +29,7 @@ class CheckoutController extends Controller
                 return response()->json([
                     'status' => 'success',
                     'message' => 'order created, user can make deposit',
-                    'data' => $order
+                    'data' => compact('order', 'escrow')
                 ]);
             }
 

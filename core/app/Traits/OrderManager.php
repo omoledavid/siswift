@@ -11,9 +11,11 @@ use App\Models\Deposit;
 use App\Models\GeneralSetting;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Product;
 use App\Models\ProductStock;
 use App\Models\ShippingMethod;
 use App\Models\StockLog;
+use App\Models\User;
 
 trait OrderManager
 {
@@ -42,19 +44,13 @@ trait OrderManager
         }, 'product.categories'])->get();
 
 
-        $coupon_amount  = 0;
-        $coupon_code    = null;
+
         $cart_total     = 0;
         $product_categories = [];
 
         foreach ($carts_data as $cart) {
             $product_categories[] = $cart->product->categories->pluck('id')->toArray();
 
-            if ($cart->product->offer && $cart->product->offer->activeOffer) {
-                $offer_amount       = calculateDiscount($cart->product->offer->activeOffer->amount, $cart->product->offer->activeOffer->discount_type, $cart->product->base_price);
-            } else {
-                $offer_amount       = 0;
-            }
 
 //            if ($cart->attributes != null) {
 //                $attr_item                   = AssignProductAttribute::productAttributesDetails($cart->attributes);
@@ -66,50 +62,7 @@ trait OrderManager
 //                $details['offer_amount']    = $offer_amount;
 //                $sub_total                  = ($cart->product->base_price  - $offer_amount) * $cart->quantity;
 //            }
-            $cart_total += $cart->product->base_price * $cart->quantity ;
-        }
-
-        if (session('coupon')) {
-            $coupon = Coupon::where('coupon_code', session('coupon')['code'])->with('categories')->first();
-            // Check Minimum Subtotal
-            if ($cart_total < $coupon->minimum_spend) {
-                throw new CheckoutException("Sorry your have to order minmum amount of $coupon->minimum_spend $general->cur_text");
-            }
-
-            // Check Maximum Subtotal
-            if ($coupon->maximum_spend != null && $cart_total > $coupon->maximum_spend) {
-                throw new CheckoutException("Sorry your have to order maximum amount of $coupon->maximum_spend $general->cur_text");
-            }
-
-            //Check Limit Per Coupon
-            if ($coupon->appliedCoupons->count() >= $coupon->usage_limit_per_coupon) {
-                throw new CheckoutException("Sorry your Coupon has exceeded the maximum Limit For Usage");
-            }
-
-            //Check Limit Per User
-            if ($coupon->appliedCoupons->where('user_id', auth()->id())->count() >= $coupon->usage_limit_per_user) {
-                throw new CheckoutException("Sorry you have already reached the maximum usage limit for this coupon");
-            }
-
-            $product_categories = array_unique(array_flatten($product_categories));
-            if ($coupon) {
-                $coupon_categories = $coupon->categories->pluck('id')->toArray();
-                $coupon_products = $coupon->products->pluck('id')->toArray();
-
-                $cart_products = $carts_data->pluck('product_id')->unique()->toArray();
-
-                if (empty(array_intersect($coupon_products, $cart_products))) {
-                    if (empty(array_intersect($product_categories, $coupon_categories))) {
-                        throw new CheckoutException('The coupon is not available for some products on your cart.');
-                    }
-                }
-                if ($coupon->discount_type == 1) {
-                    $coupon_amount = $coupon->coupon_amount;
-                } else {
-                    $coupon_amount = ($cart_total * $coupon->coupon_amount) / 100;
-                }
-                $coupon_code    = $coupon->coupon_code;
-            }
+            $cart_total = $cart->offer_price * $cart->quantity;
         }
 
         foreach ($carts_data as $cd) {
@@ -145,6 +98,7 @@ trait OrderManager
         $order->payment_status      = $payment_status ?? 0;
         $order->save();
         $details = [];
+//        return response()->json([$cart->product->seller_id]);
 
         foreach ($carts_data as $cart) {
             $od = new OrderDetail();
@@ -176,18 +130,9 @@ trait OrderManager
             $od->save();
         }
 
-        $order->total_amount =  getAmount($cart_total - $coupon_amount);
+        $order->total_amount =  getAmount($cart_total);
         $order->save();
         session()->put('order_number', $order->order_number);
-
-        if ($coupon_code != null) {
-            $applied_coupon = new AppliedCoupon();
-            $applied_coupon->user_id    = auth()->id();
-            $applied_coupon->coupon_id  = $coupon->id;
-            $applied_coupon->order_id   = $order->id;
-            $applied_coupon->amount     = $coupon_amount;
-            $applied_coupon->save();
-        }
 
         //Remove coupon from session
         if (session('coupon')) {

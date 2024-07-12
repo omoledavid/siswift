@@ -44,6 +44,17 @@ class Order extends Model
         return $this->hasMany(OrderDetail::class);
     }
 
+    public function getSellerIdAttribute()
+    {
+        // Get the first order detail
+        $orderDetail = $this->orderDetail()->first();
+        // Return the seller_id from the first order detail, or null if no order detail exists
+        return $orderDetail ? $orderDetail->seller_id : null;
+    }
+
+    // Add the custom attribute to the $appends array
+    protected $appends = ['seller_id'];
+
 
     public function getAmountAttribute()
     {

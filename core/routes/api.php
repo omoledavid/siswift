@@ -19,6 +19,7 @@ Route::group([], function () {
 		Route::apiResource('products', 'ProductController')->except('index');
 		Route::apiResource('carts', 'CartController');
 		Route::apiResource('checkout', 'CheckoutController');
+		Route::apiResource('rate', 'RateController');
 		Route::post('pay', 'HandlePaymentController');
 
         // Deposit

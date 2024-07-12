@@ -13,6 +13,15 @@ class Escrow extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'buyer_id',
+        // Add other attributes here that you want to allow mass assignment for
+        'seller_id',
+        'amount',
+        'status',
+        // etc.
+    ];
+
     protected $casts = [
         'status' => EscrowStatus::class,
     ];
@@ -22,11 +31,12 @@ class Escrow extends Model
      */
     public static function start(User $buyer, Order $order)
     {
+
         try {
             DB::beginTransaction();
             $escrow = static::query()->create([
                 'buyer_id' => $buyer->id,
-                'seller_id' => $order->product->seller,
+                'seller_id' => $order->seller_id,
                 'order_id' => $order->id,
                 'status' => EscrowStatus::Initiated
             ]);

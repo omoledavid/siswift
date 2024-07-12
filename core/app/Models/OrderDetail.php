@@ -26,7 +26,7 @@ class OrderDetail extends Model
          });
 
     }
-    
+
     public function scopePendingOrder()
     {
         return $this->whereHas('order',function($q){
@@ -83,5 +83,5 @@ class OrderDetail extends Model
 
     }
 
-   
+
 }

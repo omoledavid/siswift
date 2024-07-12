@@ -12,6 +12,11 @@ use Illuminate\Http\Request;
 class ShopController extends Controller
 {
     use ShopManager;
+
+    public function index()
+    {
+        return response()->json(Shop::all());
+    }
     public function store(Request $request): JsonResponse
     {
         try {
@@ -37,6 +42,14 @@ class ShopController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $shop
+        ]);
+    }
+    public function destroy(Shop $shop): JsonResponse
+    {
+        $shop->delete();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shop has been deleted'
         ]);
     }
 
