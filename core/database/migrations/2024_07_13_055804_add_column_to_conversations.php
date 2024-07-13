@@ -16,6 +16,7 @@ class AddColumnToConversations extends Migration
         Schema::table('conversations', function (Blueprint $table) {
             //
             $table->foreignId('receiver_id')->after('sender_id');
+            $table->integer('message_id');
         });
     }
 
@@ -27,7 +28,7 @@ class AddColumnToConversations extends Migration
     public function down()
     {
         Schema::table('conversations', function (Blueprint $table) {
-            $table->dropColumn('receiver_id');
+            $table->dropColumn('receiver_id', 'message_id');
         });
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
+use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,11 +15,11 @@ class MessagesController extends Controller
     {
         $sender_id = $request->user()->id;
 
-        $messages = Conversation::query()->where('sender_id', $sender_id)->orWhere('receiver_id', $sender_id)->with('sender', 'receiver')->get();
+        $conversations = Message::query()->where('sender_id', $sender_id)->orWhere('receiver_id', $sender_id)->with('sender', 'receiver', 'messages')->get();
 
         return response()->json([
             'status' => 'success',
-            'data' => $messages
+            'data' => $conversations
         ]);
     }
 
@@ -30,8 +31,14 @@ class MessagesController extends Controller
         ]);
 
         $hash = $this->generateHash($request->get('receiver_id'), $request->user()->id);
-
-        $conversation = Conversation::query()->create([
+        $startedChat = Message::where('sender_id', $request->user()->id)->where('receiver_id', $request->receiver_id)->first();
+        if (!$startedChat) {
+            $conversation = new Message();
+            $conversation->sender_id = $request->user()->id;
+            $conversation->receiver_id = $request->receiver_id;
+            $conversation->save();
+        }
+        $messages = Conversation::query()->create([
             'sender_id' => $request->user()->id,
             'receiver_id' => $request->receiver_id,
             'hash' => $hash,
@@ -40,7 +47,7 @@ class MessagesController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'data' => $conversation
+            'data' => $messages
         ]);
     }
 
