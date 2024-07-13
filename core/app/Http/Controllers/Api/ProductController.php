@@ -41,7 +41,6 @@ class ProductController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $allProducts,
-            'se'
         ]);
     }
 
@@ -50,6 +49,15 @@ class ProductController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $product,
+        ]);
+    }
+    public function sellerProducts(Product $product)
+    {
+        $user = auth()->user();
+        $products = $this->products($user->id);
+        return response()->json([
+            'status' => 'success',
+            'data' => $products,
         ]);
     }
 

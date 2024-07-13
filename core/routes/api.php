@@ -17,6 +17,7 @@ Route::group([], function () {
 
 	Route::group(['middleware' => 'auth.api:sanctum'], function () {
 		Route::apiResource('products', 'ProductController')->except('index');
+		Route::get('seller-products', 'ProductController@sellerProducts');
 		Route::apiResource('carts', 'CartController');
 		Route::apiResource('checkout', 'CheckoutController');
 		Route::apiResource('rate', 'RateController');

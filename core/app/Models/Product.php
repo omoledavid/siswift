@@ -100,7 +100,7 @@ class Product extends Model
 
     public function scopeSellers()
     {
-        return $this->where('seller_id', auth()->guard('seller')->user()->id);
+        return $this->where('seller_id', auth()->user()->id);
     }
     public function scopeActive()
     {

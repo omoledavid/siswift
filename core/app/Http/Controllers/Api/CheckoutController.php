@@ -19,13 +19,13 @@ class CheckoutController extends Controller
         ]);
 
         try {
-            $order = $this->checkout($request, $request->type);
-            $escrow = Escrow::start(
-                $request->user(),
-                $order
-            );
 
             if ($request->payment == 1) {
+                $order = $this->checkout($request, $request->type);
+                $escrow = Escrow::start(
+                    $request->user(),
+                    $order
+                );
                 return response()->json([
                     'status' => 'success',
                     'message' => 'order created, user can make deposit',
@@ -34,8 +34,8 @@ class CheckoutController extends Controller
             }
 
             return response()->json([
-                'status' => 'success',
-                'data' => compact('order', 'escrow')
+                'status' => 'failed',
+                'data' => 'no data'
             ]);
         } catch (CheckoutException $e) {
             return response(status: 400)->json([
