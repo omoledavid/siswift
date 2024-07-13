@@ -106,7 +106,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if($general->force_ssl){
-            \URL::forceScheme('http');
+            \URL::forceScheme('https');
         }
 
         Paginator::useBootstrap();

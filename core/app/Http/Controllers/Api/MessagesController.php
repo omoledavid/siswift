@@ -13,11 +13,8 @@ class MessagesController extends Controller
     public function index(Request $request)
     {
         $sender_id = $request->user()->id;
-        $receiver_id = $request->query('receiver_id');
 
-        $hash = $this->generateHash($sender_id, $receiver_id);
-
-        $messages = Conversation::query()->where('hash', $hash)->get();
+        $messages = Conversation::query()->where('sender_id', $sender_id)->orWhere('receiver_id', $sender_id)->get();
 
         return response()->json([
             'status' => 'success',
@@ -36,6 +33,7 @@ class MessagesController extends Controller
 
         $conversation = Conversation::query()->create([
             'sender_id' => $request->user()->id,
+            'receiver_id' => $request->receiver_id,
             'hash' => $hash,
             'message' => $request->get('message')
         ]);
@@ -50,11 +48,21 @@ class MessagesController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function show($id)
     {
-        //
+        $sender_id = auth()->user()->id;
+        $receiver_id = $id;
+
+        $hash = $this->generateHash($sender_id, $receiver_id);
+
+        $messages = Conversation::query()->where('hash', $hash)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $messages
+        ]);
     }
 
     /**

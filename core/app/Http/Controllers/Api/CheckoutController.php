@@ -25,7 +25,7 @@ class CheckoutController extends Controller
                 $order
             );
 
-            if ($request->payment === 1) {
+            if ($request->payment == 1) {
                 return response()->json([
                     'status' => 'success',
                     'message' => 'order created, user can make deposit',

@@ -42,6 +42,7 @@ Route::group([], function () {
         Route::apiResource('shops', 'ShopController');
         Route::apiResource('messages', 'MessagesController');
 
+        Route::apiResource('order', 'OrderController');
 	});
 
 

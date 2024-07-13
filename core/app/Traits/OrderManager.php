@@ -92,8 +92,6 @@ trait OrderManager
         $order = new Order();
         $order->order_number        = getTrx();
         $order->user_id             = auth()->user()->id;
-        $order->shipping_address    = json_encode($shipping_address);
-        $order->shipping_method_id  = 0;
         $order->order_type          = $type;
         $order->payment_status      = $payment_status ?? 0;
         $order->save();
