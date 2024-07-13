@@ -75,7 +75,8 @@ class ProductController extends Controller
         }
         return response()->json([
             'status' => 'success',
-            'data' => $this->storeProduct($request, null, $this->id())
+            'message' => 'Product created successfully',
+            'data' => $data
         ]);
     }
 
