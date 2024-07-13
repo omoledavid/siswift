@@ -97,7 +97,7 @@
                     </div>
                 </li>
 
-                
+
 
                 <li class="sidebar__menu-header">@lang('Shop')</li>
                 <li class="sidebar-menu-item sidebar-dropdown">
@@ -368,6 +368,12 @@
                         </ul>
                     </div>
                 </li>
+                <li class="sidebar-menu-item {{ menuActive('admin.kyc.setting') }}">
+                    <a href="{{ route('admin.kyc.setting') }}" class="nav-link">
+                        <i class="menu-icon las la-user-check"></i>
+                        <span class="menu-title">@lang('KYC Setting')</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="{{menuActive('admin.withdrawals*',3)}}">
@@ -490,9 +496,9 @@
                     </div>
                 </li>
 
-                
 
-                
+
+
             </ul>
             <div class="text-center mb-3 text-uppercase">
                 <span class="text--primary">{{__(systemDetails()['name'])}}</span>

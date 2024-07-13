@@ -54,7 +54,15 @@ class ProductController extends Controller
     public function sellerProducts(Product $product)
     {
         $user = auth()->user();
-        $products = $this->products($user->id);
+
+        // Retrieve products uploaded by the authenticated user and select specific fields
+        $products = $user->products()
+            ->select('name','seller_id','model', 'main_image', 'description', 'base_price', 'status', 'location') // Specify the fields you want to include
+            ->with(['seller' => function ($query) {
+                $query->select('id', 'firstname', 'lastname','mobile', 'address', 'email'); // Always include the foreign key
+            }])
+            ->get();
+
         return response()->json([
             'status' => 'success',
             'data' => $products,

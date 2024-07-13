@@ -106,7 +106,7 @@ trait CartManager
         } else {
             $s_id       = session()->get('session_id');
             $data = Cart::where('session_id', $s_id)
-                ->with(['product', 'product.stocks', 'product.categories', 'product.offer'])
+                ->with(['product', 'product.stocks', 'product.categories',])
                 ->whereHas('product', function ($q) {
                     return $q->whereHas('categories')->whereHas('brand');
                 })

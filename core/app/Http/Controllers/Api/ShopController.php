@@ -47,6 +47,7 @@ class ShopController extends Controller
     public function destroy(Shop $shop): JsonResponse
     {
         $shop->delete();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Shop has been deleted'

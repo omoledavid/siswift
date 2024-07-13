@@ -22,8 +22,9 @@ class User extends Authenticatable
      */
 
     protected $guarded = ['id'];
-    protected $with = ['accounts'];
-    protected $appends = ['wallet', 'escrow_wallet'];
+    protected $with = ['accounts.wallet'];
+    protected $appends = ['wallet'];
+//    protected $appends = ['wallet', 'escrow_wallet'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -173,6 +174,10 @@ class User extends Authenticatable
     public function payments()
     {
         return $this->morphMany(Payment::class, 'payable');
+    }
+    public function products()
+    {
+        return $this->hasMany(Product::class,'seller_id');
     }
 
 }

@@ -17,7 +17,7 @@ class ProfileController extends Controller
         ]);
     }
     public function update(Request $request){
-        $user = auth()->user();
+        $user = $request->user();
         $request->validate([
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',

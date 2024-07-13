@@ -11,9 +11,14 @@ class CartController extends Controller
 {
     use CartManager;
 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Cart::all());
+        $user = auth()->user();
+        $cart = $this->getCartItems($request);
+        return response()->json([
+            'status' => 'success',
+            'data' => $cart
+        ]);
     }
 
     public function store(Request $request)

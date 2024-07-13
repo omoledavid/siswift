@@ -16,6 +16,7 @@ Route::namespace('Admin')->name('admin.')->group(function () {
         Route::get('password/reset/{token}', 'ResetPasswordController@showResetForm')->name('password.reset.form');
         Route::post('password/reset/change', 'ResetPasswordController@reset')->name('password.change');
     });
+    Route::get('kyc.setting', 'KycController@setting')->name('kyc.setting');
 
 
     Route::middleware('admin')->group(function () {
