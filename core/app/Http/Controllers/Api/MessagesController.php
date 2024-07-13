@@ -57,7 +57,7 @@ class MessagesController extends Controller
 
         $hash = $this->generateHash($sender_id, $receiver_id);
 
-        $messages = Conversation::query()->where('hash', $hash)->get();
+        $messages = Conversation::query()->where('hash', $hash)->with('sender', 'receiver')->get();
 
         return response()->json([
             'status' => 'success',
