@@ -10,7 +10,7 @@ class Product extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
-    protected $with = ['seller', 'reviews', 'productImages','brand'];
+    protected $with = ['seller', 'reviews', 'productImages','brand', 'shop'];
 
     protected $casts = [
         'extra_descriptions' => 'array',
@@ -46,6 +46,9 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(Brand::class);
+    } public function shop()
+    {
+        return $this->belongsTo(Shop::class, 'shop_id', 'id');
     }
     public function seller()
     {

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnToConversations extends Migration
+class AddColumnToTableProducts extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddColumnToConversations extends Migration
      */
     public function up()
     {
-        Schema::table('conversations', function (Blueprint $table) {
-            //
-            $table->foreignId('receiver_id')->after('sender_id');
+        Schema::table('products', function (Blueprint $table) {
+            $table->integer('shop_id');
         });
     }
 
@@ -26,8 +25,8 @@ class AddColumnToConversations extends Migration
      */
     public function down()
     {
-        Schema::table('conversations', function (Blueprint $table) {
-            $table->dropColumn('receiver_id');
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('shop_id');
         });
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\ProductImage;
 use App\Models\ProductReview;
 use App\Models\ProductStock;
+use App\Models\Shop;
 use App\Models\User;
 use App\Rules\FileTypeValidate;
 
@@ -186,6 +187,7 @@ trait ProductManager
         } else {
             $request->merge(['image' => $product->main_image]);
         }
+        $shop_id = Shop::where('seller_id', $sellerId)->first()->id;
 
         $product->seller_id         = $seller->seller_id;
         $product->brand_id          = $request->brand_id;
@@ -195,6 +197,7 @@ trait ProductManager
         $product->location        = $request->location;
         $product->description       = $request->description;
         $product->base_price        = $request->base_price;
+        $product->shop_id           = $shop_id;
         $product->save();
 
         //Check Old Images
