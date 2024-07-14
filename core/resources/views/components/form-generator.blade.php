@@ -49,5 +49,5 @@
 
 
 @push('script-lib')
-<script src="{{ asset('assets/global/js/form_generator.js') }}"></script>
+    <script src="{{asset('assets/dashboard/js/form_generator.js')}}"></script>
 @endpush

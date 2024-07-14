@@ -103,6 +103,10 @@ class User extends Authenticatable
             }
         }
     }
+    public function getuserFullnameAttribute()
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
 
 
 

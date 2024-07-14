@@ -66,5 +66,5 @@
         formGenerator.totalField = {{ $form ? count((array) $form->form_data) : 0 }}
     </script>
 
-    <script src="{{ asset('assets/global/js/form_actions.js') }}"></script>
+    <script src="{{asset('assets/dashboard/js/form_actions.js')}}"></script>
 @endpush

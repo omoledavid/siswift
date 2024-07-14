@@ -129,7 +129,6 @@ class ManageUsersController extends Controller
 
         $user->firstname = $request->firstname;
         $user->lastname = $request->lastname;
-        $user->email = $request->email;
         $user->address = [
                             'address' => $request->address,
                             'city' => $request->city,
@@ -142,6 +141,7 @@ class ManageUsersController extends Controller
         $user->sv       = $request->sv ? 1 : 0;
         $user->ts       = $request->ts ? 1 : 0;
         $user->tv       = $request->tv ? 1 : 0;
+        $user->kv       = $request->kv ? 1 : 0;
         $user->save();
 
         $notify[] = ['success', 'Customer detail has been updated'];

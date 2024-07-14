@@ -98,8 +98,9 @@ class ShopController extends Controller
         }
 
         $emptyMessage ="Sorry! No Product Found.";
+        $empty_message ="Sorry! No Product Found.";
 
-        return view($this->activeTemplate . $view, compact('products', 'perpage', 'brand', 'min_price', 'max_price', 'pageTitle' ,'brands','min', 'max', 'category_id', 'emptyMessage'));
+        return view($this->activeTemplate . $view, compact('products', 'perpage', 'brand', 'min_price', 'max_price', 'pageTitle' ,'brands','min', 'max', 'category_id', 'emptyMessage', 'empty_message'));
     }
 
     public function productSearch(Request $request)

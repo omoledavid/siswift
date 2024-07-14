@@ -23,6 +23,9 @@ Route::group([], function () {
 		Route::apiResource('rate', 'RateController');
 		Route::post('pay', 'HandlePaymentController');
 
+        Route::apiResource('kyc', 'KycController');
+        Route::get('kyc-data', 'KycController@kycData');
+
         // Deposit
         Route::get('deposit/methods', 'PaymentController@depositMethods');
         Route::post('deposit/insert', 'PaymentController@store');

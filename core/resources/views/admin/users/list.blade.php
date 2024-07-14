@@ -32,8 +32,8 @@
                             @forelse($users as $user)
                                 <tr>
                                     <td data-label="@lang('Customer')">
-                                        <span class="font-weight-bold d-block">{{$user->fullname}}</span>
-                                        <a href="{{ route('admin.users.detail', $user->id) }}">{{ $user->fullname }}</a>
+                                        <span class="font-weight-bold d-block">{{$user->userFullname}}</span>
+                                        <a href="{{ route('admin.users.detail', $user->id) }}">{{ $user->userFullname }}</a>
                                     </td>
 
                                     <td data-label="@lang('Email') | @lang('Mobile')">

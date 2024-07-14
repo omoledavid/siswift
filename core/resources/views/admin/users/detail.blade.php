@@ -211,14 +211,18 @@
                                 <label class="form-control-label font-weight-bold">@lang('SMS Verification') </label>
                                 <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger" data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')" name="sv" @if($user->sv) checked @endif>
                             </div>
-                            <div class="form-group  col-md-6  col-sm-3 col-12">
+                            <div class="form-group  col-md-4  col-sm-3 col-12">
                                 <label class="form-control-label font-weight-bold">@lang('2FA Status') </label>
                                 <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger" data-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Deactive')" name="ts" @if($user->ts) checked @endif>
                             </div>
 
-                            <div class="form-group  col-md-6  col-sm-3 col-12">
+                            <div class="form-group  col-md-4  col-sm-3 col-12">
                                 <label class="form-control-label font-weight-bold">@lang('2FA Verification') </label>
                                 <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger" data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')" name="tv" @if($user->tv) checked @endif>
+                            </div>
+                            <div class="form-group  col-md-4  col-sm-3 col-12">
+                                <label class="form-control-label font-weight-bold">@lang('KYC Verification') </label>
+                                <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger" data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')" name="kv" @if($user->kv) checked @endif>
                             </div>
                         </div>
 
