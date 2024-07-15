@@ -103,10 +103,10 @@ class ProductController extends Controller
         return view('seller.products.create', $this->editProduct($id, $this->id()));
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
-        $this->deleteProduct($id, $this->id());
-        return response()->noContent();
+        $this->deleteProduct($id, auth()->user()->seller_id);
+        return response()->json('Product deleted successfully');
     }
 
     /*
