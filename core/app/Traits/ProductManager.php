@@ -187,7 +187,7 @@ trait ProductManager
         } else {
             $request->merge(['image' => $product->main_image]);
         }
-        $shop_id = Shop::where('seller_id', $sellerId)->first()->id;
+        $shop_id = Shop::where('seller_id', $seller->seller_id)->first()->id;
 
         $product->seller_id         = $seller->seller_id;
         $product->brand_id          = $request->brand_id;

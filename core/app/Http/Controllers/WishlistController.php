@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Wishlist;
+use App\Models\Wishlist;    
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
@@ -10,7 +10,7 @@ class WishlistController extends Controller
 {
     //WISH LIST
     public function addToWishList(Request $request)
-    {
+    {   
         $validator = Validator::make($request->all(), [
             'product_id' => 'required|integer',
 
