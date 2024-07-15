@@ -26,7 +26,6 @@ Route::group([], function () {
         Route::apiResource('kyc', 'KycController');
         Route::get('kyc-data', 'KycController@kycData');
 
-        Route::get('transaction', 'KycController@kycData');
 
         // Deposit
         Route::get('deposit/methods', 'PaymentController@depositMethods');
@@ -39,7 +38,8 @@ Route::group([], function () {
         Route::get('deposit/history', 'UserController@depositHistory');
 
         Route::get('transactions', 'TransactionController@transactions');
-        Route::get('withdraw', 'TransactionController@withdraw');
+        Route::post('withdraw', 'TransactionController@withdraw');
+        Route::get('withdrawal-method', 'TransactionController@withdrawalMethod');
 
         //support ticket
         Route::apiResource('support', 'SupportTicketController');

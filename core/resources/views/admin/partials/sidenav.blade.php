@@ -312,7 +312,12 @@
                         </ul>
                     </div>
                 </li>
-
+                <li class="sidebar-menu-item {{menuActive('admin.withdraw.method.index')}}">
+                    <a href="{{route('admin.withdraw.method.index')}}" class="nav-link">
+                        <i class="menu-icon lab la-amazon-pay"></i>
+                        <span class="menu-title">@lang('Withdraw Methods')</span>
+                    </a>
+                </li>
                 <li class="sidebar__menu-header">@lang('Payments & Withdraw')</li>
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="{{menuActive('admin.deposit*',3)}}">
