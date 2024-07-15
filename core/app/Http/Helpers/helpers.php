@@ -1059,7 +1059,7 @@ function combinations($arrays, $i = 0)
 
 function seller()
 {
-    return auth()->guard('seller')->user();
+    return auth()->guard('user')->user();
 }
 
 function makeHtmlElement($tag, $class, $content)

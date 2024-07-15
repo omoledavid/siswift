@@ -14,7 +14,7 @@ class Withdrawal extends Model
 
     public function seller()
     {
-        return $this->belongsTo(Seller::class,'seller_id')->withDefault();
+        return $this->belongsTo(User::class,'seller_id')->withDefault();
     }
 
     public function method()
