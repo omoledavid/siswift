@@ -23,6 +23,7 @@ class HandlePaymentController extends Controller
         $request->validate([
             'amount' => ['required', 'numeric'],
             'gateway' => ['required'],
+            'description' => ['required'],
             'callback_url' => ['required', 'url'],
         ], [
             'amount.required' => 'required',
@@ -45,7 +46,7 @@ class HandlePaymentController extends Controller
         $this->paymentService = new AutomaticPaymentService($gateway);
 
         try {
-            $payment = Payment::make($request->user(), $request->amount, 'paystack', $request->callback_url);
+            $payment = Payment::make($request->user(), $request->amount, 'paystack', $request->callback_url, $request->description);
             $paymentUrl = $this->paymentService->generatePaymentLink($payment);
             return response()->json([
                 'status' => 'success',

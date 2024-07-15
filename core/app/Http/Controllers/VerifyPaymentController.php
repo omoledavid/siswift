@@ -37,7 +37,7 @@ class VerifyPaymentController extends Controller
             DB::transaction(function () use ($payment) {
                 $payment->verify();
                 $payment->payable->wallet->deposit($payment->amount, [
-                    'description' => 'Fund wallet',
+                    'description' => $payment->data['description'],
                     'payment_reference' => $payment->reference
                 ]);
             });

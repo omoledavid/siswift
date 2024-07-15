@@ -22,7 +22,7 @@ class User extends Authenticatable
      */
 
     protected $guarded = ['id'];
-    protected $with = ['accounts.wallet'];
+    protected $with = ['accounts.wallet', 'transactions'];
     protected $appends = ['wallet'];
 //    protected $appends = ['wallet', 'escrow_wallet'];
 
@@ -90,6 +90,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Account::class);
     }
+
 
     public function setFullnameAttribute($value)
     {

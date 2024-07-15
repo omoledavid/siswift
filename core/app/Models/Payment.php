@@ -27,7 +27,7 @@ class Payment extends Model
         'data' => 'array',
     ];
 
-    public static function make(User $user, float $money, string $gateway, string $callback_url)
+    public static function make(User $user, float $money, string $gateway, string $callback_url, string $description)
     {
         return $user->payments()->create([
             'reference' => Str::uuid(),
@@ -36,6 +36,7 @@ class Payment extends Model
             'gateway' => $gateway,
             'data' => [
                 'callback_url' => $callback_url,
+                'description' => $description,
             ],
         ]);
     }

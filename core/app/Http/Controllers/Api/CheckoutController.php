@@ -22,13 +22,19 @@ class CheckoutController extends Controller
 
             if ($request->payment == 1) {
                 $order = $this->checkout($request, $request->type);
+                if(!$order){
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You don\'t have enough Money for this order',
+                    ]);
+                }
                 $escrow = Escrow::start(
                     $request->user(),
                     $order
                 );
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'order created, user can make deposit',
+                    'message' => 'order created, Escrow system initiated',
                     'data' => compact('order', 'escrow')
                 ]);
             }
