@@ -7,6 +7,7 @@ use App\Models\AdminNotification;
 use App\Models\Deposit;
 use App\Models\GeneralSetting;
 use App\Models\Transaction;
+use App\Models\User_notification;
 use App\Models\WithdrawMethod;
 use App\Models\Withdrawal;
 use App\Rules\FileTypeValidate;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use function PHPUnit\Framework\isEmpty;
 
 class UserController extends Controller
 {
@@ -377,6 +379,20 @@ class UserController extends Controller
             'data'=>[
                 'transactions'=>$transactions,
             ]
+        ]);
+    }
+    public function notifications(){
+        $user = auth()->user();
+        $notifications = User_notification::where('user_id', $user->id)->where('read_status', 0)->orderBy('id','desc')->limit(5);
+        if(isEmpty($notifications)){
+            return response()->json([
+                'message'=>'No notifications',
+            ], 404);
+        }
+        return response()->json([
+            'code'=>200,
+            'status'=>'ok',
+            'notifications'=>$notifications,
         ]);
     }
 }

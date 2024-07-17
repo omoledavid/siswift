@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Escrow;
 use App\Models\Withdrawal;
 use App\Models\WithdrawMethod;
 use App\Rules\FileTypeValidate;
@@ -50,6 +51,8 @@ class TransactionController extends Controller
         $afterCharge    = $request->amount - $charge;
         $finalAmount    = $afterCharge * $method->rate;
 
+        $seller->wallet->withdraw($finalAmount);
+
         $withdraw = new Withdrawal();
         $withdraw->method_id    = $method->id; // wallet method ID
         $withdraw->seller_id    = $seller->id;
@@ -75,5 +78,16 @@ class TransactionController extends Controller
                 'data' => $methods
             ]
         );
+    }
+
+    public function escrowAccept(){
+        $user = auth()->user();
+        return response()->json();
+    }public function escrows(){
+        $user = auth()->user();
+//        $escrow = Escrow::where('seller_id', $user->seller_id)->orWhere('buyer_id', $user->id)->get()->reject();
+        return response()->json([
+            'status' => 'success',
+        ]);
     }
 }

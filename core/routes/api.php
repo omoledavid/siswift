@@ -41,15 +41,24 @@ Route::group([], function () {
         Route::post('withdraw', 'TransactionController@withdraw');
         Route::get('withdrawal-method', 'TransactionController@withdrawalMethod');
 
+        //escrow
+        Route::post('escrow-accept', 'TransactionController@escrowAccept');
+        Route::post('escrow-reject', 'TransactionController@escrowReject');
+        Route::get('get-escrow', 'TransactionController@escrows');
+
         //support ticket
         Route::apiResource('support', 'SupportTicketController');
         Route::apiResource('profile', 'ProfileController');
 
-
+        //shops
         Route::apiResource('shops', 'ShopController');
+        Route::get('shop-stats', 'ShopController@stat');
         Route::apiResource('messages', 'MessagesController');
 
         Route::apiResource('order', 'OrderController');
+
+        //user
+        Route::get('notifications', 'UserController@notifications');
 	});
 
 

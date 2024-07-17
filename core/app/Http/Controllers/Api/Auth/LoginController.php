@@ -55,7 +55,7 @@ class LoginController extends Controller
                 'code' => 409,
                 'status' => 'Failed',
                 'message' => ['error' => $validator->errors()->all()],
-            ]);
+            ], 409);
         }
 
         $credentials = request([$this->email, 'password']);
@@ -65,7 +65,7 @@ class LoginController extends Controller
                 'code' => 401,
                 'status' => 'unauthorized',
                 'message' => ['error' => $response],
-            ]);
+            ], 401);
         }
 
         $user = auth()->guard('api')->user();
@@ -81,7 +81,7 @@ class LoginController extends Controller
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer'
             ]
-        ]);
+        ], 200);
     }
 
     public function findUserEmail()
@@ -127,10 +127,9 @@ class LoginController extends Controller
             auth()->user()->tokens()->delete();
             $notify[] = 'Your account has been deactivated';
             return response()->json([
-                'code' => 200,
                 'status' => 'ok',
                 'message' => ['success' => $notify],
-            ]);
+            ], 405);
         }
 
 
