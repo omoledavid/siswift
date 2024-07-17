@@ -80,14 +80,32 @@ class TransactionController extends Controller
         );
     }
 
-    public function escrowAccept(){
+    public function escrowAccept(Escrow $escrow){
+
+        if((int) $escrow->seller_id === (int) request()->user()->id){
+            $escrow->confirm();
+            return response()->json(['status' => 'success']);
+        }
+
+        return response()->json(['status' => 'failed'], 400);
+    }
+
+    public function escrowComplete(Escrow $escrow){
+
+        if((int) $escrow->buyer_id === (int) request()->user()->id){
+            $escrow->complete();
+            return response()->json(['status' => 'success']);
+        }
+
+        return response()->json(['status' => 'failed'], 400);
+    }
+
+    public function escrows(){
         $user = auth()->user();
-        return response()->json();
-    }public function escrows(){
-        $user = auth()->user();
-//        $escrow = Escrow::where('seller_id', $user->seller_id)->orWhere('buyer_id', $user->id)->get()->reject();
+        $escrow = Escrow::where('seller_id', $user->seller_id)->orWhere('buyer_id', $user->id)->get();
         return response()->json([
             'status' => 'success',
+            'data' => $escrow
         ]);
     }
 }

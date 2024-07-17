@@ -13,14 +13,7 @@ class Escrow extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'buyer_id',
-        // Add other attributes here that you want to allow mass assignment for
-        'seller_id',
-        'amount',
-        'status',
-        // etc.
-    ];
+protected $guarded = [];
 
     protected $casts = [
         'status' => EscrowStatus::class,
@@ -94,7 +87,7 @@ class Escrow extends Model
             }
 
             $this->update([
-                'status' => EscrowStatus::Confirmed
+                'status' => EscrowStatus::Delivered
             ]);
 
             $this->buyer->escrow_wallet->withdraw($this->order->amount);

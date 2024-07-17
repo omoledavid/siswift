@@ -383,8 +383,8 @@ class UserController extends Controller
     }
     public function notifications(){
         $user = auth()->user();
-        $notifications = User_notification::where('user_id', $user->id)->where('read_status', 0)->orderBy('id','desc')->limit(5);
-        if(isEmpty($notifications)){
+        $notifications = User_notification::where('user_id', $user->id)->where('read_status', 0)->orderBy('id','desc')->limit(5)->get();
+        if(count($notifications) === 0){
             return response()->json([
                 'message'=>'No notifications',
             ], 404);
@@ -393,6 +393,25 @@ class UserController extends Controller
             'code'=>200,
             'status'=>'ok',
             'notifications'=>$notifications,
+        ]);
+    }
+    public function mark_notifications(Request $request){
+        $user = auth()->user();
+        $validator = Validator::make($request->all(),[
+            'read_status' => 'required|int|max:50',
+            'notification_id' => 'required|int|max:50',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message'=>['error'=>$validator->errors()->all()],
+            ], 405);
+        }
+        $notification = User_notification::where('user_id', $user->id)->where('id', $request->notification_id)->firstOrFail();
+        $notification->read_status = $request->notification_id;
+        $notification->save();
+        return response()->json([
+            'message'=>'Notification marked as read',
         ]);
     }
 }

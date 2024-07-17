@@ -42,9 +42,13 @@ Route::group([], function () {
         Route::get('withdrawal-method', 'TransactionController@withdrawalMethod');
 
         //escrow
-        Route::post('escrow-accept', 'TransactionController@escrowAccept');
+        Route::post('escrow-accept/{escrow}', 'TransactionController@escrowAccept');
+        Route::post('escrow-complete/{escrow}', 'TransactionController@escrowComplete');
         Route::post('escrow-reject', 'TransactionController@escrowReject');
         Route::get('get-escrow', 'TransactionController@escrows');
+
+        //compaigns
+        Route::apiResource('campaigns', 'CampaignController')->only('store', 'update');
 
         //support ticket
         Route::apiResource('support', 'SupportTicketController');
@@ -59,6 +63,7 @@ Route::group([], function () {
 
         //user
         Route::get('notifications', 'UserController@notifications');
+        Route::post('notifications', 'UserController@mark_notifications');
 	});
 
 
