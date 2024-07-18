@@ -387,7 +387,7 @@ class UserController extends Controller
         if(count($notifications) === 0){
             return response()->json([
                 'message'=>'No notifications',
-            ], 404);
+            ], 200);
         }
         return response()->json([
             'code'=>200,
@@ -405,7 +405,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message'=>['error'=>$validator->errors()->all()],
-            ], 405);
+            ], 400);
         }
         $notification = User_notification::where('user_id', $user->id)->where('id', $request->notification_id)->firstOrFail();
         $notification->read_status = $request->notification_id;
