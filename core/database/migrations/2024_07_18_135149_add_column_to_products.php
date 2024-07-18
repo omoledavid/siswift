@@ -19,6 +19,7 @@ class AddColumnToProducts extends Migration
             $table->string('sim')->nullable();
             $table->string('state')->nullable();
             $table->string('lga')->nullable();
+            $table->text('bulk_price')->nullable();
         });
     }
 
@@ -30,7 +31,7 @@ class AddColumnToProducts extends Migration
     public function down()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('ram','condition','sim','state','lga');
+            $table->dropColumn('ram','condition','sim','state','lga','bulk_price');
         });
     }
 }

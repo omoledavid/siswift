@@ -228,6 +228,7 @@ trait ProductManager
         $product->sim = $request->sim;
         $product->state = $request->state;
         $product->lga = $request->lga;
+        $product->bulk_price = $request->bulk_price;
         $product->shop_id = $shop_id;
         $product->save();
 
