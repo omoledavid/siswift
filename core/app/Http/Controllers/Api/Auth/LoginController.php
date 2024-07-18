@@ -52,7 +52,6 @@ class LoginController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'code' => 409,
                 'status' => 'Failed',
                 'message' => ['error' => $validator->errors()->all()],
             ], 409);
@@ -62,7 +61,6 @@ class LoginController extends Controller
         if (!Auth::guard('api')->attempt($credentials)) {
             $response[] = 'Email or Password is not correct';
             return response()->json([
-                'code' => 401,
                 'status' => 'unauthorized',
                 'message' => ['error' => $response],
             ], 401);
@@ -73,8 +71,6 @@ class LoginController extends Controller
         $this->authenticated($request, $user);
         $response = 'Login Successfully';
         return response()->json([
-            'code' => 200,
-            'status' => 'ok',
             'message' => [$response],
             'data' => [
                 'user' => $user,
@@ -115,8 +111,6 @@ class LoginController extends Controller
 
         $notify = 'Logout Succesfull';
         return response()->json([
-            'code' => 200,
-            'status' => 'ok',
             'message' =>  $notify,
         ]);
     }
@@ -129,7 +123,7 @@ class LoginController extends Controller
             return response()->json([
                 'status' => 'ok',
                 'message' => ['success' => $notify],
-            ], 405);
+            ], 200);
         }
 
 

@@ -49,7 +49,7 @@ trait ShopManager
     public function createNewShop($request): Shop
     {
         if($request->user()->seller_id){
-            throw new ShopCreationError('User already owned shop');
+            throw new ShopCreationError('User already own a shop');
         };
 
         $request->validate([

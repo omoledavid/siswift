@@ -19,7 +19,8 @@ class ShopController extends Controller
 
     public function index()
     {
-        return response()->json(Shop::all());
+        $user = auth()->user();
+        return response()->json(Shop::where('seller_id', $user->seller_id)->get());
     }
     public function store(Request $request): JsonResponse
     {

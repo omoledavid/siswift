@@ -7,6 +7,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\GeneralSetting;
 use App\Models\Language;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 
 class BasicController extends Controller
@@ -67,5 +68,13 @@ class BasicController extends Controller
 	        	'language_data'=>$languageData
 	        ]
 	    ]);
+    }
+    public function plans(){
+        $plans = Plan::all();
+        return response()->json([
+            'code'=>200,
+            'status'=>'ok',
+            'data' => $plans
+        ]);
     }
 }

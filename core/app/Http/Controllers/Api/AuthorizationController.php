@@ -27,6 +27,7 @@ class AuthorizationController extends Controller
     public function authorization()
     {
         $user = auth()->user();
+//        return $user->ev;
         if (!$user->status) {
 
             auth()->user()->tokens()->delete();
@@ -52,11 +53,12 @@ class AuthorizationController extends Controller
                 'status'=>'ok',
                 'message'=>['success'=>$notify],
                 'data'=>[
-                    'verification_url'=>route('api.user.verify.email'),
+                    'verification_url'=>'api.user.verify.email',
                     'verification_method'=>'POST',
-                    'resend_url'=>route('api.user.send.verify.code').'?type=email',
+                    'resend_url'=> 'api.user.send.verify.code'.'?type=email',
                     'resend_method'=>'GET',
-                    'verification_type'=>'email'
+                    'verification_type'=>'email',
+                    'verification_code'=>$user->ver_code
                 ]
             ]);
         }elseif (!$user->sv) {

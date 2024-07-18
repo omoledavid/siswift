@@ -151,9 +151,35 @@ trait ProductManager
             'specification.*.name.required'   =>  'All specification name is required',
             'specification.*.value'           =>  'All specification value is required',
         ]);
-        $seller = auth()->user();
-        if($seller->seller_id == null){
-            return false;
+        $user = $request->user();
+        if($user->seller_id == null){
+            $seller = $user->seller;
+
+            if(!$seller){
+                $seller = $this->createSeller([
+                    'fullname' => $user->fullname,
+                    'email' => $user->email,
+                    'mobile' => $user->mobile,
+                    'address' => $user->address,
+                    'country' => $user->country
+                ]);
+            }
+            $shop = new Shop();
+            $shop->name              =  ' ';
+            $shop->seller_id         = $seller->id;
+            $shop->phone             = ' ';
+            $shop->address           = ' ';
+            $shop->opens_at          = ' ';
+            $shop->closed_at         = ' ';
+            $shop->meta_title        = ' ';
+            $shop->meta_description  = ' ';
+            $shop->meta_keywords     = $request->meta_keywords??null;
+            $shop->social_links      = $request->social_links??null;
+            $shop->save();
+
+            $request->user()->update([
+                'seller_id' => $shop->seller_id
+            ]);
         }
 
 
@@ -187,9 +213,10 @@ trait ProductManager
         } else {
             $request->merge(['image' => $product->main_image]);
         }
-        $shop_id = Shop::where('seller_id', $seller->seller_id)->first()->id;
+        $shop_id = Shop::where('seller_id', $user->seller_id)->first()->id;
 
-        $product->seller_id         = $seller->seller_id;
+
+        $product->seller_id         = $user->seller_id;
         $product->brand_id          = $request->brand_id;
         $product->name              = $request->name;
         $product->model             = $request->model;

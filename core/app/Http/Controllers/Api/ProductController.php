@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Traits\ShopManager;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use App\Traits\ProductManager;
@@ -13,7 +14,7 @@ use Laravel\Ui\Presets\React;
 
 class ProductController extends Controller
 {
-    use ProductManager;
+    use ProductManager, ShopManager;
 
     protected function seller()
     {

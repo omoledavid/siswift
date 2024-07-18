@@ -49,6 +49,7 @@ Route::group([], function () {
 
         //compaigns
         Route::apiResource('campaigns', 'CampaignController')->only('store', 'update');
+        Route::get('plans', 'BasicController@plans');
 
         //support ticket
         Route::apiResource('support', 'SupportTicketController');

@@ -55,10 +55,9 @@ class ForgotPasswordController extends Controller
         $validator = Validator::make($request->all(),$validationRule,$validationMessage);
         if ($validator->fails()) {
             return response()->json([
-                'code'=>409,
                 'status'=>'Failed',
                 'message'=>['error'=>$validator->errors()->all()],
-            ]);
+            ], 400);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -66,10 +65,9 @@ class ForgotPasswordController extends Controller
         if (!$user) {
             $notify[] = 'User not found.';
             return response()->json([
-                'code'=>409,
                 'status'=>'Failed',
                 'message'=>$notify,
-            ]);
+            ], 400);
         }
 
         PasswordReset::where('email', $user->email)->delete();
@@ -92,8 +90,6 @@ class ForgotPasswordController extends Controller
         $email = $user->email;
         $notify[] = 'Password reset email sent successfully';
         return response()->json([
-            'code'=>200,
-            'status'=>'ok',
             'message'=>['success'=>$notify],
             'data'=>['email'=>$email]
         ]);
@@ -108,10 +104,9 @@ class ForgotPasswordController extends Controller
         ]);
         if ($validator->fails()) {
             return response()->json([
-                'code'=>409,
                 'status'=>'Failed',
                 'message'=>['error'=>$validator->errors()->all()]
-            ]);
+            ], 400);
         }
 
         $code =  $request->code;
@@ -119,16 +114,12 @@ class ForgotPasswordController extends Controller
         if (PasswordReset::where('token', $code)->where('email', $request->email)->count() != 1) {
             $notify[] = 'Invalid token';
             return response()->json([
-                'code'=>200,
-                'status'=>'ok',
                 'message'=>['error'=>$notify],
-            ]);
+            ], 400);
         }
 
         $notify[] = 'You can change your password';
         return response()->json([
-            'code'=>200,
-            'status'=>'ok',
             'message'=>['success'=>$notify],
             'data'=>[
                 'token'=>$code,

@@ -70,10 +70,9 @@ class RegisterController extends Controller
         $validator = $this->validator($request->all());
         if ($validator->fails()) {
             return response()->json([
-                'code'=>401,
                 'status'=>'error',
                 'message'=>['error'=>$validator->errors()->all()],
-            ]);
+            ], 400);
         }
 
         $exist = User::where('mobile',$request->mobile)->first();
