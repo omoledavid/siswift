@@ -15,7 +15,8 @@ class Product extends Model
     protected $casts = [
         'extra_descriptions' => 'array',
         'specification' => 'array',
-        'meta_keywords' => 'array'
+        'meta_keywords' => 'array',
+        'bulk_price' => 'array'
     ];
 
     public function categories()

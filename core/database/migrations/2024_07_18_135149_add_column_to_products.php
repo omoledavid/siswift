@@ -19,6 +19,7 @@ class AddColumnToProducts extends Migration
             $table->string('sim')->nullable();
             $table->string('state')->nullable();
             $table->string('lga')->nullable();
+            $table->string('colour')->nullable();
             $table->text('bulk_price')->nullable();
         });
     }

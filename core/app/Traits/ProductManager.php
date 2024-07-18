@@ -168,6 +168,7 @@ trait ProductManager
             $shop = new Shop();
             $shop->name = ' ';
             $shop->seller_id = $seller->id;
+            $shop->user_id = $user->id;
             $shop->phone = ' ';
             $shop->address = ' ';
             $shop->opens_at = ' ';
@@ -229,6 +230,7 @@ trait ProductManager
         $product->state = $request->state;
         $product->lga = $request->lga;
         $product->bulk_price = $request->bulk_price;
+        $product->colour = $request->colour;
         $product->shop_id = $shop_id;
         $product->save();
 
