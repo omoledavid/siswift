@@ -60,7 +60,9 @@ Route::group([], function () {
         Route::get('shop-stats', 'ShopController@stat');
         Route::apiResource('messages', 'MessagesController');
 
+        //orders
         Route::apiResource('order', 'OrderController');
+        Route::get('orders/{type}', 'OrderController@pendingOrders');
 
         //user
         Route::get('notifications', 'UserController@notifications');

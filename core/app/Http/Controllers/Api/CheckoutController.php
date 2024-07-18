@@ -26,7 +26,7 @@ class CheckoutController extends Controller
                     return response()->json([
                         'status' => 'error',
                         'message' => 'You don\'t have enough Money for this order',
-                    ]);
+                    ], 400);
                 }
                 $escrow = Escrow::start(
                     $request->user(),

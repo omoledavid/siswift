@@ -15,7 +15,6 @@ class AddColumnToEscrows extends Migration
     {
         Schema::table('escrows', function (Blueprint $table) {
             $table->foreignId('order_id')->default(0)->after('buyer_id');
-            $table->dropColumn('amount');
         });
     }
 

@@ -10,6 +10,8 @@ class Order extends Model
 {
     protected $guarded = ['id'];
 
+    protected $with = ['seller'];
+
 
     public function appliedCoupon()
     {
@@ -36,6 +38,9 @@ class Order extends Model
         return new Attribute(
             fn () => $this->products()->first(),
         );
+    }
+    public function seller(){
+        return $this->belongsTo(Seller::class,'seller_id');
     }
 
 

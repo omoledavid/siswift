@@ -27,7 +27,6 @@ class AuthorizationController extends Controller
     public function authorization()
     {
         $user = auth()->user();
-//        return $user->ev;
         if (!$user->status) {
 
             auth()->user()->tokens()->delete();
