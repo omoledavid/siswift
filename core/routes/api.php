@@ -8,6 +8,7 @@ Route::get('/clear', function () {
 
 Route::group([], function () {
 	Route::get('general-setting', 'BasicController@generalSetting');
+	Route::get('all-products', 'BasicController@allProducts');
 	Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
 	Route::get('languages', 'BasicController@languages');
 	Route::get('language-data/{code}', 'BasicController@languageData');
@@ -49,6 +50,7 @@ Route::group([], function () {
 
         //compaigns
         Route::apiResource('campaigns', 'CampaignController')->only('store', 'update');
+        Route::get('campaign-data', 'CampaignController@campaignData');
         Route::get('plans', 'BasicController@plans');
 
         //support ticket

@@ -91,4 +91,12 @@ class CampaignController extends Controller
     {
         //
     }
+    public function campaignData(){
+        $user = auth()->user();
+        $campaigns = Campaign::where('user_id', $user->id)->get();
+        return response()->json([
+            'campaigns' => $campaigns,
+
+        ]);
+    }
 }

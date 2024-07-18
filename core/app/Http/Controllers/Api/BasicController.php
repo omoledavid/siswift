@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\GeneralSetting;
 use App\Models\Language;
 use App\Models\Plan;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class BasicController extends Controller
@@ -76,5 +77,8 @@ class BasicController extends Controller
             'status'=>'ok',
             'data' => $plans
         ]);
+    }
+    public function allProducts(){
+        return response()->json([Product::where('status',1)->paginate(10)]);
     }
 }
