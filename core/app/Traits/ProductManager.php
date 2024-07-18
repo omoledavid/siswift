@@ -17,11 +17,11 @@ trait ProductManager
     protected function pageTitle($isTrashed, $searchKey)
     {
         if ($isTrashed)
-            $title  =  "All Trashed Products";
+            $title = "All Trashed Products";
         else
-            $title  =  "All Products";
+            $title = "All Products";
         if ($searchKey)
-            $title  = "Product Search : '$searchKey'";
+            $title = "Product Search : '$searchKey'";
 
         return $title;
     }
@@ -29,16 +29,16 @@ trait ProductManager
     public function products($sellerId = 0, $isTrashed = false)
     {
         $search = trim(strtolower(request()->search));
-        $query  = Product::query();
+        $query = Product::query();
         if ($sellerId) {
-            $query  = $query->sellers();
+            $query = $query->sellers();
         }
 
         if (request()->has('recommeded')) {
             $query->inRandomOrder();
         }
 
-        $query  = $query->with(['categories', 'brand'])->whereHas('categories', function ($query) {
+        $query = $query->with(['categories', 'brand'])->whereHas('categories', function ($query) {
             if (request()->category) {
                 $category = strtolower(request()->category);
                 $query->where('categories.name', 'LIKE', "%$category%");
@@ -51,11 +51,11 @@ trait ProductManager
         });
 
         if ($min_price = request()->min_price) {
-            $query->where('base_price', '>=',  (int) $min_price);
+            $query->where('base_price', '>=', (int)$min_price);
         }
 
         if ($max_price = request()->max_price) {
-            $query->where('base_price', '<=',  (int) $max_price);
+            $query->where('base_price', '<=', (int)$max_price);
         }
 
         if ($sort_by = strtolower(request()->sort_by)) {
@@ -64,13 +64,13 @@ trait ProductManager
 
 
         if ($isTrashed)
-            $query  = $query->onlyTrashed();
+            $query = $query->onlyTrashed();
         if ($search)
-            $query  = $query->where('name', 'like', "%$search%");
+            $query = $query->where('name', 'like', "%$search%");
 
-        $data['products']       = $query->orderByDesc('id')->paginate(getPaginate());
-        $data['pageTitle']      = $this->pageTitle($isTrashed, $search);
-        $data['emptyMessage']   = "No product found";
+        $data['products'] = $query->orderByDesc('id')->paginate(getPaginate());
+        $data['pageTitle'] = $this->pageTitle($isTrashed, $search);
+        $data['emptyMessage'] = "No product found";
         return $data;
     }
 
@@ -78,68 +78,69 @@ trait ProductManager
     {
         $search = trim(strtolower(request()->search));
 
-        $query  = Product::query();
+        $query = Product::query();
         if ($sellerId) {
-            $query  = $query->sellers();
-            $query  = $query->with(['categories', 'brand', 'stocks'])->whereHas('categories')->whereHas('brand');
+            $query = $query->sellers();
+            $query = $query->with(['categories', 'brand', 'stocks'])->whereHas('categories')->whereHas('brand');
         }
         if ($isTrashed)
-            $query  = $query->onlyTrashed();
+            $query = $query->onlyTrashed();
         if ($search)
-            $query  = $query->where('name', 'like', "%$search%");
+            $query = $query->where('name', 'like', "%$search%");
 
-        $data['products']       = $query->where('status', 0)->orderByDesc('id')->paginate(getPaginate());
-        $data['pageTitle']      = 'Pending Products';
-        $data['emptyMessage']   = "No product found";
+        $data['products'] = $query->where('status', 0)->orderByDesc('id')->paginate(getPaginate());
+        $data['pageTitle'] = 'Pending Products';
+        $data['emptyMessage'] = "No product found";
         return $data;
     }
+
     public function productByVendor($admin = true, $isTrashed = false)
     {
         $search = trim(strtolower(request()->search));
 
-        $query  = Product::query();
+        $query = Product::query();
         if ($isTrashed)
-            $query  = $query->onlyTrashed();
+            $query = $query->onlyTrashed();
         if ($search)
-            $query  = $query->where('name', 'like', "%$search%");
+            $query = $query->where('name', 'like', "%$search%");
         if ($admin) {
-            $data['pageTitle']      = 'Products By Admin';
+            $data['pageTitle'] = 'Products By Admin';
             $query = $query->where('seller_id', 0);
         } else {
-            $data['pageTitle']      = 'Products By Seller';
+            $data['pageTitle'] = 'Products By Seller';
             $query = $query->where('seller_id', '!=', 0);
         }
 
-        $data['products']       = $query->orderByDesc('id')->paginate(getPaginate());
-        $data['emptyMessage']   = "No product found";
+        $data['products'] = $query->orderByDesc('id')->paginate(getPaginate());
+        $data['emptyMessage'] = "No product found";
         return $data;
     }
 
     public function productCreate()
     {
         $data['categories'] = Category::with('allSubcategories')->where('parent_id', null)->get();
-        $data['brands']     = Brand::orderBy('name')->get();
-        $data['pageTitle']  = "Add New Product";
+        $data['brands'] = Brand::orderBy('name')->get();
+        $data['pageTitle'] = "Add New Product";
         return $data;
     }
 
     public function editProduct($id, $sellerId = 0)
     {
         if ($sellerId)
-            $data['product']        = Product::where('seller_id', $sellerId)->where('id', $id)->firstOrFail();
+            $data['product'] = Product::where('seller_id', $sellerId)->where('id', $id)->firstOrFail();
         else
-            $data['product']        = Product::whereId($id)->first();
+            $data['product'] = Product::whereId($id)->first();
 
-        $data['categories']     = Category::with('allSubcategories')->where('parent_id', null)->get();
-        $data['brands']         = Brand::orderBy('name')->get();
-        $data['images']         = [];
+        $data['categories'] = Category::with('allSubcategories')->where('parent_id', null)->get();
+        $data['brands'] = Brand::orderBy('name')->get();
+        $data['images'] = [];
         foreach ($data['product']->productPreviewImages as $key => $image) {
             $img['id'] = $image->id;
             $img['src'] = getImage(imagePath()['product']['path'] . '/' . $image->image);
             $data['images'][] = $img;
         }
 
-        $data['pageTitle']      = "Edit Product";
+        $data['pageTitle'] = "Edit Product";
         return $data;
     }
 
@@ -148,14 +149,14 @@ trait ProductManager
     {
         $validation_rule = $this->getProductValidationRule($id);
         $request->validate($validation_rule, [
-            'specification.*.name.required'   =>  'All specification name is required',
-            'specification.*.value'           =>  'All specification value is required',
+            'specification.*.name.required' => 'All specification name is required',
+            'specification.*.value' => 'All specification value is required',
         ]);
         $user = $request->user();
-        if($user->seller_id == null){
+        if ($user->seller_id == null) {
             $seller = $user->seller;
 
-            if(!$seller){
+            if (!$seller) {
                 $seller = $this->createSeller([
                     'fullname' => $user->fullname,
                     'email' => $user->email,
@@ -165,16 +166,16 @@ trait ProductManager
                 ]);
             }
             $shop = new Shop();
-            $shop->name              =  ' ';
-            $shop->seller_id         = $seller->id;
-            $shop->phone             = ' ';
-            $shop->address           = ' ';
-            $shop->opens_at          = ' ';
-            $shop->closed_at         = ' ';
-            $shop->meta_title        = ' ';
-            $shop->meta_description  = ' ';
-            $shop->meta_keywords     = $request->meta_keywords??null;
-            $shop->social_links      = $request->social_links??null;
+            $shop->name = ' ';
+            $shop->seller_id = $seller->id;
+            $shop->phone = ' ';
+            $shop->address = ' ';
+            $shop->opens_at = ' ';
+            $shop->closed_at = ' ';
+            $shop->meta_title = ' ';
+            $shop->meta_description = ' ';
+            $shop->meta_keywords = $request->meta_keywords ?? null;
+            $shop->social_links = $request->social_links ?? null;
             $shop->save();
 
             $request->user()->update([
@@ -183,13 +184,11 @@ trait ProductManager
         }
 
 
-
-
         $product = new Product();
 
         if ($id) {
-            $product                = Product::findOrFail($id);
-            $prev_has_variants      = $product->has_variants;
+            $product = Product::findOrFail($id);
+            $prev_has_variants = $product->has_variants;
 
             if ($sellerId && $product->seller_id != $sellerId) {
                 $notify[] = ['error', 'This product doesn\'t belong to this seller'];
@@ -197,10 +196,10 @@ trait ProductManager
             }
 
             $sellerId = $product->seller_id;
-            $product->status        = 1;
+            $product->status = 1;
         } else {
             //adding admin id
-            $product->status        = $sellerId == 0 ? 1 : 0;
+            $product->status = $sellerId == 0 ? 1 : 0;
         }
 
         if ($request->hasFile('main_image')) {
@@ -216,15 +215,20 @@ trait ProductManager
         $shop_id = Shop::where('seller_id', $user->seller_id)->first()->id;
 
 
-        $product->seller_id         = $user->seller_id;
-        $product->brand_id          = $request->brand_id;
-        $product->name              = $request->name;
-        $product->model             = $request->model;
-        $product->main_image        = $request->image;
-        $product->location        = $request->location;
-        $product->description       = $request->description;
-        $product->base_price        = $request->base_price;
-        $product->shop_id           = $shop_id;
+        $product->seller_id = $user->seller_id;
+        $product->brand_id = $request->brand_id;
+        $product->name = $request->name;
+        $product->model = $request->model;
+        $product->main_image = $request->image;
+        $product->location = $request->location;
+        $product->description = $request->description;
+        $product->base_price = $request->base_price;
+        $product->ram = $request->ram;
+        $product->condition = $request->condition;
+        $product->sim = $request->sim;
+        $product->state = $request->state;
+        $product->lga = $request->lga;
+        $product->shop_id = $shop_id;
         $product->save();
 
         //Check Old Images
@@ -232,8 +236,8 @@ trait ProductManager
         $image_to_remove = array_values(array_diff($previous_images, $request->old ?? []));
 
         foreach ($image_to_remove as $item) {
-            $productImage   = ProductImage::find($item);
-            $location       = imagePath()['product']['path'];
+            $productImage = ProductImage::find($item);
+            $location = imagePath()['product']['path'];
 
             removeFile($location . '/' . $productImage->image);
             $productImage->delete();
@@ -248,8 +252,8 @@ trait ProductManager
                     return $notify;
                 }
                 $productImage = new ProductImage();
-                $productImage->product_id   = $product->id;
-                $productImage->image        = $product_img;
+                $productImage->product_id = $product->id;
+                $productImage->image = $product_img;
                 $productImage->save();
             }
         }
@@ -286,15 +290,15 @@ trait ProductManager
 
     public function deleteProduct($id, $sellerId = 0)
     {
-        $query    = Product::where('id', $id);
+        $query = Product::where('id', $id);
         if ($sellerId)
-            $query    = $query->where('seller_id', $sellerId);
-        $product  = $query->withTrashed()->firstOrFail();
-        $type     = 'Deleted';
+            $query = $query->where('seller_id', $sellerId);
+        $product = $query->withTrashed()->firstOrFail();
+        $type = 'Deleted';
 
         if ($product->trashed()) {
             $product->restore();
-            $type =  'Restored';
+            $type = 'Restored';
         } else $product->delete();
 
         $notify[] = ['success', "Product $type Successfully"];
@@ -303,38 +307,38 @@ trait ProductManager
 
     protected function getProductValidationRule($id)
     {
-        $validation_rule =  [
-            'name'                  => 'required|string|max:191',
-            'model'                 => 'nullable|string|max:100',
-            'brand_id'              => 'required|integer',
-            'base_price'            => 'required|numeric',
-            "categories"            => 'required|array|min:1',
-            'has_variants'          => 'sometimes|required|numeric|min:1|max:1',
-            'track_inventory'       => 'sometimes|required|numeric|min:1|max:1',
-            'show_in_frontend'      => 'sometimes|required|numeric|min:1|max:1',
-            'description'           => 'nullable|string',
-            'summary'               => 'nullable|string|max:360',
-            'sku'                   => 'nullable',
+        $validation_rule = [
+            'name' => 'required|string|max:191',
+            'model' => 'nullable|string|max:100',
+            'brand_id' => 'required|integer',
+            'base_price' => 'required|numeric',
+            "categories" => 'required|array|min:1',
+            'has_variants' => 'sometimes|required|numeric|min:1|max:1',
+            'track_inventory' => 'sometimes|required|numeric|min:1|max:1',
+            'show_in_frontend' => 'sometimes|required|numeric|min:1|max:1',
+            'description' => 'nullable|string',
+            'summary' => 'nullable|string|max:360',
+            'sku' => 'nullable',
 //          'sku'                   => 'nullable|required_without:has_variants|string|max:100',
-            'extra'                 => 'sometimes|required|array',
-            'extra.*.key'           => 'required_with:extra',
-            'extra.*.value'         => 'required_with:extra',
-            'specification'         => 'sometimes|required|array',
-            'specification.*.name'  => 'required_with:specification',
+            'extra' => 'sometimes|required|array',
+            'extra.*.key' => 'required_with:extra',
+            'extra.*.value' => 'required_with:extra',
+            'specification' => 'sometimes|required|array',
+            'specification.*.name' => 'required_with:specification',
             'specification.*.value' => 'required_with:specification',
-            'meta_title'            => 'nullable|string|max:191',
-            'meta_description'      => 'nullable|string|max:191',
-            'meta_keywords'         => 'nullable|array',
+            'meta_title' => 'nullable|string|max:191',
+            'meta_description' => 'nullable|string|max:191',
+            'meta_keywords' => 'nullable|array',
             'meta_keywords.array.*' => 'nullable|string',
-            'video_link'            => 'nullable|string',
-            'photos'                => 'required_if:id,0|array|min:1',
-            'photos.*'              => ['image', new FileTypeValidate(['jpeg', 'jpg', 'png'])],
+            'video_link' => 'nullable|string',
+            'photos' => 'required_if:id,0|array|min:1',
+            'photos.*' => ['image', new FileTypeValidate(['jpeg', 'jpg', 'png'])],
         ];
 
         if ($id == 0) {
-            $validation_rule['main_image']  = ['required', 'image', new FileTypeValidate(['jpeg', 'jpg', 'png'])];
+            $validation_rule['main_image'] = ['required', 'image', new FileTypeValidate(['jpeg', 'jpg', 'png'])];
         } else {
-            $validation_rule['main_image']  = ['nullable', 'image', new FileTypeValidate(['jpeg', 'jpg', 'png'])];
+            $validation_rule['main_image'] = ['nullable', 'image', new FileTypeValidate(['jpeg', 'jpg', 'png'])];
         }
 
         return $validation_rule;
@@ -362,8 +366,8 @@ trait ProductManager
 
         $data['reviews'] = $query->whereHas('user')->latest()->paginate(getPaginate());
 
-        $data['pageTitle']      = "Product Reviews";
-        $data['emptyMessage']   = "No review yet";
+        $data['pageTitle'] = "Product Reviews";
+        $data['emptyMessage'] = "No review yet";
 
         return $data;
     }
@@ -385,7 +389,6 @@ trait ProductManager
         $query = $query->where(function ($q) use ($key) {
             $q->where('review', 'like', "%$key%")
                 ->orWhere('rating', 'like', "%$key%")
-
                 ->orWhereHas('user', function ($user) use ($key) {
                     $user->where('username', 'like', "%$key%");
                 })->orWhereHas('product', function ($product) use ($key) {
@@ -393,9 +396,9 @@ trait ProductManager
                 });
         });
 
-        $data['reviews']        = $query->whereHas('user')->latest()->paginate(getPaginate());
-        $data['pageTitle']      = "Search of Reviews $key";
-        $data['emptyMessage']   = "No Review Yet";
+        $data['reviews'] = $query->whereHas('user')->latest()->paginate(getPaginate());
+        $data['pageTitle'] = "Search of Reviews $key";
+        $data['emptyMessage'] = "No Review Yet";
 
         return $data;
     }
