@@ -9,6 +9,7 @@ use Textmagic\Services\Models\Messages;
 class Message extends Model
 {
     use HasFactory;
+    protected $guarded = [];
     protected $table = 'conversations';
 
     public function sender()

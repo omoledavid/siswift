@@ -31,25 +31,43 @@ class MessagesController extends Controller
         ]);
 
         $hash = $this->generateHash($request->get('receiver_id'), $request->user()->id);
-        $startedChat = Message::where('sender_id', $request->user()->id)->where('receiver_id', $request->receiver_id)->first();
+
+        // Check if a conversation already exists
+        $startedChat = Message::where('sender_id', $request->user()->id)
+            ->where('receiver_id', $request->receiver_id)
+            ->first();
+
         if (!$startedChat) {
-            $conversation = new Message();
-            $conversation->sender_id = $request->user()->id;
-            $conversation->receiver_id = $request->receiver_id;
-            $conversation->save();
+            // Create a new conversation if one does not exist
+            $conversation = Message::query()->create([
+                'sender_id' => $request->user()->id,
+                'receiver_id' => $request->receiver_id,
+            ]);
+
+            $messages = Conversation::query()->create([
+                'sender_id' => $request->user()->id,
+                'receiver_id' => $request->receiver_id,
+                'hash' => $hash,
+                'message' => $request->get('message'),
+                'message_id' => $conversation->id,
+            ]);
+        } else {
+            // Append to the existing conversation
+            $messages = Conversation::query()->create([
+                'sender_id' => $request->user()->id,
+                'receiver_id' => $request->receiver_id,
+                'hash' => $hash,
+                'message' => $request->get('message'),
+                'message_id' => $startedChat->id, // Use the existing conversation ID
+            ]);
         }
-        $messages = Conversation::query()->create([
-            'sender_id' => $request->user()->id,
-            'receiver_id' => $request->receiver_id,
-            'hash' => $hash,
-            'message' => $request->get('message')
-        ]);
 
         return response()->json([
             'status' => 'success',
             'data' => $messages
         ]);
     }
+
 
     /**
      * Display the specified resource.

@@ -4,8 +4,11 @@ namespace App\Traits;
 
 use App\Models\AssignProductAttribute;
 use App\Models\Cart;
+use App\Models\Conversation;
+use App\Models\Message;
 use App\Models\Product;
 use App\Models\ProductStock;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
 trait CartManager
@@ -23,6 +26,7 @@ trait CartManager
         }
 
         $product = Product::findOrFail($request->product_id);
+
         $user_id = auth()->user()->id ?? null;
 
         $attributes     = AssignProductAttribute::where('product_id', $request->product_id)->distinct('product_attribute_id')->with('productAttribute')->get(['product_attribute_id']);
@@ -89,8 +93,72 @@ trait CartManager
             if ($request->offer_price) $cart->offer_price   = $request->offer_price;
             $cart->save();
         }
+        if ($product->base_price !== $request->offer_price) {
 
-        return $cart;
+            $sender = auth()->user();
+            $receiverSellerId = $product->seller_id;
+            $receiver = User::where('seller_id', $receiverSellerId)->first();
+
+            if (!$receiver) {
+                return response()->json(['message' => 'Seller wasn\'t found'], 404);
+            }
+
+            $hash = $this->generateHash($receiver->id, $sender->id);
+
+            // Check if a conversation already exists
+            $existingChat = Message::where('sender_id', $sender->id)
+                ->where('receiver_id', $receiver->id)
+                ->first();
+
+            if (!$existingChat) {
+                // Create a new conversation if one does not exist
+                $conversation = Message::query()->create([
+                    'sender_id' => $sender->id,
+                    'receiver_id' => $receiver->id,
+                ]);
+
+                $messages = Conversation::query()->create([
+                    'sender_id' => $sender->id,
+                    'receiver_id' => $receiver->id,
+                    'hash' => $hash,
+                    'message' => [
+                        'title' => 'offer',
+                        'product_id' => $request->product_id,
+                        'amount' => $request->offer_price,
+                        'cart_id' => $cart->id,
+                        'note' => 'new conversation'
+                    ],
+                    'message_id' => $conversation->id,
+                ]);
+            } else {
+                // Append to the existing conversation
+                $messages = Conversation::query()->create([
+                    'sender_id' => $sender->id,
+                    'receiver_id' => $receiver->id,
+                    'hash' => $hash,
+                    'message' => [
+                        'title' => 'offer',
+                        'product_id' => $request->product_id,
+                        'amount' => $request->offer_price,
+                        'cart_id' => $cart->id,
+                        'note' => 'conversation already exist'
+                    ],
+                    'message_id' => $existingChat->id, // Use the existing conversation ID
+                ]);
+            }
+            $cart->status = 0;
+            $cart->save();
+
+            return [
+                'cart' => $cart,
+                'messages' => $messages,
+                'cart_status' => $cart->status,
+            ];
+        }else{
+            $cart->status = 1;
+            $cart->save();
+            return $cart;
+        }
     }
 
     public function getCartItems($request)
@@ -208,5 +276,11 @@ trait CartManager
         }
 
         return $cart;
+    }
+    private function generateHash(int $sender_id, int $receiver_id): string
+    {
+        $participants = [$sender_id, $receiver_id];
+        sort($participants);
+        return md5(json_encode($participants));
     }
 }
