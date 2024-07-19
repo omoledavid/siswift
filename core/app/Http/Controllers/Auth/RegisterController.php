@@ -181,19 +181,26 @@ class RegisterController extends Controller
 
         //Check exist or not
         if ($exist) {
-            $userLogin->longitude =  $exist->longitude;
-            $userLogin->latitude =  $exist->latitude;
-            $userLogin->city =  $exist->city;
+            $userLogin->longitude = $exist->longitude;
+            $userLogin->latitude = $exist->latitude;
+            $userLogin->city = $exist->city;
             $userLogin->country_code = $exist->country_code;
-            $userLogin->country =  $exist->country;
-        }else{
+            $userLogin->country = $exist->country;
+        } else {
             $info = json_decode(json_encode(getIpInfo()), true);
-            $userLogin->longitude =  @implode(',',$info['long']);
-            $userLogin->latitude =  @implode(',',$info['lat']);
-            $userLogin->city =  @implode(',',$info['city']);
-            $userLogin->country_code = @implode(',',$info['code']);
-            $userLogin->country =  @implode(',', $info['country']);
+
+            // Helper function to handle potential array values
+            function safeImplode($value) {
+                return is_array($value) ? implode(',', $value) : $value;
+            }
+
+            $userLogin->longitude = safeImplode($info['long']);
+            $userLogin->latitude = safeImplode($info['lat']);
+            $userLogin->city = safeImplode($info['city']);
+            $userLogin->country_code = safeImplode($info['code']);
+            $userLogin->country = safeImplode($info['country']);
         }
+
 
         $userAgent = osBrowser();
         $userLogin->user_id = $user->id;
