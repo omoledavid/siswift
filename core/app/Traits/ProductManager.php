@@ -169,6 +169,7 @@ trait ProductManager
             $shop->name = ' ';
             $shop->seller_id = $seller->id;
             $shop->user_id = $user->id;
+            $shop->status = 0;
             $shop->phone = ' ';
             $shop->address = ' ';
             $shop->opens_at = ' ';

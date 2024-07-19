@@ -15,6 +15,7 @@ class AddColumnToShops extends Migration
     {
         Schema::table('shops', function (Blueprint $table) {
             $table->foreignId('user_id');
+            $table->tinyInteger('status');
         });
     }
 
@@ -27,6 +28,7 @@ class AddColumnToShops extends Migration
     {
         Schema::table('shops', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
+            $table->dropColumn('status');
         });
     }
 }

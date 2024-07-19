@@ -112,6 +112,7 @@ trait ShopManager
         $shop->name              = $request->name;
         $shop->seller_id         = $seller->id;
         $shop->user_id         = $user->id;
+        $shop->status         = 1;
         $shop->phone             = $request->phone;
         $shop->address           = $request->address;
         $shop->opens_at          = $request->opening_time;
