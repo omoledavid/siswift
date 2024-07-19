@@ -46,10 +46,22 @@ class RegisterController extends Controller
     {
         $pageTitle = "Sign Up";
         $info = json_decode(json_encode(getIpInfo()), true);
-        $mobile_code = @implode(',', $info['code']);
+
+        // Check if 'code' exists and is an array
+        $mobile_code = '';
+        if (isset($info['code'])) {
+            if (is_array($info['code'])) {
+                $mobile_code = implode(',', $info['code']);
+            } else {
+                $mobile_code = $info['code'];
+            }
+        }
+
         $countries = json_decode(file_get_contents(resource_path('views/partials/country.json')));
-        return view($this->activeTemplate . 'user.auth.register', compact('pageTitle','mobile_code','countries'));
+
+        return view($this->activeTemplate . 'user.auth.register', compact('pageTitle', 'mobile_code', 'countries'));
     }
+
 
 
     /**
