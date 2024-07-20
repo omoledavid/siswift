@@ -37,8 +37,8 @@ protected $guarded = [];
             $escrow->buyer->wallet->withdraw($order->amount);
             $escrow->buyer->escrow_wallet->deposit($order->amount);
 
-            return $escrow;
             DB::commit();
+            return $escrow;
         }catch (\Exception $e){
             DB::rollBack();
             throw $e;
