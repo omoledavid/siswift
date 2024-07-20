@@ -75,6 +75,9 @@ Route::group([], function () {
         //user
         Route::get('notifications', 'UserController@notifications');
         Route::post('notifications', 'UserController@mark_notifications');
+
+        //wishlist
+        Route::apiResource('wishlist', 'WishlistController');
 	});
 
 
