@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\CheckoutException;
 use App\Http\Controllers\Controller;
 use App\Models\Escrow;
+use App\Models\User_notification;
 use App\Traits\OrderManager;
 use Illuminate\Http\Request;
 
@@ -32,6 +33,11 @@ class CheckoutController extends Controller
                     $request->user(),
                     $order
                 );
+                $user_notificatoin = new User_notification();
+                $user_notificatoin->user_id = $request->user()->id;
+                $user_notificatoin->title = 'Order placed';
+                $user_notificatoin->save();
+
                 return response()->json([
                     'status' => 'success',
                     'message' => 'order created, Escrow system initiated',

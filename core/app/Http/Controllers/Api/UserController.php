@@ -408,7 +408,7 @@ class UserController extends Controller
             ], 400);
         }
         $notification = User_notification::where('user_id', $user->id)->where('id', $request->notification_id)->firstOrFail();
-        $notification->read_status = $request->notification_id;
+        $notification->read_status = 1;
         $notification->save();
         return response()->json([
             'message'=>'Notification marked as read',

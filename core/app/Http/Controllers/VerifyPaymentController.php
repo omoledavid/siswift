@@ -40,6 +40,7 @@ class VerifyPaymentController extends Controller
                     'description' => $payment->data['description'],
                     'payment_reference' => $payment->reference
                 ]);
+
             });
             return $this->redirectToCallbackUrl($payment, 'success');
         } catch (GatewayError $e) {
