@@ -33,6 +33,7 @@ class CheckoutController extends Controller
                     $request->user(),
                     $order
                 );
+                return dd($escrow);
                 $user_notificatoin = new User_notification();
                 $user_notificatoin->user_id = $request->user()->id;
                 $user_notificatoin->title = 'Order placed';

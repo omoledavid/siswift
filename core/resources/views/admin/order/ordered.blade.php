@@ -24,9 +24,6 @@
                             <tr>
                                 <th>@lang('Order ID') | @lang('Time')</th>
                                 <th>@lang('Customer')</th>
-                                @if(!request()->routeIs('admin.order.cod'))
-                                    <th>@lang('Payment Via')</th>
-                                @endif
                                 <th class="text-right">@lang('Amount')</th>
                                 @if(request()->routeIs('admin.order.index'))
                                     <th>@lang('Status')</th>
@@ -43,20 +40,8 @@
                                 </td>
 
                                 <td data-label="@lang('Customer')">
-                                    <a href="{{ route('admin.users.detail', $item->user->id) }}">{{ $item->user->username }}</a>
+                                    <a href="{{ route('admin.users.detail', $item->user->id) }}">{{ $item->user->firstname }}</a>
                                 </td>
-
-                                @if(!request()->routeIs('admin.order.cod'))
-                                    <td data-label="@lang('Payment Via')">
-                                        @if($item->payment_status==2)
-                                            <strong class="text-warning"><abbr data-toggle="tooltip" title="@lang('Cash On Delivery')">
-                                                {{ @$deposit->gateway->name??trans('COD') }}</abbr>
-                                            </strong>
-                                        @elseif($item->deposit)
-                                            <strong class="text-primary">{{ $item->deposit->gateway->name }}</strong>
-                                        @endif
-                                    </td>
-                                @endif
 
                                 <td data-label="@lang('Amount')" class="text-right">
                                     <b>{{ $general->cur_sym.($item->total_amount) }}</b>
