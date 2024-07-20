@@ -66,6 +66,9 @@ Route::group([], function () {
         Route::apiResource('order', 'OrderController');
         Route::get('orders/{type}', 'OrderController@pendingOrders');
 
+        //sellers orders
+        Route::get('orders/{type}/{status}', 'OrderController@pendingOrders');
+
         //user
         Route::get('notifications', 'UserController@notifications');
         Route::post('notifications', 'UserController@mark_notifications');

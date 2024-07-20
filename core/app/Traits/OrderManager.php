@@ -37,6 +37,8 @@ trait OrderManager
             if (!$general->cod) {
                 throw new CheckoutException('Cash on delivery is not available now');
             }
+        }else{
+            $payment_status = 1;
         }
 
         $carts_data = Cart::where('session_id', session('session_id'))->orWhere('user_id', auth()->user()->id ?? null)->with(['product' => function ($q) {
@@ -46,7 +48,6 @@ trait OrderManager
         $amounts = array_column($carts_array, 'offer_price');
         $total = array_sum($amounts);
         $balance = auth()->user()->wallet->balance;
-//        return dd($balance);
         if($total > $balance){
             return false;
         }

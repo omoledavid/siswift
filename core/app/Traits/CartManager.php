@@ -123,8 +123,8 @@ trait CartManager
                     'hash' => $hash,
                     'message' => [
                         'title' => 'offer',
-                        'product_id' => $request->product_id,
                         'amount' => $request->offer_price,
+                        'product' => $product,
                         'cart_id' => $cart->id,
                         'note' => 'new conversation'
                     ],
@@ -138,9 +138,9 @@ trait CartManager
                     'hash' => $hash,
                     'message' => [
                         'title' => 'offer',
-                        'product_id' => $request->product_id,
                         'amount' => $request->offer_price,
                         'cart_id' => $cart->id,
+                        'product' => $product,
                         'note' => 'conversation already exist'
                     ],
                     'message_id' => $existingChat->id, // Use the existing conversation ID
