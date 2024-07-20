@@ -69,6 +69,9 @@ Route::group([], function () {
         //sellers orders
         Route::get('orders/{type}/{status}', 'OrderController@pendingOrders');
 
+        //offer to accept or reject
+        Route::post('offer/{type}', 'CartController@offer');
+
         //user
         Route::get('notifications', 'UserController@notifications');
         Route::post('notifications', 'UserController@mark_notifications');

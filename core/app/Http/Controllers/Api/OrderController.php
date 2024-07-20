@@ -28,39 +28,59 @@ class OrderController extends Controller
     public function show(Order $order){
         return response()->json($order);
     }
-    public function pendingOrders($type, $status = null){
+    public function pendingOrders($type, $status = null) {
         $user = auth()->user();
 
-        if($status === 'seller'){
+        if ($status === 'seller') {
             $query = OrderDetail::where('seller_id', $user->id);
-//            return $query->PendingOrder()->paginate(10);
-            if ($type == 'pending') {
-                $query = $query->PendingOrder()->with('order');//pending
-            } elseif ($type == 'processing') {
-                $query = $query->ProcessingOrder();//processing
-            } elseif ($type == 'completed') {
-                $query = $query->CompletedOrder();//completed
-            } elseif ($type == 'canceled') {
-                $query = $query->CancelledOrder();//canceled
+
+            switch ($type) {
+                case 'pending':
+                    $query = $query->PendingOrder()->with('order');
+                    break;
+                case 'processing':
+                    $query = $query->ProcessingOrder();
+                    break;
+                case 'completed':
+                    $query = $query->CompletedOrder();
+                    break;
+                case 'canceled':
+                    $query = $query->CancelledOrder();
+                    break;
+                default:
+                    return response()->json(['error' => 'Invalid type provided'], 400);
             }
+
             $orders = $query->latest()->paginate(10);
+
             return response()->json([
                 'orders' => $orders
             ]);
         }
 
-        $query = Order::where('user_id', $user->id)->whereIn('payment_status', [1, 2]);
-        if ($type == 'pending') {
-            $query = $query->where('status', 0);//pending
-        } elseif ($type == 'processing') {
-            $query = $query->where('status', 1);//processing
-        } elseif ($type == 'completed') {
-            $query = $query->where('status', 3);//completed
-        } elseif ($type == 'canceled') {
-            $query = $query->where('status', 4);//canceled
+        $query = Order::where('user_id', $user->id)
+            ->whereIn('payment_status', [1, 2]);
+
+        switch ($type) {
+            case 'pending':
+                $query = $query->where('status', 0);
+                break;
+            case 'processing':
+                $query = $query->where('status', 1);
+                break;
+            case 'completed':
+                $query = $query->where('status', 3);
+                break;
+            case 'canceled':
+                $query = $query->where('status', 4);
+                break;
+            default:
+                return response()->json(['error' => 'Invalid type provided'], 400);
         }
 
         $orders = $query->latest()->paginate(getPaginate());
+
         return response()->json($orders);
     }
+
 }

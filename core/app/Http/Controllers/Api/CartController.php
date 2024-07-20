@@ -55,4 +55,37 @@ class CartController extends Controller
             'message' => 'cart item deleted successfully'
         ]);
     }
+    public function offer(Request $request, $type){
+        $cart = Cart::where('id', $request->cat_id)->firstOrFail();
+        if($type === 'accept'){
+            if($cart->status === 1){
+                return response()->json([
+                    'You already Accepted this offer'
+                ]);
+            }
+            if($cart->status === 2){
+                return response()->json([
+                    'You already Rejected this offer'
+                ]);
+            }
+            $cart->status = 1;
+            $cart->save();
+        }elseif($type === 'reject'){
+            if($cart->status === 2){
+                return response()->json([
+                    'You already Rejected this offer'
+                ]);
+            }
+            if($cart->status === 1){
+                return response()->json([
+                    'You already Accepted this offer'
+                ]);
+            }
+            $cart->status = 2;
+            $cart->save();
+        }
+        return response()->json([
+            $cart
+        ]);
+    }
 }
