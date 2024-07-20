@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Validator;
 
 class WishlistController extends Controller
@@ -148,6 +149,31 @@ class WishlistController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if($id==0){
+            $user_id    = auth()->user()->id??null;
+            if($user_id != null){
+                $wishlist = Wishlist::where('user_id', $user_id);
+            }else{
+                $s_id       = session()->get('session_id');
+                if(!$s_id){
+                    abort(404);
+                }
+                $wishlist = Wishlist::where('session_id', $s_id);
+            }
+
+        }else{
+            $wishlist   = Wishlist::findorFail($id);
+            $product_id = $wishlist->product_id;
+            $wl         = session()->get('wishlist');
+            unset($wl[$product_id]);
+            session()->put('wishlist', $wl);
+        }
+        Artisan::call('cache:clear');
+        if($wishlist) {
+            $wishlist->delete();
+            return response()->json(['success' => 'Deleted From Wishlist']);
+        }
+
+        return response()->json(['error' => 'This product isn\'t available in your wishlsit']);
     }
 }
