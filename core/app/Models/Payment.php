@@ -27,9 +27,10 @@ class Payment extends Model
         'data' => 'array',
     ];
 
-    public static function make(User $user, float $money, string $gateway, string $callback_url, string $description)
+    public static function make(User $user, float $money, string $gateway, string $callback_url, ?string $description = null, ?Order $order = null): static | Model
     {
         return $user->payments()->create([
+            'order_id' => $order->id,
             'reference' => Str::uuid(),
             'amount' => $money,
             'status' => self::StatusPending,
@@ -59,5 +60,10 @@ class Payment extends Model
     public function payable()
     {
         return $this->morphTo();
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 }

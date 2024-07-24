@@ -13,7 +13,7 @@ class OrderController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $orders = Order::where('user_id', $user->id)->paginate(10);
+        $orders = Order::where('user_id', $user->id)->where('payment_status', '!=', 1)->paginate(10);
 
         if ($orders->isEmpty()) {
             return response()->json(['message' => 'No data'], 200);

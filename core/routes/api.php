@@ -23,6 +23,7 @@ Route::group([], function () {
 		Route::apiResource('checkout', 'CheckoutController');
 		Route::apiResource('rate', 'RateController');
 		Route::post('pay', 'HandlePaymentController');
+		Route::post('direct-pay', 'OrderPaymentController');
 
         Route::apiResource('kyc', 'KycController');
         Route::get('kyc-data', 'KycController@kycData');

@@ -26,20 +26,36 @@ class VerifyPaymentController extends Controller
     {
         //TODO: Use webhook for payment verification instead
 
-
         try {
-            if($payment->isPaid()){
+            if ($payment->isPaid()) {
                 throw new GatewayError('Invalid payment reference');
             }
+
+            $gateway = match ($payment->gateway) {
+                'paystack' => app(Paystack::class),
+                default => throw new GatewayError("{$request->gateway} provider not available"),
+            };
+
+            $this->paymentService = new AutomaticPaymentService($gateway);
+
+
             if (!$this->paymentService->confirmPayment($payment)) {
                 throw new GatewayError('Invalid payment reference');
             }
+
+
             DB::transaction(function () use ($payment) {
                 $payment->verify();
-                $payment->payable->wallet->deposit($payment->amount, [
-                    'description' => $payment->data['description'],
-                    'payment_reference' => $payment->reference
-                ]);
+
+                if ($order = $payment->order) {
+                    $order->payment_status = 1;
+                    $order->save();
+                } else {
+                    $payment->payable->wallet->deposit($payment->amount, [
+                        'description' => $payment->data['description'],
+                        'payment_reference' => $payment->reference
+                    ]);
+                }
 
             });
             return $this->redirectToCallbackUrl($payment, 'success');
@@ -47,6 +63,7 @@ class VerifyPaymentController extends Controller
             return $this->redirectToCallbackUrl($payment, 'failed');
         }
     }
+
     private function redirectToCallbackUrl($payment, $status)
     {
         // Base URL

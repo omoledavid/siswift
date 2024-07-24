@@ -85,5 +85,8 @@ class Order extends Model
             return makeHtmlElement('span', 'danger', 'Cancelled');
         }
     }
+    public function escrow(){
+        return $this->hasOne(Escrow::class);
+    }
 
 }

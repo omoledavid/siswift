@@ -23,6 +23,7 @@ trait OrderManager
     {
         $general = GeneralSetting::first();
 
+
         /* Type 1 (Order for Customer) Type 2 (Order as Gift) */
 
         $request->validate([
@@ -38,7 +39,7 @@ trait OrderManager
                 throw new CheckoutException('Cash on delivery is not available now');
             }
         }else{
-            $payment_status = 1;
+            $payment_status = 0;
         }
 
         $carts_data = Cart::where('session_id', session('session_id'))->orWhere('user_id', auth()->user()->id ?? null)->with(['product' => function ($q) {
@@ -67,6 +68,8 @@ trait OrderManager
         $order->payment_status      = $payment_status ?? 0;
         $order->save();
 
+
+
         foreach ($carts_data as $cart) {
             $od = new OrderDetail();
             $od->order_id       = $order->id;
@@ -86,34 +89,10 @@ trait OrderManager
             session()->forget('coupon');
         }
 
-        if ($request->payment != 1) {
-            $depo['user_id']            = auth()->id();
-            $depo['method_code']        = 0;
-            $depo['order_id']           = $order->id;
-            $depo['method_currency']    = $general->cur_text;
-            $depo['amount']             = $order->total_amount;
-            $depo['charge']             = 0;
-            $depo['rate']               = 0;
-            $depo['final_amo']          = getAmount($order->total_amount);
-            $depo['btc_amo']            = 0;
-            $depo['btc_wallet']         = "";
-            $depo['trx']                = getTrx();
-            $depo['try']                = 0;
-            $depo['status']             = 2;
-            $deposit                    = Deposit::where('order_id', $order->id)->first();
+        $carts_data = Cart::where('session_id', session('session_id'))->orWhere('user_id', auth()->user()->id ?? null)->get();
 
-            if ($deposit) {
-                $deposit->update($depo);
-                $data = $deposit;
-            } else {
-                $data = Deposit::create($depo);
-            }
-
-            $carts_data = Cart::where('session_id', session('session_id'))->orWhere('user_id', auth()->user()->id ?? null)->get();
-
-            foreach ($carts_data as $cart) {
-                $cart->delete();
-            }
+        foreach ($carts_data as $cart) {
+            $cart->delete();
         }
 
         return $order;
