@@ -19,6 +19,17 @@ Route::namespace('Admin')->name('admin.')->group(function () {
     Route::get('kyc.setting', 'KycController@setting')->name('kyc.setting');
     Route::post('kyc.setting', 'KycController@settingUpdate');
 
+    Route::controller('PlanController')->name('plan.')->prefix('plan')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('create', 'create')->name('create');
+        Route::post('store', 'store')->name('store');
+        Route::get('edit/{id}', 'update')->name('edit');
+        Route::post('update', 'updatePlan')->name('update');
+        Route::post('status/{id}', 'status')->name('status');
+
+        Route::post('invest/cancel', 'cancelInvest')->name('invest.cancel');
+    });
+
 
     Route::middleware('admin')->group(function () {
         Route::get('analytics/all-shop', 'AdminController@dashboard')->name('dashboard');

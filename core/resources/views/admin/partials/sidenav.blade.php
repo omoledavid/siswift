@@ -24,6 +24,22 @@
                         <span class="menu-title">@lang('My Shop')</span>
                     </a>
                 </li>
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="{{ menuActive([ 'admin.plan.index*'], 3) }}">
+                        <i class="menu-icon las la-clipboard-check"></i>
+                        <span class="menu-title">@lang('Plan Manage')</span>
+                    </a>
+                    <div class="sidebar-submenu {{ menuActive(['admin.time.index*', 'admin.plan.index*'], 2) }} ">
+                        <ul>
+                            <li class="sidebar-menu-item {{ menuActive('admin.plan.index') }}">
+                                <a href="{{ route('admin.plan.index') }}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Plan Manage')</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
                 <li class="sidebar__menu-header">@lang('Users')</li>
 

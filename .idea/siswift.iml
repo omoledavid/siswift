@@ -173,6 +173,15 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/translation-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/core/vendor/mannikj/laravel-wallet" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/felixkiss/uniquewith-validator" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/rinvex/laravel-subscriptions" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/rinvex/laravel-support" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/rinvex/tmp-watson-validating" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/spatie/eloquent-sortable" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/spatie/laravel-package-tools" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/spatie/laravel-schemaless-attributes" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/spatie/laravel-sluggable" />
+      <excludeFolder url="file://$MODULE_DIR$/core/vendor/spatie/laravel-translatable" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

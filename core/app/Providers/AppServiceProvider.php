@@ -15,6 +15,7 @@ use App\Models\Seller;
 use App\Models\SupportTicket;
 use App\Models\User;
 use App\Models\Withdrawal;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
@@ -44,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         $viewShare['activeTemplate'] = $activeTemplate;
         $viewShare['activeTemplateTrue'] = activeTemplate(true);
         $viewShare['language'] = Language::all();
+        Schema::defaultStringLength(191);
 
         $viewShare['allCategories']= Category::with(['allSubcategories','products'=> function($q){
                 return $q->whereHas('categories')->whereHas('brand');
