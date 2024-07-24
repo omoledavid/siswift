@@ -89,7 +89,7 @@
                                 <label class="font-weight-bold">@lang('Description')</label>
                             </div>
                             <div class="col-md-10">
-                                <textarea rows="5" class="form-control nicEdit" name="description">{{$plan->description}}</textarea>
+                                <textarea rows="5" class="form-control" name="description">{{$plan->description}}</textarea>
                             </div>
                         </div>
 
