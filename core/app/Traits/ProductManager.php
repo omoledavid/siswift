@@ -318,7 +318,7 @@ trait ProductManager
             'base_price' => 'required|numeric',
             "categories" => 'required|array|min:1',
             'has_variants' => 'sometimes|required|numeric|min:1|max:1',
-            'track_inventory' => 'sometimes|required|numeric|min:1|max:1',
+            'track_inventory' => 'required|numeric|min:1|max:1',
             'show_in_frontend' => 'sometimes|required|numeric|min:1|max:1',
             'description' => 'nullable|string',
             'summary' => 'nullable|string|max:360',

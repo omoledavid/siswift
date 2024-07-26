@@ -34,6 +34,10 @@ class CampaignController extends Controller
         $validatedData['clicks'] = [];
         $validatedData['message'] = [];
         $validatedData['user_id'] = $request->user()->id;
+        $campaignExist = Campaign::where('product_id', $validatedData['product_id'])->where('user_id', $validatedData['user_id'])->first();
+        if ($campaignExist) {
+            return response()->json(['You already boosted this product'], 400);
+        }
         $campaign = Campaign::query()->create($validatedData);
 
 
@@ -72,7 +76,7 @@ class CampaignController extends Controller
         $campaign->update([
             'plan_id' => $request->get('plan_id'),
             'start_date' => now(),
-            'end_date' => now()->add($plan->duration, $plan->interval),
+            'end_date' => now()->add($plan->invoice_period, $plan->invoice_interval)
         ]);
 
         return response()->json([

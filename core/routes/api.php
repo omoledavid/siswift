@@ -13,11 +13,10 @@ Route::group([], function () {
 	Route::get('languages', 'BasicController@languages');
 	Route::get('language-data/{code}', 'BasicController@languageData');
 
-	//products
-	Route::resource('products', 'ProductController')->only('index');
+
 
 	Route::group(['middleware' => 'auth.api:sanctum'], function () {
-		Route::apiResource('products', 'ProductController')->except('index');
+		Route::apiResource('products', 'ProductController');
 		Route::get('seller-products', 'ProductController@sellerProducts');
 		Route::apiResource('carts', 'CartController');
 		Route::apiResource('checkout', 'CheckoutController');
@@ -25,6 +24,7 @@ Route::group([], function () {
 		Route::post('pay', 'HandlePaymentController');
 		Route::post('direct-pay', 'OrderPaymentController');
 
+        //kyc
         Route::apiResource('kyc', 'KycController');
         Route::get('kyc-data', 'KycController@kycData');
 

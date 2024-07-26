@@ -27,18 +27,18 @@ trait OrderManager
         /* Type 1 (Order for Customer) Type 2 (Order as Gift) */
 
         $request->validate([
-            'address'           => 'required|max:50',
-            'payment'           => 'required|in:1,2'
+            'address' => 'required|max:50',
+            'payment' => 'required|in:1,2'
         ]);
 
-        if ($request->payment  == 2) {
+        if ($request->payment == 2) {
 
             $payment_status = 2;
 
             if (!$general->cod) {
                 throw new CheckoutException('Cash on delivery is not available now');
             }
-        }else{
+        } else {
             $payment_status = 0;
         }
 
@@ -49,40 +49,46 @@ trait OrderManager
         $amounts = array_column($carts_array, 'offer_price');
         $total = array_sum($amounts);
         $balance = auth()->user()->wallet->balance;
-        if($total > $balance){
+        if ($total > $balance) {
             return false;
         }
 
 
-
-        $cart_total     = 0;
+        $cart_total = 0;
 
         foreach ($carts_data as $cart) {
-           $cart_total = $cart->offer_price * $cart->quantity;
+            $cart_total = $cart->offer_price * $cart->quantity;
         }
 
         $order = new Order();
-        $order->order_number        = getTrx();
-        $order->user_id             = auth()->user()->id;
-        $order->order_type          = $type;
-        $order->payment_status      = $payment_status ?? 0;
+        $order->order_number = getTrx();
+        $order->user_id = auth()->user()->id;
+        $order->order_type = $type;
+        $order->payment_status = $payment_status ?? 0;
         $order->save();
-
 
 
         foreach ($carts_data as $cart) {
             $od = new OrderDetail();
-            $od->order_id       = $order->id;
-            $od->product_id     = $cart->product_id;
-            $od->quantity       = $cart->quantity;
-            $od->base_price     = $cart->product->base_price;
-            $od->seller_id      = $cart->product->seller_id;
+            $od->order_id = $order->id;
+            $od->product_id = $cart->product_id;
+            $od->quantity = $cart->quantity;
+            $od->base_price = $cart->product->base_price;
+            $od->seller_id = $cart->product->seller_id;
             $od->save();
         }
 
-        $order->total_amount =  getAmount($cart_total);
+        $order->total_amount = getAmount($cart_total);
         $order->save();
         session()->put('order_number', $order->order_number);
+
+        $product = Product::where('id', $cart->product_id)->first();
+        $product->track_inventory -= $cart->quantity;
+        if ($product->track_inventory == 0) {
+            $product->status = 0;
+
+        }
+        $product->save();
 
         //Remove coupon from session
         if (session('coupon')) {

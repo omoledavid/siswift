@@ -32,18 +32,25 @@ class ProductController extends Controller
 
     public function index()
     {
-        $allProducts = $this->products();
-        if($allProducts['products'][0] == null){
+        $user = request()->user();
+        $sellerIdToExclude = $user->seller_id;
+
+        // Query the products while excluding the specified seller's products
+        $allProducts = Product::where('seller_id', '!=', $sellerIdToExclude)->where('status', 1)->paginate(10);
+
+        if ($allProducts->isEmpty()) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'No products found',
             ]);
         }
+
         return response()->json([
             'status' => 'success',
-            'data' => $allProducts,
+            'data' => ['products' => $allProducts],
         ]);
     }
+
 
     public function show(Product $product)
     {

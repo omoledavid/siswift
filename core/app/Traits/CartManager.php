@@ -21,11 +21,17 @@ trait CartManager
             'offer_price'  => 'nullable|numeric|gt:0',
         ]);
 
+
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
 
         $product = Product::findOrFail($request->product_id);
+
+//        return $product->track_inventory;
+        if($request->quantity > $product->track_inventory){
+            return response()->json('Quantity is greater than stock');
+        }
 
         $user_id = auth()->user()->id ?? null;
 
@@ -201,9 +207,9 @@ trait CartManager
             'offer_price'  => 'nullable|numeric|gt:0',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors());
-        }
+            if ($validator->fails()) {
+                return response()->json($validator->errors());
+            }
 
         $product = Product::findOrFail($request->product_id);
         $user_id = auth()->user()->id ?? null;

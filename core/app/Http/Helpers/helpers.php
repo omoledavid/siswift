@@ -787,6 +787,11 @@ function imagePath()
         'size' => '200x150',
     ];
 
+    $data['kyc'] = [
+        'path' => 'assets/images/kyc',
+        'size' => '200x150',
+    ];
+
     return $data;
 }
 
