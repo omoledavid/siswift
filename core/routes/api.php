@@ -43,6 +43,7 @@ Route::group([], function () {
 
         Route::get('deposit/history', 'UserController@depositHistory');
 
+        //transactions
         Route::get('transactions', 'TransactionController@transactions');
         Route::post('withdraw', 'TransactionController@withdraw');
         Route::get('withdrawal-method', 'TransactionController@withdrawalMethod');

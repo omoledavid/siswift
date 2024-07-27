@@ -14,7 +14,7 @@ class TransactionController extends Controller
 {
     public function transactions(){
         $user = auth()->user();
-    $transaction = Transaction::where('wallet_id', $user->wallet->id)->paginate(10);
+    $transaction = Transaction::where('wallet_id', $user->wallet->id)->orderBy('id', 'desc')->paginate(10);
     return response()->json($transaction);
     }
     public function withdraw(Request $request){
