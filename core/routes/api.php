@@ -53,7 +53,7 @@ Route::group([], function () {
         Route::post('escrow-reject', 'TransactionController@escrowReject');
         Route::get('get-escrow', 'TransactionController@escrows');
 
-        //compaigns
+        //Campaigns
         Route::apiResource('campaigns', 'CampaignController')->only('store', 'update');
         Route::get('campaign-data', 'CampaignController@campaignData');
         Route::get('plans', 'BasicController@plans');

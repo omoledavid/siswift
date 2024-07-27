@@ -85,7 +85,7 @@
                                 </td>
 
 
-                                <td data-label="@lang('Brand')">{{$product->brand->name}}</td>
+                                <td data-label="@lang('Brand')">{{ isset($product->brand->name) ? $product->brand->name : 'N/A' }}</td>
                                 <td data-label="@lang('Price')">{{$product->base_price}}</td>
                                 <td data-label="@lang('In Stock')">
                                     @if($product->track_inventory)
