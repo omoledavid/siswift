@@ -21,6 +21,10 @@ Route::group([], function () {
 		Route::apiResource('carts', 'CartController');
 		Route::apiResource('checkout', 'CheckoutController');
 		Route::apiResource('rate', 'RateController');
+
+        //user review
+		Route::apiResource('review', 'ReviewController');
+
 		Route::post('pay', 'HandlePaymentController');
 		Route::post('direct-pay', 'OrderPaymentController');
 
