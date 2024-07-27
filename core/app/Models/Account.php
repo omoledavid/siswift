@@ -10,7 +10,7 @@ class Account extends Model
 {
     use HasFactory, HasWallet;
 
-    protected $with = ['wallet'];
+    protected $with = ['wallet', 'escrow'];
 
     protected $guarded = [];
 }
