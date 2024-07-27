@@ -46,15 +46,11 @@ class KycController extends Controller
             ]);
         }
 
-        $form = Form::where('act', 'kyc')->first();
         $notify[] = 'KYC field is below';
         return response()->json([
             'remark' => 'kyc_form',
             'status' => 'success',
-            'message' => ['success' => $notify],
-            'data' => [
-                'form' => @$form->form_data,
-            ],
+            'message' => ['success' => $notify]
         ]);
     }
 

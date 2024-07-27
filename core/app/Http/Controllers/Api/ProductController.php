@@ -42,7 +42,7 @@ class ProductController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'No products found',
-            ]);
+            ], 400);
         }
 
         return response()->json([

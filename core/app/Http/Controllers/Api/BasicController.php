@@ -72,10 +72,26 @@ class BasicController extends Controller
     }
     public function plans(){
         $plans = Plan::all();
+        $listing = [
+            'name' => 'single listing',
+            'price' => '3000'
+        ];
+        $boost = [
+            'normal boost' => [
+                'name' => 'single listing',
+                'price' => '3000'
+            ],
+            'super boost' => [
+                'name' => 'single listing',
+                'price' => '3000'
+            ]
+        ];
         return response()->json([
             'code'=>200,
             'status'=>'ok',
-            'data' => $plans
+            'plans' => $plans,
+            'listing' => $listing,
+            'booster' => $boost
         ]);
     }
     public function allProducts(){
