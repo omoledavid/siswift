@@ -23,7 +23,7 @@ class User extends Authenticatable
 
     protected $guarded = ['id'];
     protected $with = ['accounts'];
-    protected $appends = ['wallet', 'escrowWallet'];
+    protected $appends = ['wallet', 'escrow_wallet'];
 //    protected $appends = ['wallet', 'escrow_wallet'];
 
     /**
