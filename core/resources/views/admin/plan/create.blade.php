@@ -83,12 +83,18 @@
                             </div>
                         </div>
 
+
                         <div class="form-group row">
                             <div class="col-md-2">
-                                <label class="font-weight-bold">@lang('Description')</label>
+                                <label class="font-weight-bold">@lang('Type')</label>
                             </div>
                             <div class="col-md-10">
-                                <textarea rows="5" class="form-control" name="description"></textarea>
+                                <select class="form-control select2-basic" name="type" required>
+                                    <option selected disabled value="">@lang('Select One')</option>
+                                    <option value="sub">Subscription plan</option>
+                                    <option value="boost">Boost</option>
+                                    <option value="listing">Highlight Listing</option>
+                                </select>
                             </div>
                         </div>
 

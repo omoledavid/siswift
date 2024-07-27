@@ -26,7 +26,8 @@ class PlanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'type' => 'required'
         ]);
         $plan = app('rinvex.subscriptions.plan')->create([
             'name' => $request->get('name'),
@@ -39,6 +40,7 @@ class PlanController extends Controller
             'trial_interval' => $request->get('trial_interval'),
             'sort_order' => $request->get('order'),
             'currency' => 'NGN',
+            'type' => $request->type
         ]);
         $plan->features()->saveMany([
             new PlanFeature(['name' => 'photo_upload', 'value' => $request->photo_upload, 'sort_order' => 1]),
@@ -83,6 +85,7 @@ class PlanController extends Controller
             'trial_interval' => $request->get('trial_interval'),
             'sort_order' => $request->get('order'),
             'currency' => 'NGN',
+            'type' => $request->type
         ]);
         return redirect()->route('admin.plan.index');
     }

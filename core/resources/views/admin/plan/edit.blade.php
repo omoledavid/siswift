@@ -83,6 +83,19 @@
                                     value="{{$plan->sort_order}}" name="order" />
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                <label class="font-weight-bold">@lang('Type')</label>
+                            </div>
+                            <div class="col-md-10">
+                                <select class="form-control select2-basic" name="type" required>
+                                    <option selected disabled value="">@lang('Select One')</option>
+                                    <option value="sub">Subscription plan</option>
+                                    <option value="boost">Boost</option>
+                                    <option value="listing">Highlight Listing</option>
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="form-group row">
                             <div class="col-md-2">

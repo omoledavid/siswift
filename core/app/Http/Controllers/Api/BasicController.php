@@ -71,21 +71,9 @@ class BasicController extends Controller
 	    ]);
     }
     public function plans(){
-        $plans = Plan::all();
-        $listing = [
-            'name' => 'single listing',
-            'price' => '3000'
-        ];
-        $boost = [
-            'normal boost' => [
-                'name' => 'single listing',
-                'price' => '3000'
-            ],
-            'super boost' => [
-                'name' => 'single listing',
-                'price' => '3000'
-            ]
-        ];
+        $plans = Plan::where('type', 'sub')->get();
+        $listing = Plan::where('type', 'listing')->get();
+        $boost = Plan::where('type', 'boost')->get();
         return response()->json([
             'code'=>200,
             'status'=>'ok',
