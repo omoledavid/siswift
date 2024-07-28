@@ -8,13 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use MannikJ\Laravel\Wallet\Traits\HasWallet;
+use Rinvex\Subscriptions\Traits\HasPlanSubscriptions;
 
 /**
  * @property Wallet $wallet
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens;
+    use Notifiable, HasApiTokens, HasPlanSubscriptions;
     /**
      * The attributes that are mass assignable.
      *

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SubscriptionPaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/clear', function () {
@@ -84,6 +85,12 @@ Route::group([], function () {
 
         //wishlist
         Route::apiResource('wishlist', 'WishlistController');
+
+        //plans
+        Route::apiResource('subscription', 'SubscriptionController');
+
+        //subscription payment
+        Route::post('subscription-payment', 'SubscriptionPaymentController');
 	});
 
 

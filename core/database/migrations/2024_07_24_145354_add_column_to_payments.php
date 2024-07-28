@@ -14,7 +14,8 @@ class AddColumnToPayments extends Migration
     public function up()
     {
         Schema::table('payments', function (Blueprint $table) {
-            $table->foreignId('order_id')->nullable();
+            $table->foreignId('order_id')->nullable()->after('data');
+            $table->foreignId('plan_id')->nullable()->after('order_id');
         });
     }
 
@@ -26,7 +27,8 @@ class AddColumnToPayments extends Migration
     public function down()
     {
         Schema::table('payments', function (Blueprint $table) {
-            $table->dropForeign('order_id');
+            $table->dropColumn('order_id');
+            $table->dropColumn('plan_id');
         });
     }
 }

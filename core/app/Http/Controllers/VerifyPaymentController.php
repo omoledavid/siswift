@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\Payment\GatewayError;
 use App\Models\Payment;
+use App\Models\User;
 use App\Services\AutomaticPaymentService;
 use App\Services\Gateways\Paystack;
 use Illuminate\Http\Request;
@@ -50,6 +51,10 @@ class VerifyPaymentController extends Controller
                 if ($order = $payment->order) {
                     $order->payment_status = 1;
                     $order->save();
+                }elseif($plan_data = $payment->plan){
+                    $user = User::find($payment->payable_id);
+                    $plan = app('rinvex.subscriptions.plan')->find($plan_data->id);
+                    $user->newPlanSubscription($plan->name, $plan);
                 } else {
                     $payment->payable->wallet->deposit($payment->amount, [
                         'description' => $payment->data['description'],
