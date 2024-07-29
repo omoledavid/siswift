@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use MannikJ\Laravel\Wallet\Models\Transaction as ModelsTransaction;
 use MannikJ\Laravel\Wallet\Traits\HasWallet;
 use Rinvex\Subscriptions\Traits\HasPlanSubscriptions;
+use Stripe\Review;
 
 /**
  * @property Wallet $wallet
@@ -24,7 +25,7 @@ class User extends Authenticatable
      */
 
     protected $guarded = ['id'];
-    protected $with = ['accounts'];
+    protected $with = ['review'];
     protected $appends = ['wallet', 'escrow_wallet'];
 //    protected $appends = ['wallet', 'escrow_wallet'];
 
@@ -191,6 +192,9 @@ class User extends Authenticatable
     public function withdrawals()
     {
         return $this->hasMany(Withdrawal::class,'seller_id')->where('status','!=',0);
+    }
+    public function review(){
+        return $this->hasMany(UserReview::class);
     }
 
 }

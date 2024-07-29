@@ -9,6 +9,7 @@ use App\Models\GeneralSetting;
 use App\Models\Language;
 use App\Models\Plan;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class BasicController extends Controller

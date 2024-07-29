@@ -8,11 +8,6 @@
             <div class="row justify-content-center">
                 <div class="col-xl-12">
                     <div class="card custom--card">
-                        <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
-                            <h4 class="card-title mb-0">
-                                {{__($pageTitle)}}
-                            </h4>
-                        </div>
                         <div class="card-body p-0">
                             <ul class="chat-area">
                                 @forelse($conversions as $conversion)

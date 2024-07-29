@@ -12,8 +12,8 @@ class ChatController extends Controller
 {
     public function index($id)
     {
-        $pageTitle = "Inbox";
         $user = User::find($id);
+        $pageTitle = "Chats of ". $user->userfullname;
         $conversions = Message::where('sender_id', $user->id)->orWhere('receiver_id', $user->id)->with('sender')->with('messages')->latest()->get();
         return view('admin.message.index', compact('pageTitle', 'conversions','user'));
     }
