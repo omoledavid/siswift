@@ -156,7 +156,7 @@ trait ProductManager
         if ($request->user()) {
             $user = $request->user();
             if ($user->seller_id == null) {
-                $seller = $user->seller;
+//                $seller = $user->seller;
 
                 if (!$seller) {
                     $seller = $this->createSeller([
