@@ -15,7 +15,7 @@
                 <li class="sidebar-menu-item {{menuActive('admin.dashboard')}}">
                     <a href="{{route('admin.dashboard')}}" class="nav-link ">
                         <i class="menu-icon las la-tachometer-alt"></i>
-                        <span class="menu-title">@lang('All Shop')</span>
+                        <span class="menu-title">@lang('Dashboard')</span>
                     </a>
                 </li>
                 <li class="sidebar-menu-item {{menuActive('admin.dashboard.self')}}">
@@ -99,6 +99,12 @@
                                         <span
                                             class="menu-badge pill bg--primary ml-auto">{{$sms_unverified_users_count}}</span>
                                     @endif
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive('admin.users.listing')}}">
+                                <a href="{{route('admin.users.listing')}}" class="nav-link">
+                                    <i class="menu-icon las la-user"></i>
+                                    <span class="menu-title">@lang('With Listing')</span>
                                 </a>
                             </li>
 

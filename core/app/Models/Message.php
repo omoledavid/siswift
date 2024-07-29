@@ -10,7 +10,7 @@ class Message extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $table = 'conversations';
+//    protected $table = 'conversations';
 
     public function sender()
     {

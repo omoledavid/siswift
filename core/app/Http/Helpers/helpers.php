@@ -655,7 +655,7 @@ function sendMailjetMail($config, $receiver_email, $receiver_name, $subject, $me
 }
 
 
-function getPaginate($paginate = 20)
+function getPaginate($paginate = 10)
 {
     return $paginate;
 }

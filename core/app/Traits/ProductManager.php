@@ -11,6 +11,7 @@ use App\Models\ProductStock;
 use App\Models\Shop;
 use App\Models\User;
 use App\Rules\FileTypeValidate;
+use Illuminate\Support\Facades\Auth;
 
 trait ProductManager
 {
@@ -152,52 +153,55 @@ trait ProductManager
             'specification.*.name.required' => 'All specification name is required',
             'specification.*.value' => 'All specification value is required',
         ]);
-        $user = $request->user();
-        if ($user->seller_id == null) {
-            $seller = $user->seller;
+        if ($request->user()) {
+            $user = $request->user();
+            if ($user->seller_id == null) {
+                $seller = $user->seller;
 
-            if (!$seller) {
-                $seller = $this->createSeller([
-                    'fullname' => $user->fullname,
-                    'email' => $user->email,
-                    'mobile' => $user->mobile,
-                    'address' => $user->address,
-                    'country' => $user->country
+                if (!$seller) {
+                    $seller = $this->createSeller([
+                        'fullname' => $user->fullname,
+                        'email' => $user->email,
+                        'mobile' => $user->mobile,
+                        'address' => $user->address,
+                        'country' => $user->country
+                    ]);
+                }
+                $shop = new Shop();
+                $shop->name = ' ';
+                $shop->seller_id = $seller->id;
+                $shop->user_id = $user->id;
+                $shop->status = 0;
+                $shop->phone = ' ';
+                $shop->address = ' ';
+                $shop->opens_at = ' ';
+                $shop->closed_at = ' ';
+                $shop->meta_title = ' ';
+                $shop->meta_description = ' ';
+                $shop->meta_keywords = $request->meta_keywords ?? null;
+                $shop->social_links = $request->social_links ?? null;
+                $shop->save();
+
+                $request->user()->update([
+                    'seller_id' => $shop->seller_id
                 ]);
             }
-            $shop = new Shop();
-            $shop->name = ' ';
-            $shop->seller_id = $seller->id;
-            $shop->user_id = $user->id;
-            $shop->status = 0;
-            $shop->phone = ' ';
-            $shop->address = ' ';
-            $shop->opens_at = ' ';
-            $shop->closed_at = ' ';
-            $shop->meta_title = ' ';
-            $shop->meta_description = ' ';
-            $shop->meta_keywords = $request->meta_keywords ?? null;
-            $shop->social_links = $request->social_links ?? null;
-            $shop->save();
-
-            $request->user()->update([
-                'seller_id' => $shop->seller_id
-            ]);
         }
-
 
         $product = new Product();
 
         if ($id) {
             $product = Product::findOrFail($id);
-            $prev_has_variants = $product->has_variants;
-
-            if ($sellerId && $product->seller_id != $sellerId) {
+            if(auth()->user()){
+                $user = $request->user();
+            }else{
+                $user = User::where('seller_id', $product->seller_id)->first();
+            }
+            if ($product->seller_id != $user->seller_id) {
                 $notify[] = ['error', 'This product doesn\'t belong to this seller'];
                 return $notify;
             }
 
-            $sellerId = $product->seller_id;
             $product->status = 1;
         } else {
             //adding admin id
@@ -280,8 +284,12 @@ trait ProductManager
 //            $seller->save();
 //        }
 
-
-        return $product;
+        if(auth()->user()){
+            return $product;
+        }else{
+            $notify[]=['success', 'Product updated successfully'];
+            return $notify;
+        }
     }
 
     public function storeProductAndReturnNotification($request, $id, $sellerId = 0)

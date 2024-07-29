@@ -23,9 +23,15 @@
                     <h5 class="mb-20 text-muted">@lang('Customer information')</h5>
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            @lang('Username')
-                            <span class="font-weight-bold">{{$user->username}}</span>
+                            @lang('Balance')
+                            <span
+                                class="font-weight-bold">{{showAmount($user->wallet->balance)}}  {{__($general->cur_text)}}</span>
                         </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @lang('Joined At') <strong>{{showDateTime($user->created_at,'d M, Y h:i A')}}</strong>
+                        </li>
+
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             @lang('Status')
                             @if($user->status == 1)
@@ -61,60 +67,126 @@
         </div>
 
         <div class="col-xl-9 col-lg-7 col-md-7 mb-30">
-
             <div class="row mb-none-30">
-                    <div class="col-xl-4 col-lg-6 col-sm-6 mb-30">
-                        <div class="dashboard-w1 bg--deep-purple b-radius--10 box-shadow has--link">
-                            <a href="{{route('admin.users.deposits',$user->id)}}" class="item--link"></a>
-                            <div class="icon">
-                                <i class="fa fa-credit-card"></i>
+                <div class="col-xl-3 col-lg-6 col-sm-6 mb-30">
+                    <div class="dashboard-w1 bg--deep-purple b-radius--10 box-shadow has--link">
+                        <a href="{{route('admin.users.sell.logs',$user->id)}}" class="item--link"></a>
+                        <div class="icon">
+                            <i class="fa fa-credit-card"></i>
+                        </div>
+                        <div class="details">
+                            <div class="numbers">
+                                <span class="currency-sign"> {{__($general->cur_sym)}}</span>
+                                <span class="amount">{{getAmount($totalSold)}}</span>
                             </div>
-                            <div class="details">
-                                <div class="numbers">
-                                    <span class="currency-sign"> {{__($general->cur_sym)}}</span>
-                                    <span class="amount">{{getAmount($totalDeposit)}}</span>
-                                </div>
-                                <div class="desciption">
-                                    <span>@lang('Total Shopping')</span>
-                                </div>
+                            <div class="desciption">
+                                <span>@lang('Total Sold')</span>
                             </div>
                         </div>
-                    </div><!-- dashboard-w1 end -->
+                    </div>
+                </div><!-- dashboard-w1 end -->
 
 
-                    <div class="col-xl-4 col-lg-6 col-sm-6 mb-30">
-                        <div class="dashboard-w1 bg--indigo b-radius--10 box-shadow has--link">
-                            <a href="{{route('admin.users.transactions',$user->id)}}" class="item--link"></a>
-                            <div class="icon">
-                                <i class="la la-exchange-alt"></i>
+                <div class="col-xl-3 col-lg-6 col-sm-6 mb-30">
+                    <div class="dashboard-w1 bg--indigo b-radius--10 box-shadow has--link">
+                        <a href="{{route('admin.users.withdrawals',$user->id)}}" class="item--link"></a>
+                        <div class="icon">
+                            <i class="fa fa-wallet"></i>
+                        </div>
+                        <div class="details">
+                            <div class="numbers">
+                                <span class="currency-sign">{{__($general->cur_sym)}}</span>
+                                <span class="amount">{{showAmount($totalWithdraw)}}</span>
                             </div>
-                            <div class="details">
-                                <div class="numbers">
-                                    <span class="amount">{{$totalTransaction}}</span>
-                                </div>
-                                <div class="desciption">
-                                    <span>@lang('Total Transactions')</span>
-                                </div>
+                            <div class="desciption">
+                                <span>@lang('Total Withdraw')</span>
                             </div>
                         </div>
-                    </div><!-- dashboard-w1 end -->
+                    </div>
+                </div><!-- dashboard-w1 end -->
 
-                    <div class="col-xl-4 col-lg-6 col-sm-6 mb-30">
-                        <div class="dashboard-w1 bg--12 b-radius--10 box-shadow has--link">
-                            <a href="{{route('admin.report.order.user',$user->id)}}" class="item--link"></a>
-                            <div class="icon">
-                                <i class="las la-cart-plus"></i>
+                <div class="col-xl-3 col-lg-6 col-sm-6 mb-30">
+                    <div class="dashboard-w1 bg--12 b-radius--10 box-shadow has--link">
+                        <a href="{{route('admin.users.transactions',$user->id)}}" class="item--link"></a>
+                        <div class="icon">
+                            <i class="la la-exchange-alt"></i>
+                        </div>
+                        <div class="details">
+                            <div class="numbers">
+                                <span class="amount">{{$totalTransaction}}</span>
                             </div>
-                            <div class="details">
-                                <div class="numbers">
-                                    <span class="amount">{{ $totalOrders }}</span>
-                                </div>
-                                <div class="desciption">
-                                    <span>@lang('Total Orders')</span>
-                                </div>
+                            <div class="desciption">
+                                <span>@lang('Total Transaction')</span>
                             </div>
                         </div>
-                    </div><!-- dashboard-w1 end -->
+                    </div>
+                </div><!-- dashboard-w1 end -->
+
+                <div class="col-xl-3 col-lg-6 col-sm-6 mb-30">
+                    <div class="dashboard-w1 bg--17 b-radius--10 box-shadow has--link">
+                        <a href="{{route('admin.users.products',$user->id)}}" class="item--link"></a>
+                        <div class="icon">
+                            <i class="las la-tshirt"></i>
+                        </div>
+                        <div class="details">
+                            <div class="numbers">
+                                <span class="amount">{{$totalProducts}}</span>
+                            </div>
+                            <div class="desciption">
+                                <span>@lang('Total Products')</span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- dashboard-w1 end -->
+                <div class="col-xl-3 col-lg-6 col-sm-6 mb-30">
+                    <div class="dashboard-w1 bg--deep-purple b-radius--10 box-shadow has--link">
+                        <a href="{{route('admin.users.deposits',$user->id)}}" class="item--link"></a>
+                        <div class="icon">
+                            <i class="fa fa-credit-card"></i>
+                        </div>
+                        <div class="details">
+                            <div class="numbers">
+                                <span class="currency-sign"> {{__($general->cur_sym)}}</span>
+                                <span class="amount">{{getAmount($totalDeposit)}}</span>
+                            </div>
+                            <div class="desciption">
+                                <span>@lang('Total Shopping')</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-sm-6 mb-30">
+                    <div class="dashboard-w1 bg--17 b-radius--10 box-shadow has--link">
+                        <a href="{{route('admin.report.order.user',$user->id)}}" class="item--link"></a>
+                        <div class="icon">
+                            <i class="las la-cart-plus"></i>
+                        </div>
+                        <div class="details">
+                            <div class="numbers">
+                                <span class="amount">{{ $totalOrders }}</span>
+                            </div>
+                            <div class="desciption">
+                                <span>@lang('Total Orders')</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-sm-6 mb-30">
+                    <div class="dashboard-w1 bg--light-green b-radius--10 box-shadow has--link">
+                        <a href="{{route('admin.chat',$user->id)}}" class="item--link"></a>
+                        <div class="icon">
+                            <i class="las la-mail-bulk"></i>
+                        </div>
+                        <div class="details">
+                            <div class="numbers">
+                                <span class="amount">{{ $totalMessages }}</span>
+                            </div>
+                            <div class="desciption">
+                                <span>@lang('chats')</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 

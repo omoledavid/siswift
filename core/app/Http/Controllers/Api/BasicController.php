@@ -85,4 +85,16 @@ class BasicController extends Controller
     public function allProducts(){
         return response()->json([Product::where('status',1)->paginate(10)]);
     }
+    public function user($id){
+        $user = User::find($id);
+        if (!$user) {
+            $notify[] = 'User not found';
+            return response()->json([
+                $notify
+            ]);
+        }
+        return response()->json([
+            $user
+        ]);
+    }
 }

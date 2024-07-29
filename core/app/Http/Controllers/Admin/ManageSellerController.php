@@ -115,7 +115,7 @@ class ManageSellerController extends Controller
         $pageTitle = 'Seller Details';
         $seller = Seller::findOrFail($id);
         $totalWithdraw = Withdrawal::where('seller_id',$seller->id)->where('status',1)->sum('amount');
-        $totalTransaction = Transaction::where('seller_id',$seller->id)->count();
+        $totalTransaction = 12;
         $totalProducts = Product::where('seller_id',$seller->id)->count();
         $totalSold = SellLog::where('seller_id',$seller->id)->sum('after_commission');
         $countries = json_decode(file_get_contents(resource_path('views/partials/country.json')));
@@ -126,8 +126,9 @@ class ManageSellerController extends Controller
     {
         $seller = Seller::findOrFail($id);
         $pageTitle = "Sell logs of : $seller->username";
+        $emptyMessage = 'No information here';
         $logs = SellLog::where('seller_id',$seller->id)->paginate(getPaginate());
-        return view('admin.seller.sales_log', compact('pageTitle','logs','seller'));
+        return view('admin.seller.sales_log', compact('pageTitle','logs','seller', 'emptyMessage'));
     }
     public function sellerProducts($id)
     {

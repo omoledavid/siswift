@@ -88,15 +88,14 @@
                                 <td data-label="@lang('Brand')">{{ isset($product->brand->name) ? $product->brand->name : 'N/A' }}</td>
                                 <td data-label="@lang('Price')">{{$product->base_price}}</td>
                                 <td data-label="@lang('In Stock')">
-                                    @if($product->track_inventory)
-                                        @php
-                                            $inStock = optional($product->stocks)->sum('quantity');
-                                        @endphp
-                                        <span class="@if($inStock < 10) text--danger @endif">
-                                            {{$inStock}}
+                                    @if($product->track_inventory == 0)
+                                        <span class="text--danger">
+                                            {{$product->track_inventory}}
                                         </span>
                                     @else
-                                        @lang('Infinite')
+                                        <span class="text--success">
+                                            {{$product->track_inventory}}
+                                        </span>
                                     @endif
                                 </td>
                                 <td data-label="@lang('Status')">
@@ -143,9 +142,6 @@
                                                 @endif
                                             </a>
 
-                                            @if($product->track_inventory)
-                                                <a href="{{ route('admin.products.stock.create', [$product->id]) }}" class="dropdown-item">@lang('Manage Inventory')</a>
-                                            @endif
 
                                             @if($product->has_variants)
                                             <a href="{{ route('admin.products.variant.store', [$product->id]) }}" class="dropdown-item">

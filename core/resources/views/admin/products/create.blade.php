@@ -37,6 +37,14 @@
                             <input type="text" class="form-control" placeholder="@lang('Type Here')..." value="{{isset($product)?$product->model:old('model')}}" name="model" />
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <div class="col-md-2">
+                            <label class="font-weight-bold">@lang('Quantity')</label>
+                        </div>
+                        <div class="col-md-10">
+                            <input type="number" class="form-control" placeholder="@lang('Type Here')..." value="{{isset($product)?$product->track_inventory:old('track_inventory')}}" name="track_inventory" />
+                        </div>
+                    </div>
 
                     <div class="form-group row">
                         <div class="col-md-2">
@@ -108,225 +116,9 @@
                             <textarea rows="5" class="form-control nicEdit" name="description">@php echo ($product->description)??'' @endphp</textarea>
                         </div>
                     </div>
-
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">@lang('Summary')</label>
-                        </div>
-                        <div class="col-md-10">
-                            <textarea rows="5" class="form-control" name="summary">{{ $product->summary??'' }}</textarea>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
-            <div class="card p-2 my-3">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">@lang('Extra Descriptions')</h5>
-                </div>
-                <div class="card-body">
-                    <div class="extras">
-                        @if(isset($product) && $product->extra_descriptions != null)
-                            @foreach ($product->extra_descriptions as $item)
-                            <div class="extra">
-                                    <div class="d-flex justify-content-end mb-3">
-                                        <button type="button" class="btn btn-outline--danger float-right  remove-extra"><i class="la la-minus"></i></button>
-                                    </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-2">
-                                        <label class="font-weight-bold">@lang('Name')</label>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <input type="text" class="form-control" name="extra[{{ $loop->iteration }}][key]" value="{{ $item['key'] }}">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-md-2">
-                                        <label class="font-weight-bold">@lang('Value')</label>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <textarea class="form-control nicEdit" name="extra[{{ $loop->iteration }}][value]" rows="3"> @php echo $item['value'] @endphp</textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        @endif
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-8">
-                            <p class="p-2 extra-info">@lang('Add more descriptions as you want by clicking the (+) button on the right side.')</p>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-end">
-
-                                <button type="button" class="btn btn-outline--success add-extra"><i class="la la-plus"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card p-2 my-3">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">@lang('Inventory')</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">
-                                @lang('Track Inventory')
-                            </label>
-                        </div>
-                        <div class="col-md-10">
-                            <label class="switch">
-                                <input type="checkbox" name="track_inventory" value="1" @if(isset($product)) {{ @$product->track_inventory?'checked':'' }} @else checked  @endif>
-                                <span class="slider round"></span>
-                            </label>
-
-                        </div>
-
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">
-                                @lang('Show in Frontend')
-                            </label>
-                        </div>
-                        <div class="col-md-10">
-                            <label class="switch">
-                                <input type="checkbox" name="show_in_frontend" value="1" @if(isset($product)) {{ @$product->show_in_frontend?'checked':'' }} @else checked  @endif>
-                                <span class="slider round"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">
-                                @lang('Has Variants')
-                            </label>
-                        </div>
-                        <div class="col-md-10">
-                            <label class="switch">
-                                <input type="checkbox" name="has_variants" value="1" @if(isset($product)) {{ $product->has_variants?'checked':'' }}  @endif>
-                                <span class="slider round"></span>
-                            </label>
-
-                        </div>
-                    </div>
-
-                    <div class="form-group row sku-wrapper">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">@lang('Product SKU')</label>
-                        </div>
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" placeholder="@lang('Type Here')..." value="{{isset($product)?$product->sku:old('sku')}}" name="sku" />
-                        </div>
-                    </div>
-                </div>
-                @if(request()->routeIs('admin.products.edit'))
-                <div class="card-footer">
-                    <h5 class="ml-3 text-danger font-weight-bold">@lang('If you change the value of Track Inventory or Has Variants, your previous stock records for this product will be removed.')</h5>
-                </div>
-                @endif
-            </div>
-
-            <div class="card p-2 my-3">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">@lang('Product Specifications')</h5>
-                </div>
-                <div class="card-body">
-                    <div class="specifications-wrapper">
-                        @if(isset($product) && $product->specification != null)
-                            @foreach ($product->specification as $item)
-                            <div class="specifications">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <label class="font-weight-bold">{{ $loop->iteration }}</label>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input type="text" class="form-control" name="specification[{{ $loop->iteration }}][name]" placeholder="@lang('Type Name Here...')" value="{{@$item['name']}}">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <div class="form-group abs-form-group d-flex justify-content-between flex-wrap">
-
-                                                    <input type="text" class="form-control" name="specification[{{ $loop->iteration }}][value]" placeholder="@lang('Type Value Here...')" value="{{@$item['value']}}"">
-                                                    <button type="button" class="btn btn-outline--danger remove-specification abs-button"><i class="la la-minus"></i></button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        @endif
-                    </div>
-                    <div class="row">
-                        <div class="col-md-8">
-                            <p class="p-2 specification-info">@lang('Add specifications as you want by clicking the (+) button on the right side.')</p>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="d-flex justify-content-end">
-                                <button type="button" class="btn btn-outline--success add-specification "><i class="la la-plus"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card p-2 my-3">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">@lang('SEO Contents')</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">@lang('Meta Title')</label>
-                        </div>
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" name="meta_title" value="{{isset($product)?$product->meta_title:old('meta_title')}}" placeholder="@lang('Meta Title')">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">@lang('Meta Description')</label>
-                        </div>
-                        <div class="col-md-10">
-                            <textarea name="meta_description" rows="5" class="form-control">{{isset($product)?$product->meta_description:old('meta_description')}}</textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">@lang('Meta Keywords')</label>
-                        </div>
-                        <div class="col-md-10">
-                            <select name="meta_keywords[]" class="form-control select2-auto-tokenize"  multiple="multiple">
-                                @if(@$product->meta_keywords)
-                                    @foreach($product->meta_keywords as $option)
-                                        <option value="{{ $option }}" selected>{{ __($option) }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                            <small class="form-text text-muted">
-                                <i class="las la-info-circle"></i>
-                                @lang('Type , as seperator or hit enter among keywords')
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="card p-2 my-3">
                 <div class="card-header">
@@ -367,20 +159,6 @@
                                     <i class="las la-info-circle"></i> @lang('You can only upload a maximum of 6 images')</label>
                                 </small>
                             </div>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <div class="col-md-2">
-                            <label class="font-weight-bold">@lang('Video')</label>
-                        </div>
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" name="video_link" placeholder="@lang('Type Here')..." value="{{$product->video_link??''}}" />
-                            <small class="form-text text-muted">
-                                <i class="las la-info-circle"></i>
-                                @lang('Only youtube embed link is allowed')
-                            </small>
                         </div>
                     </div>
                 </div>

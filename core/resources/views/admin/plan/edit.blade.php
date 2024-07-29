@@ -90,9 +90,9 @@
                             <div class="col-md-10">
                                 <select class="form-control select2-basic" name="type" required>
                                     <option selected disabled value="">@lang('Select One')</option>
-                                    <option value="sub">Subscription plan</option>
-                                    <option value="boost">Boost</option>
-                                    <option value="listing">Highlight Listing</option>
+                                    <option {{($plan->type == 'sub') ? 'selected' : ''}} value="sub">Subscription plan</option>
+                                    <option {{($plan->type == 'boost') ? 'selected' : ''}} value="boost">Boost</option>
+                                    <option {{($plan->type == 'listing') ? 'selected' : ''}} value="listing">Highlight Listing</option>
                                 </select>
                             </div>
                         </div>

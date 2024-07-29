@@ -17,6 +17,7 @@ Route::group([], function () {
 
 
 	Route::group(['middleware' => 'auth.api:sanctum'], function () {
+        Route::get('user/{id}', 'BasicController@user');
 		Route::apiResource('products', 'ProductController');
 		Route::get('seller-products', 'ProductController@sellerProducts');
 		Route::apiResource('carts', 'CartController');

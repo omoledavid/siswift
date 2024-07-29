@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use MannikJ\Laravel\Wallet\Models\Transaction as ModelsTransaction;
 use MannikJ\Laravel\Wallet\Traits\HasWallet;
 use Rinvex\Subscriptions\Traits\HasPlanSubscriptions;
 
@@ -35,6 +36,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+    protected $fillable = ['firstname', 'lastname'];
+
 
     /**
      * The attributes that should be cast to native types.
@@ -121,7 +124,7 @@ class User extends Authenticatable
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class)->orderBy('id','desc');
+        return $this->hasMany(ModelsTransaction::class)->orderBy('id','desc');
     }
 
     public function deposits()
@@ -184,6 +187,10 @@ class User extends Authenticatable
     public function products()
     {
         return $this->hasMany(Product::class,'seller_id');
+    }
+    public function withdrawals()
+    {
+        return $this->hasMany(Withdrawal::class,'seller_id')->where('status','!=',0);
     }
 
 }

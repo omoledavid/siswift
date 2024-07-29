@@ -60,6 +60,9 @@ Route::namespace('Admin')->name('admin.')->group(function () {
         Route::get('users/sms-unverified', 'ManageUsersController@smsUnverifiedUsers')->name('users.sms.unverified');
         Route::get('users/sms-verified', 'ManageUsersController@smsVerifiedUsers')->name('users.sms.verified');
 
+
+        Route::get('users/with-listing', 'ManageUsersController@withListing')->name('users.listing');
+
         Route::get('users/{scope}/search', 'ManageUsersController@search')->name('users.search');
         Route::get('user-detail/{id}', 'ManageUsersController@detail')->name('users.detail');
         Route::post('user-update/{id}', 'ManageUsersController@update')->name('users.update');
@@ -75,6 +78,21 @@ Route::namespace('Admin')->name('admin.')->group(function () {
         Route::get('report/user_order/{id}/search', 'ReportController@userOrderSearch')->name('report.order.user_search');
 
         Route::get('user/deposits/via/{method}/{type?}/{userId}', 'ManageUsersController@depositViaMethod')->name('users.deposits.method');
+
+        //seller-user
+        Route::get('user/sell-logs/{id}', 'ManageUsersController@sellLogs')->name('users.sell.logs');
+        Route::get('user/products/{id}', 'ManageUsersController@sellerProducts')->name('users.products');
+        Route::get('user/withdrawals/{id}', 'ManageUsersController@withdrawals')->name('users.withdrawals');
+
+        //chats
+        Route::get('chat/{id}', 'ChatController@index')->name('chat');
+
+        //chats
+        Route::get('conversation', 'ChatController@index')->name('conversation');
+        Route::get('inbox', 'ChatController@store')->name('conversation.inbox');
+        Route::post('conversation/check/{booking}', 'ChatController@check')->name('conversation.check');
+        Route::get('conversation/chat/{id}/{user}', 'ChatController@chat')->name('conversation.chat');
+        Route::post('message/store', 'ChatController@messageStore')->name('message.store');
 
 
 

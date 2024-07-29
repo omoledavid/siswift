@@ -35,42 +35,17 @@
                     <table class="table table--light style--two">
                         <thead>
                             <tr>
-                                <th>@lang('User/Seller')</th>
                                 <th>@lang('Type')</th>
-                                <th>@lang('Trx')</th>
                                 <th>@lang('Transacted')</th>
                                 <th>@lang('Amount')</th>
-                                <th>@lang('Post Balance')</th>
-                                <th>@lang('Detail')</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($transactions as $trx)
                             <tr>
-                                <td data-label="@lang('User/Seller')">
-                                    @if ($trx->user)
-                                    <span class="font-weight-bold">{{ $trx->user->fullname }}</span>
-                                    <br>
-                                    <span class="small"> <a href="{{ route('admin.users.detail', $trx->user_id) }}"><span>@</span>{{ $trx->user->username }}</a> </span>
-
-                                    @elseif($trx->seller)
-                                    <span class="font-weight-bold">{{ $trx->seller->fullname }}</span>
-                                    <br>
-                                    <span class="small"> <a href="{{ route('admin.sellers.detail', $trx->seller_id) }}"><span>@</span>{{ $trx->seller->username }}</a> </span>
-                                    @endif
-
-                                </td>
 
                                 <td>
-                                    @if ($trx->user)
-                                    <span class="font-weight-bold">@lang('USER')</span>
-                                    @elseif($trx->seller)
-                                    <span class="font-weight-bold">@lang('SELLER')</span>
-                                    @endif
-                                </td>
-
-                                <td data-label="@lang('Trx')">
-                                    <strong>{{ $trx->trx }}</strong>
+                                    {{$trx->type}}
                                 </td>
 
                                 <td data-label="@lang('Transacted')">
@@ -78,17 +53,10 @@
                                 </td>
 
                                 <td data-label="@lang('Amount')" class="budget">
-                                    <span class="font-weight-bold @if($trx->trx_type == '+')text--success @else text--danger @endif">
+                                    <span class="font-weight-bold @if($trx->type == 'deposit')text--success @else text--danger @endif">
                                         {{ $trx->trx_type }} {{showAmount($trx->amount)}} {{ $general->cur_text }}
                                     </span>
                                 </td>
-
-                                <td data-label="@lang('Post Balance')" class="budget">
-                                   {{ showAmount($trx->post_balance) }} {{ __($general->cur_text) }}
-                               </td>
-
-
-                               <td data-label="@lang('Detail')">{{ __($trx->details) }}</td>
                            </tr>
                            @empty
                            <tr>

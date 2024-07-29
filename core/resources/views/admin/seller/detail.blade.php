@@ -7,7 +7,9 @@
                 <div class="card-body p-0">
                     <div class="p-3 bg--white">
                         <div class="">
-                            <img src="{{ getImage(imagePath()['seller']['profile']['path'].'/'.$seller->image,imagePath()['seller']['profile']['size'])}}" alt="@lang('Profile Image')" class="b-radius--10 w-100">
+                            <img
+                                src="{{ getImage(imagePath()['seller']['profile']['path'].'/'.$seller->image,imagePath()['seller']['profile']['size'])}}"
+                                alt="@lang('Profile Image')" class="b-radius--10 w-100">
                         </div>
                     </div>
                 </div>
@@ -25,7 +27,8 @@
 
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             @lang('Balance')
-                            <span class="font-weight-bold">{{showAmount($seller->balance)}}  {{__($general->cur_text)}}</span>
+                            <span
+                                class="font-weight-bold">{{showAmount($seller->balance)}}  {{__($general->cur_text)}}</span>
                         </li>
 
                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -47,30 +50,33 @@
                 <div class="card-body">
                     <h5 class="mb-20 text-muted">@lang('Seller action')</h5>
                     @if ($seller->shop)
-                    <a href="{{ route('admin.sellers.shop.details', $seller->id) }}"
-                       class="btn btn--success btn--shadow btn-block btn-lg">
-                        @lang('Shop Info.')
-                    </a>
+                        <a href="{{ route('admin.sellers.shop.details', $seller->id) }}"
+                           class="btn btn--success btn--shadow btn-block btn-lg">
+                            @lang('Shop Info.')
+                        </a>
                     @endif
 
                     <a data-toggle="modal" href="#addSubModal" class="btn btn--primary btn--shadow btn-block btn-lg">
                         @lang('Add / Subtract Balance')
                     </a>
 
-                    <a href="{{route('admin.sellers.login',$seller->id)}}" target="_blank" class="btn btn--dark btn--shadow btn-block btn-lg">
+                    <a href="{{route('admin.sellers.login',$seller->id)}}" target="_blank"
+                       class="btn btn--dark btn--shadow btn-block btn-lg">
                         @lang('Login as Seller')
                     </a>
 
-                    <a href="{{ route('admin.sellers.login.history.single', $seller->id) }}" class="btn btn--secondary btn--shadow btn-block btn-lg">
+                    <a href="{{ route('admin.sellers.login.history.single', $seller->id) }}"
+                       class="btn btn--secondary btn--shadow btn-block btn-lg">
                         @lang('Login Logs')
                     </a>
 
                     <a href="{{route('admin.sellers.email.single',$seller->id)}}"
-                        class="btn btn--info btn--shadow btn-block btn-lg">
-                         @lang('Send Email')
-                     </a>
+                       class="btn btn--info btn--shadow btn-block btn-lg">
+                        @lang('Send Email')
+                    </a>
 
-                    <a href="{{route('admin.sellers.email.log',$seller->id)}}" class="btn btn--warning btn--shadow btn-block btn-lg">
+                    <a href="{{route('admin.sellers.email.log',$seller->id)}}"
+                       class="btn btn--warning btn--shadow btn-block btn-lg">
                         @lang('Email Log')
                     </a>
                 </div>
@@ -150,8 +156,6 @@
                         </div>
                     </div>
                 </div><!-- dashboard-w1 end -->
-
-
             </div>
 
 
@@ -166,15 +170,19 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group ">
-                                    <label class="form-control-label font-weight-bold">@lang('First Name')<span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" name="firstname" value="{{$seller->firstname}}">
+                                    <label class="form-control-label font-weight-bold">@lang('First Name')<span
+                                            class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="firstname"
+                                           value="{{$seller->firstname}}">
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-control-label  font-weight-bold">@lang('Last Name') <span class="text-danger">*</span></label>
-                                    <input class="form-control" type="text" name="lastname" value="{{$seller->lastname}}">
+                                    <label class="form-control-label  font-weight-bold">@lang('Last Name') <span
+                                            class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="lastname"
+                                           value="{{$seller->lastname}}">
                                 </div>
                             </div>
                         </div>
@@ -182,14 +190,16 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group ">
-                                    <label class="form-control-label font-weight-bold">@lang('Email') <span class="text-danger">*</span></label>
+                                    <label class="form-control-label font-weight-bold">@lang('Email') <span
+                                            class="text-danger">*</span></label>
                                     <input class="form-control" type="email" name="email" value="{{$seller->email}}">
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="form-control-label  font-weight-bold">@lang('Mobile Number') <span class="text-danger">*</span></label>
+                                    <label class="form-control-label  font-weight-bold">@lang('Mobile Number') <span
+                                            class="text-danger">*</span></label>
                                     <input class="form-control" type="text" name="mobile" value="{{$seller->mobile}}">
                                 </div>
                             </div>
@@ -200,28 +210,32 @@
                             <div class="col-md-12">
                                 <div class="form-group ">
                                     <label class="form-control-label font-weight-bold">@lang('Address') </label>
-                                    <input class="form-control" type="text" name="address" value="{{@$seller->address->address}}">
+                                    <input class="form-control" type="text" name="address"
+                                           value="{{@$seller->address->address}}">
                                 </div>
                             </div>
 
                             <div class="col-xl-3 col-md-6">
                                 <div class="form-group">
                                     <label class="form-control-label font-weight-bold">@lang('City') </label>
-                                    <input class="form-control" type="text" name="city" value="{{@$seller->address->city}}">
+                                    <input class="form-control" type="text" name="city"
+                                           value="{{@$seller->address->city}}">
                                 </div>
                             </div>
 
                             <div class="col-xl-3 col-md-6">
                                 <div class="form-group ">
                                     <label class="form-control-label font-weight-bold">@lang('State') </label>
-                                    <input class="form-control" type="text" name="state" value="{{@$seller->address->state}}">
+                                    <input class="form-control" type="text" name="state"
+                                           value="{{@$seller->address->state}}">
                                 </div>
                             </div>
 
                             <div class="col-xl-3 col-md-6">
                                 <div class="form-group ">
                                     <label class="form-control-label font-weight-bold">@lang('Zip/Postal') </label>
-                                    <input class="form-control" type="text" name="zip" value="{{@$seller->address->zip}}">
+                                    <input class="form-control" type="text" name="zip"
+                                           value="{{@$seller->address->zip}}">
                                 </div>
                             </div>
 
@@ -230,7 +244,8 @@
                                     <label class="form-control-label font-weight-bold">@lang('Country') </label>
                                     <select name="country" class="form-control">
                                         @foreach($countries as $key => $country)
-                                            <option value="{{ $key }}" @if($country->country == @$seller->address->country ) selected @endif>{{ __($country->country) }}</option>
+                                            <option value="{{ $key }}"
+                                                    @if($country->country == @$seller->address->country ) selected @endif>{{ __($country->country) }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -242,7 +257,8 @@
                             <div class="form-group col-xl-4 col-md-6  col-sm-3 col-12">
                                 <label class="form-control-label font-weight-bold">@lang('Status') </label>
                                 <input type="checkbox" data-onstyle="-success" data-offstyle="-danger"
-                                       data-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Banned')" data-width="100%"
+                                       data-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Banned')"
+                                       data-width="100%"
                                        name="status"
                                        @if($seller->status) checked @endif>
                             </div>
@@ -250,7 +266,8 @@
                             <div class="form-group  col-xl-4 col-md-6  col-sm-3 col-12">
                                 <label class="form-control-label font-weight-bold">@lang('Email Verification') </label>
                                 <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger"
-                                       data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')" name="ev"
+                                       data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')"
+                                       name="ev"
                                        @if($seller->ev) checked @endif>
 
                             </div>
@@ -258,21 +275,24 @@
                             <div class="form-group  col-xl-4 col-md-6  col-sm-3 col-12">
                                 <label class="form-control-label font-weight-bold">@lang('SMS Verification') </label>
                                 <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger"
-                                       data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')" name="sv"
+                                       data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')"
+                                       name="sv"
                                        @if($seller->sv) checked @endif>
 
                             </div>
                             <div class="form-group  col-md-6  col-sm-3 col-12">
                                 <label class="form-control-label font-weight-bold">@lang('2FA Status') </label>
                                 <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger"
-                                       data-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Deactive')" name="ts"
+                                       data-toggle="toggle" data-on="@lang('Active')" data-off="@lang('Deactive')"
+                                       name="ts"
                                        @if($seller->ts) checked @endif>
                             </div>
 
                             <div class="form-group  col-md-6  col-sm-3 col-12">
                                 <label class="form-control-label font-weight-bold">@lang('2FA Verification') </label>
                                 <input type="checkbox" data-width="100%" data-onstyle="-success" data-offstyle="-danger"
-                                       data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')" name="tv"
+                                       data-toggle="toggle" data-on="@lang('Verified')" data-off="@lang('Unverified')"
+                                       name="tv"
                                        @if($seller->tv) checked @endif>
                             </div>
                         </div>
@@ -281,7 +301,8 @@
                         <div class="row mt-4">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn--primary btn-block btn-lg">@lang('Save Changes')
+                                    <button type="submit"
+                                            class="btn btn--primary btn-block btn-lg">@lang('Save Changes')
                                     </button>
                                 </div>
                             </div>
@@ -293,8 +314,8 @@
         </div>
     </div>
 
-       {{-- Add Sub Balance MODAL --}}
-       <div id="addSubModal" class="modal fade" tabindex="-1" role="dialog">
+    {{-- Add Sub Balance MODAL --}}
+    <div id="addSubModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -308,14 +329,17 @@
                     <div class="modal-body">
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <input type="checkbox" data-width="100%" data-height="44px" data-onstyle="-success" data-offstyle="-danger" data-toggle="toggle" data-on="@lang('Add Balance')" data-off="@lang('Subtract Balance')" name="act" checked>
+                                <input type="checkbox" data-width="100%" data-height="44px" data-onstyle="-success"
+                                       data-offstyle="-danger" data-toggle="toggle" data-on="@lang('Add Balance')"
+                                       data-off="@lang('Subtract Balance')" name="act" checked>
                             </div>
 
 
                             <div class="form-group col-md-12">
                                 <label>@lang('Amount')<span class="text-danger">*</span></label>
                                 <div class="input-group has_append">
-                                    <input type="text" name="amount" class="form-control" placeholder="@lang('Please provide positive amount')">
+                                    <input type="text" name="amount" class="form-control"
+                                           placeholder="@lang('Please provide positive amount')">
                                     <div class="input-group-append">
                                         <div class="input-group-text">{{ __($general->cur_sym) }}</div>
                                     </div>

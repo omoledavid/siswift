@@ -56,7 +56,8 @@ class PlanController extends Controller
             new PlanFeature(['name' => 'social', 'value' => $request->social, 'sort_order' => 12]),
             new PlanFeature(['name' => 'manager', 'value' => $request->manager, 'sort_order' => 13]),
         ]);
-        return redirect()->route('admin.plan.index');
+        $notify[] = ['success', 'Plan created successfully!'];
+        return redirect()->route('admin.plan.index')->withNotify($notify);
     }
 
 
@@ -87,7 +88,8 @@ class PlanController extends Controller
             'currency' => 'NGN',
             'type' => $request->type
         ]);
-        return redirect()->route('admin.plan.index');
+        $notify[] = ['success', 'Plan detail has been updated'];
+        return redirect()->route('admin.plan.index')->withNotify($notify);
     }
 
 

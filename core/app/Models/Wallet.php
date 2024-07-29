@@ -10,4 +10,7 @@ class Wallet extends \MannikJ\Laravel\Wallet\Models\Wallet
     use HasFactory;
 
     protected $hidden = ['owner_type', 'owner_id'];
+    public function user(){
+        return $this->belongsTo(User::class, 'owner_id', 'id');
+    }
 }
