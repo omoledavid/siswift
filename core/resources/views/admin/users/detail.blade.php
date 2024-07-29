@@ -56,9 +56,9 @@
                        class="btn btn--info btn--shadow btn-block btn-lg">
                         @lang('Send Email')
                     </a>
-                    <a href="{{route('admin.users.login',$user->id)}}" target="_blank" class="btn btn--dark btn--shadow btn-block btn-lg">
-                        @lang('Login as User')
-                    </a>
+{{--                    <a href="{{route('admin.users.login',$user->id)}}" target="_blank" class="btn btn--dark btn--shadow btn-block btn-lg">--}}
+{{--                        @lang('Login as User')--}}
+{{--                    </a>--}}
                     <a href="{{route('admin.users.email.log',$user->id)}}" class="btn btn--warning btn--shadow btn-block btn-lg">
                         @lang('Email Log')
                     </a>
