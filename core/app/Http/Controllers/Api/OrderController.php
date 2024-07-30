@@ -65,11 +65,8 @@ class OrderController extends Controller
             case 'pending':
                 $query = $query->where('status', 0);
                 break;
-            case 'processing':
-                $query = $query->where('status', 1);
-                break;
             case 'completed':
-                $query = $query->where('status', 3);
+                $query = $query->where('status', 1);
                 break;
             case 'canceled':
                 $query = $query->where('status', 4);

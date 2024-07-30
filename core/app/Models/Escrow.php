@@ -91,6 +91,7 @@ protected $guarded = [];
             ]);
 
             $this->order->payment_status = 1;
+            $this->order->status = 1;
             $this->order->save();
 
             $this->seller->escrow_wallet->withdraw($this->order->amount);
