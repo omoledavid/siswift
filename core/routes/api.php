@@ -9,6 +9,7 @@ Route::get('/clear', function () {
 
 Route::group([], function () {
 	Route::get('general-setting', 'BasicController@generalSetting');
+    Route::get('banks', 'BasicController@banks');
 	Route::get('all-products', 'BasicController@allProducts');
 	Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
 	Route::get('languages', 'BasicController@languages');
@@ -51,6 +52,7 @@ Route::group([], function () {
         //withdraw
         Route::post('withdraw-detail', 'TransactionController@withdrawDetails');
         Route::post('withdraw', 'TransactionController@withdraw');
+        Route::post('withdraw-money', 'WithdrawalController@store');
         Route::get('withdrawal-method', 'TransactionController@withdrawalMethod');
 
         //escrow
