@@ -32,11 +32,11 @@ class OrderController extends Controller
         $user = auth()->user();
 
         if ($status === 'seller') {
-            $query = OrderDetail::where('seller_id', $user->id);
+            $query = OrderDetail::where('seller_id', $user->seller_id);
 
             switch ($type) {
                 case 'pending':
-                    $query = $query->PendingOrder()->with('order');
+                    $query = $query;
                     break;
                 case 'processing':
                     $query = $query->ProcessingOrder();
