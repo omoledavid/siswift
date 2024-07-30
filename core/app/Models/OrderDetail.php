@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderDetail extends Model
 {
+    protected $with = ['product'];
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -30,7 +31,7 @@ class OrderDetail extends Model
     public function scopePendingOrder()
     {
         return $this->whereHas('order',function($q){
-            $q->where('payment_status' , 0)->whereHas('escrow')->where('status', 0)->when(request()->search,function($order){
+            $q->where('payment_status' , 0)->where('status', 0)->when(request()->search,function($order){
                 return $order->where('order_number',request()->search);
             });
          });

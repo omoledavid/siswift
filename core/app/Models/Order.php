@@ -10,7 +10,7 @@ class Order extends Model
 {
     protected $guarded = ['id'];
 
-    protected $with = ['seller'];
+    protected $with = ['seller', 'products'];
 
 
     public function appliedCoupon()
