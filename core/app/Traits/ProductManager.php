@@ -153,8 +153,8 @@ trait ProductManager
             'specification.*.name.required' => 'All specification name is required',
             'specification.*.value' => 'All specification value is required',
         ]);
-        if ($request->user()) {
-            $user = $request->user();
+        if (auth()->user()) {
+            $user = auth()->user();
             if ($user->seller_id == null) {
 //
                 $seller = $this->createSeller([
@@ -178,10 +178,9 @@ trait ProductManager
                 $shop->meta_keywords = $request->meta_keywords ?? null;
                 $shop->social_links = $request->social_links ?? null;
                 $shop->save();
-
-                $request->user()->update([
-                    'seller_id' => $shop->seller_id
-                ]);
+                
+                $user->seller_id = $shop->seller_id;
+                $user->save();
             }
         }
 
