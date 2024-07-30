@@ -59,7 +59,7 @@ protected $guarded = [];
                 'status' => EscrowStatus::Rejected
             ]);
 
-            $this->buyer->escrow_wallet->withdraw($this->order->amount);
+            $this->seller->escrow_wallet->withdraw($this->order->amount);
             $this->buyer->wallet->deposit($this->order->amount);
 
             return $this;
@@ -91,7 +91,6 @@ protected $guarded = [];
             $this->update([
                 'status' => EscrowStatus::Delivered
             ]);
-            return $this->seller;
 
             $this->seller->escrow_wallet->withdraw($this->order->amount);
             $this->seller->wallet->deposit($this->order->amount);
