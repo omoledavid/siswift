@@ -35,9 +35,9 @@ protected $guarded = [];
             ]);
 
             $escrow->buyer->wallet->withdraw($order->amount);
-//            $seller = User::where('seller_id', $order->seller_id)->firstOrFail();
-//            $seller->escrow_wallet->deposit($order->amount);
-//            $escrow->seller->escrow_wallet->deposit($order->amount);
+            $seller = User::where('seller_id', $order->seller_id)->firstOrFail();
+            $seller->escrow_wallet->deposit($order->amount);
+//            $escrow->buyer->escrow_wallet->deposit($order->amount);
 
             DB::commit();
             return $escrow;
@@ -59,7 +59,7 @@ protected $guarded = [];
                 'status' => EscrowStatus::Rejected
             ]);
 
-            $this->seller->escrow_wallet->withdraw($this->order->amount);
+            $this->buyer->escrow_wallet->withdraw($this->order->amount);
             $this->buyer->wallet->deposit($this->order->amount);
 
             return $this;
@@ -92,7 +92,7 @@ protected $guarded = [];
                 'status' => EscrowStatus::Delivered
             ]);
 
-            $this->seller->escrow_wallet->withdraw($this->order->amount);
+            $this->buyer->escrow_wallet->withdraw($this->order->amount);
             $this->seller->wallet->deposit($this->order->amount);
 
             return $this;
