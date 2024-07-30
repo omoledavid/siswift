@@ -232,8 +232,8 @@ trait ProductManager
         $product->lga = $request->lga;
         $product->bulk_price = $request->bulk_price;
         $product->colour = $request->colour;
-        $product->colour = $request->colour;
         $product->track_inventory = $request->track_inventory;
+        $product->shop_id = $shop_id;
         $product->save();
 
         //Check Old Images

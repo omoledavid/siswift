@@ -97,6 +97,14 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <div class="col-md-2">
+                                <label class="font-weight-bold">@lang('Description')</label>
+                            </div>
+                            <div class="col-md-10">
+                                <textarea rows="5" class="form-control" name="description">{{$plan->description}}</textarea>
+                            </div>
+                        </div>
 
                         <div class="form-group row">
                             <div class="col-md-2">
