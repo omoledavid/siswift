@@ -12,20 +12,23 @@ use MannikJ\Laravel\Wallet\Models\Transaction;
 
 class TransactionController extends Controller
 {
-    public function transactions(){
+    public function transactions()
+    {
         $user = auth()->user();
-    $transaction = Transaction::where('wallet_id', $user->wallet->id)->orderBy('id', 'desc')->paginate(10);
-    return response()->json($transaction);
+        $transaction = Transaction::where('wallet_id', $user->wallet->id)->orderBy('id', 'desc')->paginate(10);
+        return response()->json($transaction);
     }
-    public function withdraw(Request $request){
+
+    public function withdraw(Request $request)
+    {
         $user = auth()->user();
         $request->validate([
-            'account_name'                  => 'required|string|max:40',
-            'account_number'                 => 'required|string|max:40',
-            'bank_name'               => 'required|string|max:600',
-            'currency'               => 'required|string|max:600',
-            'method_code'               => 'required|string|max:600',
-            'amount'               => 'required|string|max:600',
+            'account_name' => 'required|string|max:40',
+            'account_number' => 'required|string|max:40',
+            'bank_name' => 'required|string|max:600',
+            'currency' => 'required|string|max:600',
+            'method_code' => 'required|string|max:600',
+            'amount' => 'required|string|max:600',
         ]);
 
         $method = WithdrawMethod::where('id', $request->method_code)->where('status', 1)->firstOrFail();
@@ -47,29 +50,31 @@ class TransactionController extends Controller
         }
 
 
-        $charge         = $method->fixed_charge + ($request->amount * $method->percent_charge / 100);
-        $afterCharge    = $request->amount - $charge;
-        $finalAmount    = $afterCharge * $method->rate;
+        $charge = $method->fixed_charge + ($request->amount * $method->percent_charge / 100);
+        $afterCharge = $request->amount - $charge;
+        $finalAmount = $afterCharge * $method->rate;
 
         $seller->wallet->withdraw($finalAmount);
 
         $withdraw = new Withdrawal();
-        $withdraw->method_id    = $method->id; // wallet method ID
-        $withdraw->seller_id    = $seller->id;
-        $withdraw->amount       = $request->amount;
-        $withdraw->currency     = $method->currency;
-        $withdraw->rate         = $method->rate;
-        $withdraw->charge       = $charge;
+        $withdraw->method_id = $method->id; // wallet method ID
+        $withdraw->seller_id = $seller->id;
+        $withdraw->amount = $request->amount;
+        $withdraw->currency = $method->currency;
+        $withdraw->rate = $method->rate;
+        $withdraw->charge = $charge;
         $withdraw->final_amount = $finalAmount;
         $withdraw->after_charge = $afterCharge;
-        $withdraw->trx          = getTrx();
+        $withdraw->trx = getTrx();
         $withdraw->save();
         session()->put('wtrx', $withdraw->trx);
         return response()->json(['status' => 'success', 'message' => 'Withdraw Successful.']);
 
 
     }
-    public function withdrawalMethod(Request $request){
+
+    public function withdrawalMethod(Request $request)
+    {
         $user = auth()->user();
         $methods = WithdrawMethod::all();
         return response()->json(
@@ -80,19 +85,24 @@ class TransactionController extends Controller
         );
     }
 
-    public function escrowAccept(Escrow $escrow){
+    public function escrowAccept(Escrow $escrow)
+    {
 
-        if((int) $escrow->seller_id === (int) request()->user()->id){
+        if ((int)$escrow->seller_id === (int)request()->user()->id) {
             $escrow->confirm();
-            return response()->json(['status' => 'success']);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Escrow Accepted'
+            ]);
         }
 
         return response()->json(['status' => 'failed'], 400);
     }
 
-    public function escrowComplete(Escrow $escrow){
+    public function escrowComplete(Escrow $escrow)
+    {
 
-        if((int) $escrow->buyer_id === (int) request()->user()->id){
+        if ((int)$escrow->buyer_id === (int)request()->user()->id) {
             $escrow->complete();
             return response()->json(['status' => 'success']);
         }
@@ -100,7 +110,8 @@ class TransactionController extends Controller
         return response()->json(['status' => 'failed'], 400);
     }
 
-    public function escrows(){
+    public function escrows()
+    {
         $user = auth()->user();
         $escrow = Escrow::where('seller_id', $user->seller_id)->orWhere('buyer_id', $user->id)->get();
         return response()->json([
