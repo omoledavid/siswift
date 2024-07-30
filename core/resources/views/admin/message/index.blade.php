@@ -25,7 +25,7 @@
                                             @php
                                                 $lastMessage = $conversion->messages->last()->message ?? '';
 
-                                                // If the last message is an array, convert it to a string
+                                                
                                                 if (is_array($lastMessage)) {
                                                     $lastMessage = implode(' ', $lastMessage);
                                                 }
