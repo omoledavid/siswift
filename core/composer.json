@@ -31,6 +31,7 @@
         "stripe/stripe-php": "^7.72",
         "textmagic/sdk": "dev-master",
         "twilio/sdk": "^6.23",
+        "unicodeveloper/laravel-paystack": "^1.2",
         "vonage/client": "^2.4"
     },
     "require-dev": {
