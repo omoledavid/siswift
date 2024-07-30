@@ -156,17 +156,14 @@ trait ProductManager
         if ($request->user()) {
             $user = $request->user();
             if ($user->seller_id == null) {
-//                $seller = $user->seller;
-
-                if (!$seller) {
-                    $seller = $this->createSeller([
-                        'fullname' => $user->fullname,
-                        'email' => $user->email,
-                        'mobile' => $user->mobile,
-                        'address' => $user->address,
-                        'country' => $user->country
-                    ]);
-                }
+//
+                $seller = $this->createSeller([
+                    'fullname' => $user->fullname,
+                    'email' => $user->email,
+                    'mobile' => $user->mobile,
+                    'address' => $user->address,
+                    'country' => $user->country
+                ]);
                 $shop = new Shop();
                 $shop->name = ' ';
                 $shop->seller_id = $seller->id;
@@ -192,9 +189,9 @@ trait ProductManager
 
         if ($id) {
             $product = Product::findOrFail($id);
-            if(auth()->user()){
+            if (auth()->user()) {
                 $user = $request->user();
-            }else{
+            } else {
                 $user = User::where('seller_id', $product->seller_id)->first();
             }
             if ($product->seller_id != $user->seller_id) {
@@ -284,10 +281,10 @@ trait ProductManager
 //            $seller->save();
 //        }
 
-        if(auth()->user()){
+        if (auth()->user()) {
             return $product;
-        }else{
-            $notify[]=['success', 'Product updated successfully'];
+        } else {
+            $notify[] = ['success', 'Product updated successfully'];
             return $notify;
         }
     }
