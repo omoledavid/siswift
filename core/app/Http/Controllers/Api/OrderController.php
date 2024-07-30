@@ -59,7 +59,7 @@ class OrderController extends Controller
         }
 
         $query = Order::where('user_id', $user->id)
-            ->whereIn('payment_status', [1, 2]);
+            ->whereIn('payment_status', [0, 1]);
 
         switch ($type) {
             case 'pending':

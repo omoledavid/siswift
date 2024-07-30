@@ -92,6 +92,9 @@ protected $guarded = [];
                 'status' => EscrowStatus::Delivered
             ]);
 
+            $this->order->status = 1;
+            $this->order->save();
+
             $this->seller->escrow_wallet->withdraw($this->order->amount);
             $this->seller->wallet->deposit($this->order->amount);
 
