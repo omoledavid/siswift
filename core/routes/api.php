@@ -66,6 +66,8 @@ Route::group([], function () {
 
         //support ticket
         Route::apiResource('support', 'SupportTicketController');
+
+        //profile
         Route::apiResource('profile', 'ProfileController');
 
         //shops

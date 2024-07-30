@@ -16,8 +16,9 @@ class ProfileController extends Controller
             'profile' => $user
         ]);
     }
-    public function update(Request $request){
+    public function update(Request $request) {
         $user = $request->user();
+
         $request->validate([
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
@@ -25,37 +26,49 @@ class ProfileController extends Controller
             'state' => 'sometimes|required|max:80',
             'zip' => 'sometimes|required|max:40',
             'city' => 'sometimes|required|max:50',
-            'image' => ['image',new FileTypeValidate(['jpg','jpeg','png'])]
-        ],[
-            'firstname.required'=>'First name field is required',
-            'lastname.required'=>'Last name field is required'
+            'image' => ['image', new FileTypeValidate(['jpg','jpeg','png'])]
+        ], [
+            'firstname.required' => 'First name field is required',
+            'lastname.required' => 'Last name field is required'
         ]);
 
-        $in['firstname'] = $request->firstname;
-        $in['lastname'] = $request->lastname;
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
 
-        $in['address'] = [
+        $user->address = [
             'address' => $request->address,
             'state' => $request->state,
             'zip' => $request->zip,
-            'country' => @$user->address->country,
+            'country' => $user->address->country ?? null,
             'city' => $request->city,
         ];
-
 
         if ($request->hasFile('image')) {
             $location = imagePath()['profile']['user']['path'];
             $size = imagePath()['profile']['user']['size'];
             $filename = uploadImage($request->image, $location, $size, $user->image);
-            $in['image'] = $filename;
+
+
+            // Ensure filename is correctly assigned
+            if ($filename) {
+                $user->image = $filename;
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Image upload failed.'
+                ]);
+            }
         }
-        $user->fill($in)->save();
+
+        $user->save();
+
         $notify = 'Profile updated successfully.';
         return response()->json([
-            'status' => 'sucess',
+            'status' => 'success',
             'message' => $notify,
             'profile' => $user
         ]);
-
     }
+
+
 }
