@@ -76,7 +76,7 @@ class OrderController extends Controller
                 return response()->json(['error' => 'Invalid type provided'], 400);
         }
 
-        $orders = $query->latest()->paginate(getPaginate());
+        $orders = $query->with('orderDetail')->latest()->paginate(getPaginate());
 
         return response()->json($orders);
     }
