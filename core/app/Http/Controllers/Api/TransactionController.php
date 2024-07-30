@@ -101,7 +101,7 @@ class TransactionController extends Controller
     }
     public function escrowReject(Escrow $escrow)
     {
-
+return $escrow->seller_id. ' login user seller id:'. request()->user()->seller_id;
         if ((int)$escrow->seller_id === (int)request()->user()->seller_id) {
             $escrow->reject();
             return response()->json([
