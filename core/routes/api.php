@@ -53,7 +53,7 @@ Route::group([], function () {
         //escrow
         Route::post('escrow-accept/{escrow}', 'TransactionController@escrowAccept');
         Route::post('escrow-complete/{escrow}', 'TransactionController@escrowComplete');
-        Route::post('escrow-reject/{id}', 'TransactionController@escrowReject');
+        Route::post('escrow-reject/{escrow}', 'TransactionController@escrowReject');
         Route::get('get-escrow', 'TransactionController@escrows');
 
         //Campaigns
