@@ -22,7 +22,8 @@ class ReviewController extends Controller
 
         // Validate the request inputs
         $validator = Validator::make($request->all(), [
-            'seller_id' => 'required|exists:users,seller_id|exists:users,id', // Ensure the seller exists
+            'seller_id' => 'required', // Ensure the seller exists
+//            'seller_id' => 'required|exists:users,seller_id|exists:users,id', // Ensure the seller exists
             'review' => 'required|string',
             'rating' => 'required|min:1|max:5', // Assuming rating is an integer between 1 and 5
         ]);
