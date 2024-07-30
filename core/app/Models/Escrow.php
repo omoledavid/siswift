@@ -91,6 +91,7 @@ protected $guarded = [];
             $this->update([
                 'status' => EscrowStatus::Delivered
             ]);
+            return $this->seller;
 
             $this->seller->escrow_wallet->withdraw($this->order->amount);
             $this->seller->wallet->deposit($this->order->amount);

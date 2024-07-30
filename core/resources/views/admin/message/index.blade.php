@@ -25,7 +25,7 @@
                                             @php
                                                 $lastMessage = $conversion->messages->last()->message ?? '';
 
-                                                
+
                                                 if (is_array($lastMessage)) {
                                                     $lastMessage = implode(' ', $lastMessage);
                                                 }
