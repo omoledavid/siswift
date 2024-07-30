@@ -107,7 +107,7 @@ protected $guarded = [];
 
     public function seller(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'seller_id', 'id');
+        return $this->belongsTo(User::class, 'seller_id', 'seller_id');
     }
 
     public function order()
