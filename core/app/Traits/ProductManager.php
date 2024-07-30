@@ -178,7 +178,7 @@ trait ProductManager
                 $shop->meta_keywords = $request->meta_keywords ?? null;
                 $shop->social_links = $request->social_links ?? null;
                 $shop->save();
-                
+
                 $user->seller_id = $shop->seller_id;
                 $user->save();
             }
