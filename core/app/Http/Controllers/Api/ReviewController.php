@@ -11,7 +11,7 @@ class ReviewController extends Controller
 {
     public function index(){
         $user = auth()->user();
-        $review = UserReview::where('seller_id', $user->seller_id)->paginate(10);
+        $review = UserReview::where('seller_id', $user->seller_id)->orWhere('seller_id', $user->id)->paginate(10);
         return response()->json([
             'reviews' => $review,
         ]);
