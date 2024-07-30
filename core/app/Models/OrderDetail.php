@@ -60,7 +60,7 @@ class OrderDetail extends Model
     public function scopeCompletedOrder()
     {
         return $this->whereHas('order',function($q){
-            $q->where('payment_status', '!=' , 0)->where('status', 3)->when(request()->search,function($order){
+            $q->where('payment_status', '!=' , 0)->where('status', 1)->when(request()->search,function($order){
                 return $order->where('order_number',request()->search);
             });
          });
