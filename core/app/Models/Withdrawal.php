@@ -11,6 +11,7 @@ class Withdrawal extends Model
     protected $casts = [
         'withdraw_information' => 'object'
     ];
+    protected $fillable = ['user_id', 'amount', 'account_number', 'bank_code', 'status'];
 
     public function seller()
     {

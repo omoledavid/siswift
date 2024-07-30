@@ -60,9 +60,7 @@
       <path value="$PROJECT_DIR$/core/vendor/doctrine/inflector" />
       <path value="$PROJECT_DIR$/core/vendor/nesbot/carbon" />
       <path value="$PROJECT_DIR$/core/vendor/mailjet/mailjet-apiv3-php" />
-      <path value="$PROJECT_DIR$/core/vendor/mollie/mollie-api-php" />
       <path value="$PROJECT_DIR$/core/vendor/mollie/laravel-mollie" />
-      <path value="$PROJECT_DIR$/core/vendor/phpoption/phpoption" />
       <path value="$PROJECT_DIR$/core/vendor/starkbank/ecdsa" />
       <path value="$PROJECT_DIR$/core/vendor/razorpay/razorpay" />
       <path value="$PROJECT_DIR$/core/vendor/dflydev/dot-access-data" />
@@ -90,7 +88,6 @@
       <path value="$PROJECT_DIR$/core/vendor/symfony/deprecation-contracts" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/polyfill-mbstring" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/finder" />
-      <path value="$PROJECT_DIR$/core/vendor/symfony/routing" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/polyfill-php83" />
       <path value="$PROJECT_DIR$/core/vendor/league/config" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/polyfill-intl-grapheme" />
@@ -105,7 +102,6 @@
       <path value="$PROJECT_DIR$/core/vendor/symfony/polyfill-ctype" />
       <path value="$PROJECT_DIR$/core/vendor/stella-maris/clock" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/polyfill-php72" />
-      <path value="$PROJECT_DIR$/core/vendor/symfony/error-handler" />
       <path value="$PROJECT_DIR$/core/vendor/asm89/stack-cors" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/event-dispatcher-contracts" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/polyfill-php73" />
@@ -118,19 +114,13 @@
       <path value="$PROJECT_DIR$/core/vendor/symfony/event-dispatcher" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/var-dumper" />
       <path value="$PROJECT_DIR$/core/vendor/brick/math" />
-      <path value="$PROJECT_DIR$/core/vendor/symfony/http-foundation" />
-      <path value="$PROJECT_DIR$/core/vendor/symfony/http-kernel" />
       <path value="$PROJECT_DIR$/core/vendor/fakerphp/faker" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/translation-contracts" />
       <path value="$PROJECT_DIR$/core/vendor/theseer/tokenizer" />
-      <path value="$PROJECT_DIR$/core/vendor/symfony/validator" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/service-contracts" />
-      <path value="$PROJECT_DIR$/core/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/core/vendor/guzzlehttp/promises" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/yaml" />
-      <path value="$PROJECT_DIR$/core/vendor/guzzlehttp/psr7" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/translation" />
-      <path value="$PROJECT_DIR$/core/vendor/guzzlehttp/guzzle" />
       <path value="$PROJECT_DIR$/core/vendor/symfony/process" />
       <path value="$PROJECT_DIR$/core/vendor/dragonmantank/cron-expression" />
       <path value="$PROJECT_DIR$/core/vendor/rmccue/requests" />
@@ -143,7 +133,6 @@
       <path value="$PROJECT_DIR$/core/vendor/opis/closure" />
       <path value="$PROJECT_DIR$/core/vendor/nette/schema" />
       <path value="$PROJECT_DIR$/core/vendor/nette/utils" />
-      <path value="$PROJECT_DIR$/core/vendor/graham-campbell/result-type" />
       <path value="$PROJECT_DIR$/core/vendor/laminas/laminas-diactoros" />
       <path value="$PROJECT_DIR$/core/vendor/voku/portable-ascii" />
       <path value="$PROJECT_DIR$/core/vendor/phar-io/version" />
@@ -161,7 +150,6 @@
       <path value="$PROJECT_DIR$/core/vendor/stripe/stripe-php" />
       <path value="$PROJECT_DIR$/core/vendor/fruitcake/laravel-cors" />
       <path value="$PROJECT_DIR$/core/vendor/swiftmailer/swiftmailer" />
-      <path value="$PROJECT_DIR$/core/vendor/vlucas/phpdotenv" />
       <path value="$PROJECT_DIR$/core/vendor/ezyang/htmlpurifier" />
       <path value="$PROJECT_DIR$/core/vendor/laravel/sail" />
       <path value="$PROJECT_DIR$/core/vendor/laravel/ui" />
@@ -174,7 +162,6 @@
       <path value="$PROJECT_DIR$/core/vendor/phpmailer/phpmailer" />
       <path value="$PROJECT_DIR$/core/vendor/twilio/sdk" />
       <path value="$PROJECT_DIR$/core/vendor/phpunit/php-code-coverage" />
-      <path value="$PROJECT_DIR$/core/vendor/mannikj/laravel-wallet" />
       <path value="$PROJECT_DIR$/core/vendor/rinvex/laravel-subscriptions" />
       <path value="$PROJECT_DIR$/core/vendor/felixkiss/uniquewith-validator" />
       <path value="$PROJECT_DIR$/core/vendor/rinvex/tmp-watson-validating" />
@@ -184,6 +171,20 @@
       <path value="$PROJECT_DIR$/core/vendor/spatie/laravel-sluggable" />
       <path value="$PROJECT_DIR$/core/vendor/spatie/laravel-schemaless-attributes" />
       <path value="$PROJECT_DIR$/core/vendor/spatie/laravel-translatable" />
+      <path value="$PROJECT_DIR$/core/vendor/unicodeveloper/laravel-paystack" />
+      <path value="$PROJECT_DIR$/core/vendor/vlucas/phpdotenv" />
+      <path value="$PROJECT_DIR$/core/vendor/symfony/routing" />
+      <path value="$PROJECT_DIR$/core/vendor/symfony/string" />
+      <path value="$PROJECT_DIR$/core/vendor/symfony/http-kernel" />
+      <path value="$PROJECT_DIR$/core/vendor/symfony/error-handler" />
+      <path value="$PROJECT_DIR$/core/vendor/symfony/http-foundation" />
+      <path value="$PROJECT_DIR$/core/vendor/phpoption/phpoption" />
+      <path value="$PROJECT_DIR$/core/vendor/graham-campbell/result-type" />
+      <path value="$PROJECT_DIR$/core/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/core/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/core/vendor/mannikj/laravel-wallet" />
+      <path value="$PROJECT_DIR$/core/vendor/mollie/mollie-api-php" />
+      <path value="$PROJECT_DIR$/core/vendor/symfony/validator" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1">

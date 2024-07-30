@@ -10,9 +10,16 @@ use App\Models\WithdrawMethod;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
 use MannikJ\Laravel\Wallet\Models\Transaction;
+use App\Services\PaystackService;
 
 class TransactionController extends Controller
 {
+    protected $paystackService;
+
+    public function __construct(PaystackService $paystackService)
+    {
+        $this->paystackService = $paystackService;
+    }
     public function transactions()
     {
         $user = auth()->user();
@@ -27,6 +34,18 @@ class TransactionController extends Controller
             'bank_name' => 'required|string|max:600',
             'bank_code' => 'required|string|max:200'
         ]);
+        $accountNumber = $request->input('account_number');
+        $bankCode = $request->input('bank_code');
+
+        $result = $this->paystackService->validateBankAccount($accountNumber, $bankCode);
+
+        if ($result['error']) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['message'],
+            ], 400);
+        }
+
         $detailsExist = WithdrawDetail::where('account_number', $request->account_number)->first();
         if($detailsExist){
             return response()->json([
@@ -41,7 +60,8 @@ class TransactionController extends Controller
         $withDetails->bank_code = $request->input('bank_code');
         $withDetails->save();
         return response()->json([
-            $withDetails
+            'data' => $withDetails,
+            'response' => $result['data'],
         ]);
 
     }

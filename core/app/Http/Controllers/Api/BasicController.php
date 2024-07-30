@@ -11,6 +11,7 @@ use App\Models\Plan;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class BasicController extends Controller
 {
@@ -97,5 +98,26 @@ class BasicController extends Controller
         return response()->json([
             'user' => $user
         ]);
+    }
+    public function banks(){
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . env('PAYSTACK_SECRET_KEY'),
+            'Cache-Control' => 'no-cache',
+        ])->get('https://api.paystack.co/bank');
+
+        if ($response->failed()) {
+            return response()->json([
+                'code'=>400,
+                'status'=>'error',
+                'message'=>['error'=>$response->json()]
+            ]);
+        } else {
+            return response()->json([
+                'code'=>200,
+                'status'=>'ok',
+                'data'=>$response->json()
+            ]);
+//            echo $response->body();;
+        }
     }
 }
