@@ -55,13 +55,16 @@ class WithdrawalController extends Controller
             ]);
 
             $result = $response->body();
+            $json_data = json_decode($result, true);
+            $recipientCode = $json_data['data']['recipient_code'];
 
             $withdrawal->update(['status' => 3]); //3 is for processing
 
             // Handle successful transfer
             return response()->json([
                 'message' => 'Withdrawal initiated successfully',
-                'result' => $result,
+                'result' => json_decode($result, true),
+                'code' => $recipientCode,
             ], 200);
         } catch (\Exception $e) {
             // Handle error
