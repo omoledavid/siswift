@@ -45,14 +45,9 @@ class AppServiceProvider extends ServiceProvider
         $viewShare['activeTemplate'] = $activeTemplate;
         $viewShare['activeTemplateTrue'] = activeTemplate(true);
         $viewShare['language'] = Language::all();
-        Schema::defaultStringLength(191);
+//        Schema::defaultStringLength(191);
 
-        $viewShare['allCategories']= Category::with(['allSubcategories','products'=> function($q){
-                return $q->whereHas('categories')->whereHas('brand');
-            }, 'products.reviews','products.offer.activeOffer'])
-            ->where('parent_id', null)->get();
-
-        view()->share($viewShare);
+        
 
 
         view()->composer('admin.partials.sidenav', function ($view) {
