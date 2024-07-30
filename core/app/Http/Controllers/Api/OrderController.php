@@ -37,7 +37,7 @@ class OrderController extends Controller
 
             switch ($type) {
                 case 'pending':
-                    $query = $query;
+                    $query = $query->PendingOrder();
                     break;
                 case 'processing':
                     $query = $query->ProcessingOrder();
