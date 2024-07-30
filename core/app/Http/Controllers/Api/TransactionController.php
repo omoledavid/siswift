@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Escrow;
 use App\Models\Withdrawal;
+use App\Models\WithdrawDetail;
 use App\Models\WithdrawMethod;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
@@ -17,6 +18,32 @@ class TransactionController extends Controller
         $user = auth()->user();
         $transaction = Transaction::where('wallet_id', $user->wallet->id)->orderBy('id', 'desc')->paginate(10);
         return response()->json($transaction);
+    }
+    public function withdrawDetails(Request $request){
+        $user = auth()->user();
+        $request->validate([
+            'account_name' => 'required|string|max:40',
+            'account_number' => 'required|max:40',
+            'bank_name' => 'required|string|max:600',
+            'bank_code' => 'required|string|max:200'
+        ]);
+        $detailsExist = WithdrawDetail::where('account_number', $request->account_number)->first();
+        if($detailsExist){
+            return response()->json([
+                'message' => 'Account number already exist'
+            ]);
+        }
+        $withDetails = new WithdrawDetail();
+        $withDetails->user_id = $user->id;
+        $withDetails->account_name = $request->input('account_name');
+        $withDetails->account_number = $request->input('account_number');
+        $withDetails->bank_name = $request->input('bank_name');
+        $withDetails->bank_code = $request->input('bank_code');
+        $withDetails->save();
+        return response()->json([
+            $withDetails
+        ]);
+
     }
 
     public function withdraw(Request $request)
@@ -76,7 +103,7 @@ class TransactionController extends Controller
     public function withdrawalMethod(Request $request)
     {
         $user = auth()->user();
-        $methods = WithdrawMethod::all();
+        $methods = WithdrawDetail::where('user_id', $user->id)->get();
         return response()->json(
             [
                 'status' => 'success',

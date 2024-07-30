@@ -47,6 +47,9 @@ Route::group([], function () {
 
         //transactions
         Route::get('transactions', 'TransactionController@transactions');
+
+        //withdraw
+        Route::post('withdraw-detail', 'TransactionController@withdrawDetails');
         Route::post('withdraw', 'TransactionController@withdraw');
         Route::get('withdrawal-method', 'TransactionController@withdrawalMethod');
 

@@ -69,7 +69,7 @@ class OrderDetail extends Model
     public function scopeCancelledOrder()
     {
         return $this->whereHas('order',function($q){
-            $q->where('payment_status', '!=' , 0)->where('status', 4)->when(request()->search,function($order){
+            $q->where('payment_status', '!=' , 0)->where('status', 3)->when(request()->search,function($order){
                 return $order->where('order_number',request()->search);
             });
          });

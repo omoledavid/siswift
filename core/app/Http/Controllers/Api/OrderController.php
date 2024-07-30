@@ -26,8 +26,11 @@ class OrderController extends Controller
     public function store(Request $request){
 
     }
-    public function show(Order $order){
-        return response()->json($order);
+    public function show(OrderDetail $order){
+        return response()->json([
+            'order' => $order,
+            'order detail' => $order->order
+        ]);
     }
     public function pendingOrders($type, $status = null) {
         $user = auth()->user();
