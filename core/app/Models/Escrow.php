@@ -35,7 +35,9 @@ protected $guarded = [];
             ]);
 
             $escrow->buyer->wallet->withdraw($order->amount);
-            $escrow->buyer->escrow_wallet->deposit($order->amount);
+            $seller = User::where('seller_id', $order->seller_id)->firstOrFail();
+            $seller->escrow_wallet->deposit($order->amount);
+//            $escrow->buyer->escrow_wallet->deposit($order->amount);
 
             DB::commit();
             return $escrow;
