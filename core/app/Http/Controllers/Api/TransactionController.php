@@ -99,6 +99,20 @@ class TransactionController extends Controller
 
         return response()->json(['status' => 'failed'], 400);
     }
+    public function escrowReject(Escrow $escrow)
+    {
+
+        if ((int)$escrow->seller_id === (int)request()->user()->seller_id) {
+            $escrow->reject();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Escrow Rejected',
+                'data' => $escrow
+            ]);
+        }
+
+        return response()->json(['status' => 'failed'], 400);
+    }
 
     public function escrowComplete(Escrow $escrow)
     {
