@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
@@ -31,22 +32,22 @@ class AdminController extends Controller
         $widget['verified_users'] = User::where('status', 1)->count();
 
 
-        $widget['all_orders']               = Order::where('payment_status', '!=', 0)->count();
-        $widget['delivered_orders']         = Order::where('payment_status', '!=', 0)->where('status', 3)->count();
-        $recent_orders                      = Order::where('payment_status', '!=', 0)->latest()->take(6)->get();
+        $widget['all_orders'] = Order::where('payment_status', '!=', 0)->count();
+        $widget['delivered_orders'] = Order::where('payment_status', '!=', 0)->where('status', 3)->count();
+        $recent_orders = Order::where('payment_status', '!=', 0)->latest()->take(6)->get();
 
-        $widget['total_product']            = Product::whereHas('brand')->whereHas('categories')->count();
+        $widget['total_product'] = Product::whereHas('brand')->whereHas('categories')->count();
 
-        $widget['last_seven_days']          = Deposit::where('status', 1)->where('created_at', '>=', Carbon::today()->subDays(7))->sum('amount');
+        $widget['last_seven_days'] = Deposit::where('status', 1)->where('created_at', '>=', Carbon::today()->subDays(7))->sum('amount');
 
-        $widget['last_fifteen_days']        = Deposit::where('status', 1)->where('created_at', '>=', Carbon::today()->subDays(15))->sum('amount');
+        $widget['last_fifteen_days'] = Deposit::where('status', 1)->where('created_at', '>=', Carbon::today()->subDays(15))->sum('amount');
 
-        $widget['last_thirty_days']         = Deposit::where('status', 1)->where('created_at', '>=', Carbon::today()->subDays(30))->sum('amount');
+        $widget['last_thirty_days'] = Deposit::where('status', 1)->where('created_at', '>=', Carbon::today()->subDays(30))->sum('amount');
 
-        $widget['top_selling_products']     = Product::topSales(3);
-        $widget['total_deposit_amount']     = Deposit::where('status', 1)->sum('amount');
-        $widget['total_seller']             = Seller::count();
-        $widget['total_active_seller']      = Seller::where('status', 1)->count();
+        $widget['top_selling_products'] = Product::topSales(3);
+        $widget['total_deposit_amount'] = Deposit::where('status', 1)->sum('amount');
+        $widget['total_seller'] = Seller::count();
+        $widget['total_active_seller'] = Seller::where('status', 1)->count();
 
         // Monthly Deposit & Withdraw Report Graph
         $report['months'] = collect([]);
@@ -82,15 +83,15 @@ class AdminController extends Controller
         $months = $report['months'];
 
         for ($i = 0; $i < $months->count(); ++$i) {
-            $monthVal      = Carbon::parse($months[$i]);
+            $monthVal = Carbon::parse($months[$i]);
             if (isset($months[$i + 1])) {
                 $monthValNext = Carbon::parse($months[$i + 1]);
                 if ($monthValNext < $monthVal) {
                     $temp = $months[$i];
-                    $months[$i]   = Carbon::parse($months[$i + 1])->format('F-Y');
+                    $months[$i] = Carbon::parse($months[$i + 1])->format('F-Y');
                     $months[$i + 1] = Carbon::parse($temp)->format('F-Y');
                 } else {
-                    $months[$i]   = Carbon::parse($months[$i])->format('F-Y');
+                    $months[$i] = Carbon::parse($months[$i])->format('F-Y');
                 }
             }
         }
@@ -150,24 +151,24 @@ class AdminController extends Controller
     {
         $pageTitle = 'My Shop\'s Analytics';
 
-        $order['all']    = OrderDetail::orders()->where('seller_id', 0)->count();
-        $order['pending']    = OrderDetail::pendingOrder()->where('seller_id', 0)->count();
+        $order['all'] = OrderDetail::orders()->where('seller_id', 0)->count();
+        $order['pending'] = OrderDetail::pendingOrder()->where('seller_id', 0)->count();
         $order['processing'] = OrderDetail::processingOrder()->where('seller_id', 0)->count();
         $order['dispatched'] = OrderDetail::dispatchedOrder()->where('seller_id', 0)->count();
-        $order['delivered']  = OrderDetail::deliveredOrder()->where('seller_id', 0)->count();
-        $order['cancelled']  = OrderDetail::cancelledOrder()->where('seller_id', 0)->count();
-        $order['cod']        = OrderDetail::cod()->where('seller_id', 0)->count();
+        $order['delivered'] = OrderDetail::deliveredOrder()->where('seller_id', 0)->count();
+        $order['cancelled'] = OrderDetail::cancelledOrder()->where('seller_id', 0)->count();
+        $order['cod'] = OrderDetail::cod()->where('seller_id', 0)->count();
 
         $product['total'] = Product::active()->where('seller_id', 0)->count();
         $product['total_sold'] = Product::active()->where('seller_id', 0)->sum('sold');
-        $product['top_selling_products']     = Product::topSales(3);
+        $product['top_selling_products'] = Product::topSales(3);
 
 
-        $sale['last_seven_days']          = SellLog::where('seller_id', 0)->where('created_at', '>=', Carbon::today()->subDays(7))->sum('product_price');
+        $sale['last_seven_days'] = SellLog::where('seller_id', 0)->where('created_at', '>=', Carbon::today()->subDays(7))->sum('product_price');
 
-        $sale['last_fifteen_days']        = SellLog::where('seller_id', 0)->where('created_at', '>=', Carbon::today()->subDays(15))->sum('product_price');
+        $sale['last_fifteen_days'] = SellLog::where('seller_id', 0)->where('created_at', '>=', Carbon::today()->subDays(15))->sum('product_price');
 
-        $sale['last_thirty_days']         = SellLog::where('seller_id', 0)->where('created_at', '>=', Carbon::today()->subDays(30))->sum('product_price');
+        $sale['last_thirty_days'] = SellLog::where('seller_id', 0)->where('created_at', '>=', Carbon::today()->subDays(30))->sum('product_price');
 
 
         $report['months'] = collect([]);
@@ -188,15 +189,15 @@ class AdminController extends Controller
         $months = $report['months'];
 
         for ($i = 0; $i < $months->count(); ++$i) {
-            $monthVal      = Carbon::parse($months[$i]);
+            $monthVal = Carbon::parse($months[$i]);
             if (isset($months[$i + 1])) {
                 $monthValNext = Carbon::parse($months[$i + 1]);
                 if ($monthValNext < $monthVal) {
                     $temp = $months[$i];
-                    $months[$i]   = Carbon::parse($months[$i + 1])->format('F-Y');
+                    $months[$i] = Carbon::parse($months[$i + 1])->format('F-Y');
                     $months[$i + 1] = Carbon::parse($temp)->format('F-Y');
                 } else {
-                    $months[$i]   = Carbon::parse($months[$i])->format('F-Y');
+                    $months[$i] = Carbon::parse($months[$i])->format('F-Y');
                 }
             }
         }
@@ -338,5 +339,10 @@ class AdminController extends Controller
         ]);
         $notify[] = ['success', 'Notifications read successfully'];
         return back()->withNotify($notify);
+    }
+
+    public function testCsv()
+    {
+        return (new UsersExport)->download('users.csv');
     }
 }

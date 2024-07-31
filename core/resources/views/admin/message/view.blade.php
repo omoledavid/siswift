@@ -27,13 +27,7 @@
                                          src="{{ getImage(imagePath()['profile']['user']['path'].'/'.$message->sender->image,imagePath()['profile']['user']['size']) }}"
                                          alt="client">
                                     <div class="media-body">
-                                        @if(!empty($message->message))
-                                            @if(is_array($message->message))
-                                                <p style="width:fit-content">Escrow Initiated</p>
-                                            @else
-                                                <p style="width:fit-content">{{$message->message}}</p>
-                                            @endif
-                                        @endif
+                                        <p style="width:fit-content">{{!is_string($message->message) ? 'Escrow Initiated' : $message->message}}</p>
                                         @if(!empty($message->file))
                                             <div class="media-chat-thumb text-end">
                                                 <img
@@ -49,9 +43,8 @@
                                          src="{{ getImage(imagePath()['profile']['user']['path'].'/'.$message->receiver->image,imagePath()['profile']['user']['size']) }}"
                                          alt="client">
                                     <div class="media-body">
-                                        @if(!empty($message->message))
-                                            <p style="float:right">{{$message->message}}</p>
-                                        @endif
+                                            <p style="float:right">{{!is_string($message->message) ? 'Escrow Initiated' : $message->message}}</p>
+
                                         @if(!empty($message->file))
                                             <div class="media-chat-thumb text-end">
                                                 <img

@@ -15,7 +15,7 @@ class MessagesController extends Controller
     {
         $sender_id = $request->user()->id;
 
-        $conversations = Message::query()->where('sender_id', $sender_id)->orWhere('receiver_id', $sender_id)->with('sender', 'receiver', 'messages')->get();
+        $conversations = Message::query()->where('sender_id', $sender_id)->orWhere('receiver_id', $sender_id)->with('sender', 'receiver', 'conversations')->get();
 
         return response()->json([
             'status' => 'success',

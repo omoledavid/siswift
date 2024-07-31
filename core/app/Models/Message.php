@@ -12,6 +12,11 @@ class Message extends Model
     protected $guarded = [];
 //    protected $table = 'conversations';
 
+    public function getLastConversation()
+    {
+        return $this->conversations()->latest()->first();
+    }
+
     public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');
@@ -22,7 +27,8 @@ class Message extends Model
         return $this->belongsTo(User::class, 'receiver_id');
     }
 
-    public function messages(){
-        return $this->hasMany(Conversation::class, 'message_id');
+    public function conversations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Conversation::class);
     }
 }

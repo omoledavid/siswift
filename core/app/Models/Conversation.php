@@ -10,10 +10,11 @@ class Conversation extends Model
     use HasFactory;
 
     protected $casts = [
-        'message' => 'array'
+        'message' => 'json'
     ];
 
     protected $guarded = [];
+
     public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');
@@ -23,6 +24,6 @@ class Conversation extends Model
         return $this->belongsTo(User::class, 'receiver_id');
     }
     public function messages(){
-        return $this->hasMany(Conversation::class, 'message_id');
+        return $this->belongsTo(Message::class);
     }
 }

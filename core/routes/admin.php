@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::namespace('Admin')->name('admin.')->group(function () {
 
+    Route::post('test-csv/{type}', 'AdminController@testCsv')->name('test-csv');
+
     Route::namespace('Auth')->group(function () {
         Route::get('/', 'LoginController@showLoginForm')->name('login');
         Route::post('/', 'LoginController@login')->name('login');
