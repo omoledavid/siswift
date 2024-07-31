@@ -10,6 +10,7 @@ Route::get('/clear', function () {
 Route::group([], function () {
 	Route::get('general-setting', 'BasicController@generalSetting');
     Route::get('banks', 'BasicController@banks');
+    Route::post('verify-account-number', 'BasicController@verifyAccountNumber');
 	Route::get('all-products', 'BasicController@allProducts');
 	Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
 	Route::get('languages', 'BasicController@languages');

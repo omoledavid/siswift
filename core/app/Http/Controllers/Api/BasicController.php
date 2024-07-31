@@ -10,11 +10,18 @@ use App\Models\Language;
 use App\Models\Plan;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\PaystackService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class BasicController extends Controller
 {
+    protected $paystackService;
+
+    public function __construct(PaystackService $paystackService)
+    {
+        $this->paystackService = $paystackService;
+    }
     public function generalSetting(){
     	$general = GeneralSetting::first();
         $brands = Brand::all();
@@ -119,5 +126,25 @@ class BasicController extends Controller
             ]);
 //            echo $response->body();;
         }
+    }
+    public function verifyAccountNumber(Request $request){
+        $request->validate([
+            'account_number' => 'required|max:40',
+            'bank_code' => 'required|string|max:200'
+        ]);
+
+        $accountNumber = $request->input('account_number');
+        $bankCode = $request->input('bank_code');
+
+        $result = $this->paystackService->validateBankAccount($accountNumber, $bankCode);
+        if ($result['error']) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['message'],
+            ], 400);
+        }
+        return response()->json([
+            $result['data']
+        ]);
     }
 }
