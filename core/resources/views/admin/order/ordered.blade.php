@@ -40,8 +40,8 @@
                                 </td>
 
                                 <td data-label="@lang('Customer')">
-                                    @if($item->user)
-                                        <a href="{{ route('admin.users.detail', $item?->user?->id) }}">{{ $item->user->firstname }}</a>
+                                    @if($item->user()->exists())
+                                        <a href="{{ route('admin.users.detail', $item->user_id) }}">{{ $item->user->firstname }}</a>
                                     @endif
                                 </td>
 
