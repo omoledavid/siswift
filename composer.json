@@ -1,5 +1,0 @@
-{
-    "require": {
-        "bavix/laravel-wallet": "^10.1"
-    }
-}
