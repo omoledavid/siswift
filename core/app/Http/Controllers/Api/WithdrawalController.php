@@ -8,7 +8,6 @@ use App\Models\WithdrawDetail;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Unicodeveloper\Paystack\Facades\Paystack;
 
 
 class WithdrawalController extends Controller
