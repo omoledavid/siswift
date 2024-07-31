@@ -36,7 +36,7 @@ class ProductController extends Controller
         $sellerIdToExclude = $user->seller_id;
 
         // Query the products while excluding the specified seller's products
-        $allProducts = Product::where('seller_id', '!=', $sellerIdToExclude)->where('status', 1)->paginate(10);
+        $allProducts = Product::where('seller_id', '!=', $sellerIdToExclude)->where('status', 1)->paginate(12);
 
         if ($allProducts->isEmpty()) {
             return response()->json([

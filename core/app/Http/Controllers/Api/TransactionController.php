@@ -26,45 +26,6 @@ class TransactionController extends Controller
         $transaction = Transaction::where('wallet_id', $user->wallet->id)->orderBy('id', 'desc')->paginate(10);
         return response()->json($transaction);
     }
-    public function withdrawDetails(Request $request){
-        $user = auth()->user();
-        $request->validate([
-            'account_name' => 'required|string|max:40',
-            'account_number' => 'required|max:40',
-            'bank_name' => 'required|string|max:600',
-            'bank_code' => 'required|string|max:200'
-        ]);
-        $accountNumber = $request->input('account_number');
-        $bankCode = $request->input('bank_code');
-
-        $result = $this->paystackService->validateBankAccount($accountNumber, $bankCode);
-
-        if ($result['error']) {
-            return response()->json([
-                'success' => false,
-                'message' => $result['message'],
-            ], 400);
-        }
-
-        $detailsExist = WithdrawDetail::where('account_number', $request->account_number)->first();
-        if($detailsExist){
-            return response()->json([
-                'message' => 'Account number already exist'
-            ]);
-        }
-        $withDetails = new WithdrawDetail();
-        $withDetails->user_id = $user->id;
-        $withDetails->account_name = $request->input('account_name');
-        $withDetails->account_number = $request->input('account_number');
-        $withDetails->bank_name = $request->input('bank_name');
-        $withDetails->bank_code = $request->input('bank_code');
-        $withDetails->save();
-        return response()->json([
-            'data' => $withDetails,
-            'response' => $result['data'],
-        ]);
-
-    }
 
     public function withdraw(Request $request)
     {

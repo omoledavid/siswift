@@ -51,10 +51,10 @@ Route::group([], function () {
         Route::get('transactions', 'TransactionController@transactions');
 
         //withdraw
+        Route::resource('bank_accounts', 'BankAccountController');
         Route::post('withdraw-detail', 'TransactionController@withdrawDetails');
         Route::post('withdraw', 'TransactionController@withdraw');
         Route::post('withdraw-money', 'WithdrawalController@store');
-        Route::get('withdrawal-method', 'TransactionController@withdrawalMethod');
 
         //escrow
         Route::post('escrow-accept/{escrow}', 'TransactionController@escrowAccept');

@@ -40,7 +40,7 @@
                                 </td>
 
                                 <td data-label="@lang('Customer')">
-                                    <a href="{{ route('admin.users.detail', $item->user->id) }}">{{ $item->user->firstname }}</a>
+                                    <a href="{{ route('admin.users.detail', $item?->user?->id) }}">{{ $item->user->firstname }}</a>
                                 </td>
 
                                 <td data-label="@lang('Amount')" class="text-right">

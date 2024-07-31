@@ -197,4 +197,9 @@ class User extends Authenticatable
         return $this->hasMany(UserReview::class);
     }
 
+    public function bankAccounts()
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+
 }

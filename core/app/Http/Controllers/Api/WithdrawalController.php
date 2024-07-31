@@ -18,7 +18,9 @@ class WithdrawalController extends Controller
         // Validate request data
         $validatedData = $request->validate([
             'amount' => 'required|numeric|min:1',
-            'method_id' => 'required|string',
+            'method_id' => 'required|string|exists:withdraw_details,id',
+        ], [
+            'method_id.exists' => 'The selected method is invalid.'
         ]);
         $user = auth()->user();
 
