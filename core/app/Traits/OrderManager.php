@@ -49,7 +49,7 @@ trait OrderManager
         $amounts = array_column($carts_array, 'offer_price');
         $total = array_sum($amounts);
         $balance = auth()->user()->wallet->balance;
-        if ($total > $balance) {
+        if ($total >= $balance) {
             return false;
         }
 

@@ -18,6 +18,15 @@ class BankAccountController extends Controller
         $this->paystackService = $paystackService;
     }
 
+    public function index(){
+        $user = auth()->user();
+        $bankAccount = BankAccount::where('user_id', $user->id)->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $bankAccount
+        ]);
+    }
+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
@@ -39,7 +48,7 @@ class BankAccountController extends Controller
             ], 400);
         }
 
-        if(!$user->bankAccounts()
+        if($user->bankAccounts()
             ->where(['account_number' => $request->input('account_number'), 'bank_name' => $request->input('bank_name')])
             ->exists()){
             return response()->json([
@@ -64,6 +73,9 @@ class BankAccountController extends Controller
     public function destroy(BankAccount $bankAccount)
     {
         $bankAccount->delete();
-        return response()->noContent();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Bank account deleted successfully'
+        ]);
     }
 }
