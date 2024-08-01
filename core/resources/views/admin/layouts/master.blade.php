@@ -38,6 +38,7 @@
     <!-- dashdoard main css -->
     <link rel="stylesheet" href="{{asset('assets/dashboard/css/app.css')}}">
     <link rel="stylesheet" href="{{asset('assets/dashboard/css/custom.css')}}">
+
     @stack('style')
 </head>
 <body>
@@ -54,6 +55,9 @@
 <script src="{{asset('assets/dashboard/js/vendor/jquery.slimscroll.min.js')}}"></script>
 <!-- custom select box js -->
 <script src="{{asset('assets/dashboard/js/vendor/jquery.nice-select.min.js')}}"></script>
+{{-- for staff add --}}
+<script src="{{asset('assets/dashboard/js/cu-modal.js')}}"></script>
+
 
 
 @include('partials.notify')

@@ -33,7 +33,7 @@ Route::namespace('Admin')->name('admin.')->group(function () {
     });
 
 
-    Route::middleware('admin')->group(function () {
+    Route::middleware('admin', 'adminPermission')->group(function () {
         Route::get('analytics/all-shop', 'AdminController@dashboard')->name('dashboard');
         Route::get('analytics/my-shop', 'AdminController@dashboardSelf')->name('dashboard.self');
         Route::get('profile', 'AdminController@profile')->name('profile');
@@ -398,6 +398,24 @@ Route::namespace('Admin')->name('admin.')->group(function () {
             Route::post('frontend-content/{key}', 'FrontendController@frontendContent')->name('sections.content');
             Route::get('frontend-element/{key}/{id?}', 'FrontendController@frontendElement')->name('sections.element');
             Route::post('remove', 'FrontendController@remove')->name('remove');
+        });
+
+        Route::controller('StaffController')->prefix('staff')->name('staff.')->group(function () {
+            Route::get('', 'index')->name('index');
+            Route::post('save/{id?}', 'save')->name('save');
+            Route::post('switch-status/{id}', 'status')->name('status');
+            Route::get('login/{id}', 'login')->name('login');
+        });
+        Route::controller('PermissionController')->group(function () {
+            Route::get('permissions', 'index');
+            Route::post('permission', 'updatePermissions')->name('permissions.update');
+        });
+
+        Route::controller('RolesController')->prefix('roles')->name('roles.')->group(function () {
+            Route::get('', 'index')->name('index');
+            Route::get('add', 'add')->name('add');
+            Route::get('edit/{id}', 'edit')->name('edit');
+            Route::post('save/{id?}', 'save')->name('save');
         });
     });
 });

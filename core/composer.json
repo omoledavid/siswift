@@ -28,6 +28,7 @@
         "razorpay/razorpay": "^2.5",
         "rinvex/laravel-subscriptions": "^6.0",
         "sendgrid/sendgrid": "^7.6",
+        "spatie/laravel-permission": "^6.9",
         "stripe/stripe-php": "^7.72",
         "textmagic/sdk": "dev-master",
         "twilio/sdk": "^6.23",

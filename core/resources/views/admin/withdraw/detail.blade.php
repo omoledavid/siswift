@@ -11,7 +11,7 @@
 
                     <div class="p-3 bg--white">
                         <div class="">
-                            <img src="{{$methodImage}}" alt="@lang('Image')" class="b-radius--10 withdraw-detailImage" >
+                            <img src="" alt="@lang('Image')" class="b-radius--10 withdraw-detailImage" >
                         </div>
                     </div>
 
@@ -33,7 +33,7 @@
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             @lang('Method')
-                            <span class="font-weight-bold">{{__($withdrawal->method->name)}}</span>
+                            <span class="font-weight-bold">Transfer</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             @lang('Amount')

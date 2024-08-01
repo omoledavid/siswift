@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Role;
 use Carbon\Carbon;
 use App\Lib\SendSms;
 use App\Models\User;
@@ -628,6 +629,16 @@ function sendSendGridMail($config, $receiver_email, $receiver_name, $subject, $m
     }
 }
 
+function can($code)
+{
+    return Role::hasPermission($code);
+}
+
+function keyToTitle($text)
+{
+    return ucfirst(preg_replace("/[^A-Za-z0-9 ]/", ' ', $text));
+}
+
 
 function sendMailjetMail($config, $receiver_email, $receiver_name, $subject, $message, $general)
 {
@@ -1113,3 +1124,5 @@ function getFileExt($key)
 {
     return fileManager()->$key()->extensions;
 }
+
+

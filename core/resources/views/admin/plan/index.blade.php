@@ -27,7 +27,7 @@
                                         <td> {{$plan->sort_order}}</td>
                                         <td>
                                             <a class="btn btn-sm btn-outline--primary modalShow me-2" href="{{ route('admin.plan.edit', $plan->id) }}"> Edit</a>
-                                            
+
                                             @if ($plan->status)
                                                 <button class="btn btn-sm btn-outline--danger confirmationBtn"
                                                     data-question="@lang('Are you sure to disable this plan?')"
@@ -59,7 +59,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">@lang('Edit Plan')</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <i class="las la-times"></i>
                     </button>
                 </div>

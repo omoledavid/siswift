@@ -53,7 +53,7 @@
                             @endphp
                             <tr>
                                 <td data-label="@lang('Gateway | Trx')">
-                                    <span class="font-weight-bold"><a href="{{ route('admin.withdrawals.method',[$withdraw->method->id,'all']) }}"> {{ __(@$withdraw->method->name) }}</a></span>
+                                    <span class="font-weight-bold"><a href=""> Transfer</a></span>
                                     <br>
                                     <small>{{ $withdraw->trx }}</small>
                                 </td>

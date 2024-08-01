@@ -50,8 +50,8 @@ Route::name('seller.')->namespace('Seller')->group(function () {
             Route::get('product/reviews', 'ProductController@reviews')->name('products.reviews');
             Route::get('product/reviews/search/{key?}', 'ProductController@reviewSearch')->name('products.reviews.search');
 
-            Route::get('product/add-variant/{id}', 'ProductController@addVariant')->name('products.variant.store');
-            Route::post('product/add-variant/{id}', 'ProductController@storeVariant')->name('products.variant.store');
+//            Route::get('product/add-variant/{id}', 'ProductController@addVariant')->name('products.variant.store');
+//            Route::post('product/add-variant/{id}', 'ProductController@storeVariant')->name('products.variant.store');
             Route::get('product/edit-variant/{pid}/{aid}', 'ProductController@editAttribute')->name('products.variant.edit');
             Route::post('product/edit-variant-update/{id}', 'ProductController@updateVariant')->name('products.variant.update');
             Route::post('product/delete-variant/{id}', 'ProductController@deleteVariant')->name('products.variant.delete');

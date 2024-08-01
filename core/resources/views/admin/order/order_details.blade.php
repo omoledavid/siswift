@@ -41,11 +41,11 @@
                             <address>
                                 <ul>
                                 <li>@lang('Name'): <strong>{{$order->user->firstname }} {{$order->user->lastname }}</strong></li>
-                                    <li>@lang('Address'): {{$shipping_address->address}}</li>
-                                    <li>@lang('State'): {{$shipping_address->state}}</li>
-                                    <li>@lang('City'): {{$shipping_address->city}}</li>
-                                    <li>@lang('Zip'): {{$shipping_address->zip}}</li>
-                                    <li>@lang('Country'): {{$shipping_address->country}}</li>
+                                    <li>@lang('Address'): {{($shipping_address->address)?? 'N/A'}}</li>
+                                    <li>@lang('State'): {{($shipping_address->state)?? 'N/A'}}</li>
+                                    <li>@lang('City'): {{($shipping_address->city)?? 'N/A'}}</li>
+                                    <li>@lang('Zip'): {{($shipping_address->zip)?? 'N/A'}}</li>
+                                    <li>@lang('Country'): {{($shipping_address->country)??'N/A'}}</li>
                                 </ul>
                             </address>
                         </div><!-- /.col -->
@@ -65,7 +65,6 @@
                                 <tr>
                                     <th>@lang('SN.')</th>
                                     <th>@lang('Product')</th>
-                                    <th>@lang('Variants')</th>
                                     <th>@lang('Discount')</th>
                                     <th>@lang('Quantity')</th>
                                     <th>@lang('Price')</th>
@@ -79,30 +78,19 @@
                                     @foreach($order->orderDetail as $data)
 
                                     @php
-                                    $details = json_decode($data->details);
-                                    $offer_price = $details->offer_amount;
+                                    $details = (json_decode($data->details)?? 'N/A');
+                                    $offer_price = ($details->offer_amount)?? 'N/A';
                                     $extra_price = 0;
                                     @endphp
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
                                         <td>{{$data->product->name}}</td>
-                                        <td>
-                                            @if($details->variants)
-                                            @foreach ($details->variants as $item)
-                                               <span class="d-block">{{__($item->name)}} :  <b>{{__($item->value)}}</b></span>
-                                               @php $extra_price += $item->price;  @endphp
-                                            @endforeach
-                                            @else
-                                            @lang('N/A')
-                                            @endif
-                                        </td>
                                         @php $base_price = $data->base_price + $extra_price @endphp
-                                        <td class="text-right">{{$general->cur_sym.getAmount($offer_price)}}/ @lang('Item')</td>
                                         <td class="text-center">{{$data->quantity}}</td>
-                                        <td class="text-right">{{$general->cur_sym. ($data->base_price - getAmount($offer_price))}}</td>
+                                        <td class="text-right">{{$general->cur_sym. ($data->base_price)}}</td>
 
-                                        <td class="text-right">{{$general->cur_sym.getAmount(($base_price - $offer_price)*$data->quantity)}}</td>
-                                        @php $subtotal += ($base_price - $offer_price) * $data->quantity @endphp
+                                        <td class="text-right">{{$general->cur_sym.getAmount(($base_price)*$data->quantity)}}</td>
+                                        @php $subtotal += ($base_price) * $data->quantity @endphp
                                     </tr>
                                     @endforeach
 

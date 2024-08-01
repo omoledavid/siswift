@@ -150,8 +150,7 @@ class WithdrawalController extends Controller
         $withdrawal = Withdrawal::where('id',$id)->where('status', '!=', 0)->with(['seller','method'])->firstOrFail();
         $pageTitle = $withdrawal->seller->username.' Withdraw Requested ' . showAmount($withdrawal->amount) . ' '.$general->cur_text;
         $details = $withdrawal->withdraw_information ? json_encode($withdrawal->withdraw_information) : null;
-        $methodImage =  getImage(imagePath()['withdraw']['method']['path'].'/'. $withdrawal->method->image,'800x800');
-        return view('admin.withdraw.detail', compact('pageTitle', 'withdrawal','details','methodImage'));
+        return view('admin.withdraw.detail', compact('pageTitle', 'withdrawal','details'));
     }
 
     public function approve(Request $request)

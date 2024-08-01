@@ -1,4 +1,5 @@
 <?php
+global $timezone;
 require_once('timezone.php');
 return [
 
@@ -135,6 +136,7 @@ return [
     */
 
     'providers' => [
+        App\Providers\BladeDirectivesServiceProvider::class,
 
         /*
          * Laravel Framework Service Providers...

@@ -24,6 +24,37 @@
                         <span class="menu-title">@lang('My Shop')</span>
                     </a>
                 </li>
+                @can(['admin.staff.index', 'admin.roles.index', 'admin.permissions.index'])
+                    <li class="sidebar-menu-item sidebar-dropdown">
+                        <a class="{{ menuActive(['admin.staff*', 'admin.roles.*'], 3) }}" href="javascript:void(0)">
+                            <i class="menu-icon las la-users"></i>
+                            <span class="menu-title">@lang('Manage Staff')</span>
+                        </a>
+                        <div
+                            class="sidebar-submenu {{ menuActive(['admin.staff*', 'admin.roles.*', 'admin.permissions*'], 2) }}">
+                            <ul>
+                                @can('admin.staff.index')
+                                    <li class="sidebar-menu-item {{ menuActive('admin.staff*') }}">
+                                        <a class="nav-link" href="{{ route('admin.staff.index') }}">
+                                            <i class="menu-icon las la-dot-circle"></i>
+                                            <span class="menu-title">@lang('All Staff')</span>
+                                        </a>
+                                    </li>
+                                @endcan
+
+                                @can('admin.roles.index')
+                                    <li class="sidebar-menu-item {{ menuActive('admin.roles*') }}">
+                                        <a class="nav-link" href="{{ route('admin.roles.index') }}">
+                                            <i class="menu-icon las la-dot-circle"></i>
+                                            <span class="menu-title">@lang('Roles')</span>
+                                        </a>
+                                    </li>
+                                @endcan
+
+                            </ul>
+                        </div>
+                    </li>
+                @endcan
                 <li class="sidebar-menu-item sidebar-dropdown">
                     <a href="javascript:void(0)" class="{{ menuActive([ 'admin.plan.index*'], 3) }}">
                         <i class="menu-icon las la-clipboard-check"></i>
@@ -229,18 +260,6 @@
                                 </a>
                             </li>
 
-                            <li class="sidebar-menu-item {{ menuActive('admin.order.dispatched') }}">
-                                <a class="nav-link" href="{{ route('admin.order.dispatched') }}">
-                                    <i class="menu-icon las la-shopping-basket"></i>
-
-                                    <span class="menu-title">@lang('Dispatched Orders')</span>
-
-                                    @if($dispatched_orders_count > 0)
-                                    <span class="badge bg--primary badge-pill ml-2"><i class="fas fa-exclamation"></i></span>
-                                    @endif
-                                </a>
-                            </li>
-
                             <li class="sidebar-menu-item {{ menuActive('admin.order.delivered') }}">
                                 <a class="nav-link" href="{{ route('admin.order.delivered') }}">
                                     <i class="menu-icon las la-check-circle"></i>
@@ -252,13 +271,6 @@
                                 <a class="nav-link" href="{{ route('admin.order.canceled') }}">
                                     <i class="menu-icon las la-times-circle"></i>
                                     <span class="menu-title">@lang('Canceled Orders')</span>
-                                </a>
-                            </li>
-
-                            <li class="sidebar-menu-item {{ menuActive('admin.order.cod') }}">
-                                <a class="nav-link" href="{{ route('admin.order.cod') }}">
-                                    <i class="menu-icon las la-hand-holding-usd"></i>
-                                    <span class="menu-title"><abbr data-toggle="tooltip" title="@lang('Cash On Delivery')">{{ @$deposit->gateway->name??trans('COD') }}</abbr> @lang('Orders')</span>
                                 </a>
                             </li>
 

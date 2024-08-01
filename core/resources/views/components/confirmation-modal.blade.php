@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">@lang('Confirmation Alert!')</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="las la-times"></i>
                 </button>
             </div>
@@ -13,7 +13,7 @@
                     <p class="question"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn {{ $closeBtn ?? 'btn--dark' }}" data-bs-dismiss="modal">@lang('No')</button>
+                    <button type="button" class="btn {{ $closeBtn ?? 'btn--dark' }}" data-dismiss="modal">@lang('No')</button>
                     <button type="submit" class="btn {{ $submitBtn ?? 'btn--primary' }}">@lang('Yes')</button>
                 </div>
             </form>
