@@ -42,9 +42,9 @@ class CheckoutController extends Controller
 
             if ($request->payment != 1) {
                 return response()->json([
-                    'status' => 'failed',
+                    'status' => 'error',
                     'data' => 'no data'
-                ]);
+                ], 400);
             }
 
 
