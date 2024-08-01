@@ -52,9 +52,9 @@ Route::group([], function () {
 
         //withdraw
         Route::resource('bank_accounts', 'BankAccountController');
-        Route::post('withdraw-detail', 'TransactionController@withdrawDetails');
-        Route::post('withdraw', 'TransactionController@withdraw');
-        Route::post('withdraw-money', 'WithdrawalController@store');
+//        Route::post('withdraw-detail', 'TransactionController@withdrawDetails');
+//        Route::post('withdraw', 'TransactionController@withdraw');
+        Route::post('withdraw', 'WithdrawalController@store');
 
         //escrow
         Route::post('escrow-accept/{escrow}', 'TransactionController@escrowAccept');

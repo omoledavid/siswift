@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BankAccount;
 use App\Models\Withdrawal;
 use App\Models\WithdrawDetail;
 use GuzzleHttp\Client;
@@ -18,17 +19,22 @@ class WithdrawalController extends Controller
         // Validate request data
         $validatedData = $request->validate([
             'amount' => 'required|numeric|min:1',
-            'method_id' => 'required|string|exists:withdraw_details,id',
+            'bank_account_id' => 'required|string|exists:bank_accounts,id',
         ], [
-            'method_id.exists' => 'The selected method is invalid.'
+            'bank_account_id.exists' => 'The selected bank details is invalid.'
         ]);
         $user = auth()->user();
 
-        // Check user balance, account verification, etc.
-        $account_details = WithdrawDetail::where('id', $validatedData['method_id'])->first();
+        if($user->wallet->balance < $validatedData['amount']) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Insufficient balance.'
+            ]);
+        }
+        $account_details = BankAccount::where('id', $validatedData['bank_account_id'])->first();
         if(!$account_details){
             return response()->json([
-                'message' => 'Kindly add withdrawal method first',
+                'message' => 'Kindly add bank account details to withdraw',
             ]);
         }
 
