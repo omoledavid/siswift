@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use MannikJ\Laravel\Wallet\Models\Transaction as ModelsTransaction;
 use MannikJ\Laravel\Wallet\Traits\HasWallet;
+use Rinvex\Subscriptions\Models\PlanSubscription;
 use Rinvex\Subscriptions\Traits\HasPlanSubscriptions;
 use Stripe\Review;
 
@@ -25,7 +26,7 @@ class User extends Authenticatable
      */
 
     protected $guarded = ['id'];
-    protected $with = ['review'];
+    protected $with = ['review', 'subscription'];
     protected $appends = ['wallet', 'escrow_wallet'];
 //    protected $appends = ['wallet', 'escrow_wallet'];
 
@@ -200,6 +201,13 @@ class User extends Authenticatable
     public function bankAccounts()
     {
         return $this->hasMany(BankAccount::class);
+    }
+    public function shop(){
+        return $this->belongsTo(Shop::class, 'seller_id', 'seller_id');
+    }
+
+    public function subscription(){
+        return $this->belongsTo(PlanSubscription::class, 'id','subscriber_id');
     }
 
 }

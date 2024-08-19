@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\ProductStatus;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
@@ -148,25 +149,29 @@ trait ProductManager
 
     public function storeProduct($request, $id, $sellerId = 0)
     {
+        $user = auth()->user();
         $validation_rule = $this->getProductValidationRule($id);
         $request->validate($validation_rule, [
             'specification.*.name.required' => 'All specification name is required',
             'specification.*.value' => 'All specification value is required',
         ]);
-        if (auth()->user()) {
-            $user = auth()->user();
-            if ($user->seller_id == null) {
-//
-                $seller = $this->createSeller([
-                    'fullname' => $user->fullname,
-                    'email' => $user->email,
-                    'mobile' => $user->mobile,
-                    'address' => $user->address,
-                    'country' => $user->country
-                ]);
+        if ($user) {
+            if ($user->shop == null) {
+                if ($user->seller_id == null) {
+                    $seller = $this->createSeller([
+                        'fullname' => $user->fullname,
+                        'email' => $user->email,
+                        'mobile' => $user->mobile,
+                        'address' => $user->address,
+                        'country' => $user->country
+                    ]);
+                    $seller_id = $seller->id;
+                } else {
+                    $seller_id = $user->seller_id;
+                }
                 $shop = new Shop();
                 $shop->name = ' ';
-                $shop->seller_id = $seller->id;
+                $shop->seller_id = $seller_id;
                 $shop->user_id = $user->id;
                 $shop->status = 0;
                 $shop->phone = ' ';
@@ -198,10 +203,10 @@ trait ProductManager
                 return $notify;
             }
 
-            $product->status = 1;
+            $product->status = ProductStatus::PENDING;
         } else {
             //adding admin id
-            $product->status = $sellerId == 0 ? 1 : 0;
+            $product->status = ProductStatus::PENDING;
         }
 
         if ($request->hasFile('main_image')) {
@@ -214,7 +219,6 @@ trait ProductManager
         } else {
             $request->merge(['image' => $product->main_image]);
         }
-        $shop_id = Shop::where('seller_id', $user->seller_id)->first()->id;
 
 
         $product->seller_id = $user->seller_id;
@@ -233,7 +237,7 @@ trait ProductManager
         $product->bulk_price = $request->bulk_price;
         $product->colour = $request->colour;
         $product->track_inventory = $request->track_inventory;
-        $product->shop_id = $shop_id;
+        $product->shop_id = $user->shop->id;;
         $product->save();
 
         //Check Old Images
@@ -302,8 +306,8 @@ trait ProductManager
         $query = Product::where('id', $id);
         if ($sellerId)
             $query = $query->where('seller_id', $sellerId);
-        $product = $query->withTrashed()->firstOrFail();
-        $type = 'Deleted';
+            $product = $query->withTrashed()->firstOrFail();
+            $type = 'Deleted';
 
         if ($product->trashed()) {
             $product->restore();

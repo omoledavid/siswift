@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\ProductStatus;
 use App\Exceptions\CheckoutException;
 use App\Models\AppliedCoupon;
 use App\Models\AssignProductAttribute;
@@ -85,7 +86,7 @@ trait OrderManager
         $product = Product::where('id', $cart->product_id)->first();
         $product->track_inventory -= $cart->quantity;
         if ($product->track_inventory == 0) {
-            $product->status = 0;
+            $product->status = ProductStatus::DELIST;
 
         }
         $product->save();

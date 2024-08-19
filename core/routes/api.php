@@ -15,13 +15,20 @@ Route::group([], function () {
 	Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
 	Route::get('languages', 'BasicController@languages');
 	Route::get('language-data/{code}', 'BasicController@languageData');
+    Route::post('search', 'SearchController@search');
 
 
 
 	Route::group(['middleware' => 'auth.api:sanctum'], function () {
         Route::get('user/{id}', 'BasicController@user');
+        //products
 		Route::apiResource('products', 'ProductController');
 		Route::get('seller-products', 'ProductController@sellerProducts');
+
+        //delist
+        Route::get('delist/{id}', 'ProductController@delist');
+        Route::get('relist/{id}', 'ProductController@relist');
+
 		Route::apiResource('carts', 'CartController');
 		Route::apiResource('checkout', 'CheckoutController');
 		Route::apiResource('rate', 'RateController');
@@ -108,6 +115,7 @@ Route::group([], function () {
         Route::post('logout', 'LoginController@logout');
 		Route::post('register', 'RegisterController@register');
 
+
 		Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');
 		Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
 
@@ -116,6 +124,7 @@ Route::group([], function () {
 
 
 	Route::middleware('auth.api:sanctum')->name('user.')->prefix('user')->group(function () {
+        Route::post('change-password', 'UserController@submitPassword');
 		Route::get('logout', 'Auth\LoginController@logout');
 		Route::get('authorization', 'AuthorizationController@authorization')->name('authorization');
 		Route::get('resend-verify', 'AuthorizationController@sendVerifyCode')->name('send.verify.code');
@@ -129,7 +138,6 @@ Route::group([], function () {
 			});
 
 			Route::post('profile-setting', 'UserController@submitProfile');
-			Route::post('change-password', 'UserController@submitPassword');
 
 			// Withdraw
 			Route::get('withdraw/methods', 'UserController@withdrawMethods');

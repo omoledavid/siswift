@@ -1126,3 +1126,29 @@ function getFileExt($key)
 }
 
 
+function recordImageUpload(){
+    $user = auth()->user();
+    $plan_name = auth()->user()->subscription->name;
+    $user->planSubscription($plan_name)->recordFeatureUsage('photo-upload');
+}
+function canUse($feature){
+    $user = auth()->user();
+    $plan_name = $user->subscription->name;
+    $data = $user->planSubscription($plan_name)->getFeatureRemainings($feature);
+    if($data >= 1){
+        return true;
+    }else{
+        return false;
+    }
+}
+function featureValue($feature){
+    $user = auth()->user();
+    $plan_name = $user->subscription->name;
+    $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
+    if($data){
+        return $data;
+    }
+
+}
+
+

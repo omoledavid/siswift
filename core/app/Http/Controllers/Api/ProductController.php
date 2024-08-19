@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Feature;
+use App\Enums\ProductStatus;
 use App\Traits\ShopManager;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
@@ -36,7 +38,7 @@ class ProductController extends Controller
         $sellerIdToExclude = $user->seller_id;
 
         // Query the products while excluding the specified seller's products
-        $allProducts = Product::where('seller_id', '!=', $sellerIdToExclude)->where('track_inventory', '>=', 1)->where('status', 1)->paginate(12);
+        $allProducts = Product::where('track_inventory', '>=', 1)->where('status', ProductStatus::ACTIVE)->orderBy('id','desc')->paginate(12);
 
         if ($allProducts->isEmpty()) {
             return response()->json([
@@ -54,17 +56,17 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        $suggestedProduct = Product::where('status', ProductStatus::ACTIVE)->orderBy('sold', 'desc')->get();
         return response()->json([
             'status' => 'success',
             'data' => $product,
+            'suggest' => $suggestedProduct
         ]);
     }
-    public function sellerProducts(Product $product)
+    public function sellerProducts()
     {
         $user = auth()->user();
-
-        // Retrieve products uploaded by the authenticated user and select specific fields
-        $products = Product::where('seller_id', $user->seller_id)->paginate(15);
+        $products = Product::where('seller_id', $user->seller_id)->orderBy('id', 'desc')->paginate(15);
 
         return response()->json([
             'status' => 'success',
@@ -74,6 +76,15 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $user = auth()->user();
+        $valData = featureValue(Feature::UPLOAD->value);
+        $photoCount = count($request->photos);
+        if($photoCount > $valData){
+            return response()->json([
+                'status' => 'failed',
+                'message' => "You can only upload $valData photos at a time",
+            ], 400);
+        };
         $data = $this->storeProduct($request, null, $this->id());
         if(!$data){
             return response()->json([
@@ -90,6 +101,21 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        $valData = featureValue(Feature::UPLOAD->value);
+        $photoCount = count($request->photos ?? []);
+        $categoriesCount = count($request->categories ?? []);
+        if($photoCount > $valData){
+            return response()->json([
+                'status' => 'failed',
+                'message' => "You can only upload $valData photos at a time",
+            ], 400);
+        };
+        if($categoriesCount > 2){
+            return response()->json([
+                'status' => 'failed',
+                'message' => "You can only select 2 categories at a time",
+            ], 400);
+        };
         return response()->json([
             'status' => 'success',
             'data' => $this->storeProduct($request, $product->id, $this->id())
@@ -172,5 +198,51 @@ class ProductController extends Controller
         $storeImages = $this->saveProductVariantImages($request, $id, $this->id());
 
         return redirect()->back()->withNotify($storeImages);
+    }
+    public function delist($id){
+        $user = auth()->user();
+        $product = Product::where('id', $id)->first();
+        if($product->seller_id != $user->seller_id){
+            return response()->json([
+                'status' => false,
+                'message' => 'You can\'t delist other\'s product'
+            ], 403);
+        }
+        if($product->status == ProductStatus::DELIST->value || $product->status == ProductStatus::PENDING->value){
+            return response()->json([
+                'status' => false,
+                'message' => 'This product is already delisted or waiting approval'
+            ],400);
+        }
+        $product->status = ProductStatus::DELIST;
+        $product->save();
+        return response()->json([
+           'status' => true,
+           'message' => 'Product has been Unlisted',
+           'product' => $product
+        ]);
+    }
+    public function relist($id){
+        $user = auth()->user();
+        $product = Product::where('id', $id)->first();
+        if($product->seller_id != $user->seller_id){
+            return response()->json([
+                'status' => false,
+                'message' => 'You can\'t relist other\'s product'
+            ], 403);
+        }
+        if($product->status == ProductStatus::PENDING->value){
+            return response()->json([
+                'status' => false,
+                'message' => 'This product is pending approval'
+            ],400);
+        }
+        $product->status = ProductStatus::PENDING;
+        $product->save();
+        return response()->json([
+           'status' => true,
+           'message' => 'Product has been relisted',
+           'product' => $product
+        ]);
     }
 }
