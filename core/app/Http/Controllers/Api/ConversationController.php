@@ -93,7 +93,8 @@ class ConversationController extends Controller
 
         // Notify the other user
         $recipient = $request->user()->id == $conversation->buyer_id ? $conversation->seller : $conversation->buyer;
-//        $recipient->notify(new MessageReceivedNotification($message));
+//        return $conversation;/
+        $recipient->notify(new MessageReceivedNotification($message));
 
         return response()->json([
             'status' => true,

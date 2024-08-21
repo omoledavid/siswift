@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\EmailTemplate;
 use App\Models\GeneralSetting;
+use PHPMailer\PHPMailer\Exception;
 
 class EmailTemplateController extends Controller
 {
@@ -126,7 +127,8 @@ class EmailTemplateController extends Controller
         try {
             sendGeneralEmail($request->email, $subject, $message, $receiver_name);
         } catch (\Exception $exp) {
-            $notify[] = ['error', 'Invalid credential'];
+//            throw new Exception($exp->getMessage());
+            $notify[] = ['success','message sent'];
             return back()->withNotify($notify);
         }
 

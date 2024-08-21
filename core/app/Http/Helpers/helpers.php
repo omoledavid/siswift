@@ -581,7 +581,7 @@ function sendPhpMail($receiver_email, $receiver_name, $subject, $message, $gener
 }
 
 
-function sendSmtpMail($config, $receiver_email, $receiver_name, $subject, $message, $general)
+function sendSmtpMail($config, $receiver_email, $receiver_name, $subject, $message, $general, $attachments = [], $additionalRecipients = [], $bccRecipients = [])
 {
     $mail = new PHPMailer(true);
 
@@ -592,26 +592,39 @@ function sendSmtpMail($config, $receiver_email, $receiver_name, $subject, $messa
         $mail->SMTPAuth   = true;
         $mail->Username   = $config->username;
         $mail->Password   = $config->password;
-        if ($config->enc == 'ssl') {
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        } else {
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        }
+        $mail->SMTPSecure = $config->enc === 'ssl' ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = $config->port;
-        $mail->CharSet = 'UTF-8';
+        $mail->CharSet    = 'UTF-8';
+
         //Recipients
         $mail->setFrom($general->email_from, $general->sitename);
         $mail->addAddress($receiver_email, $receiver_name);
         $mail->addReplyTo($general->email_from, $general->sitename);
+
+        foreach ($additionalRecipients as $email) {
+            $mail->addAddress($email);
+        }
+        foreach ($bccRecipients as $email) {
+            $mail->addBCC($email);
+        }
+
+        //Attachments
+        foreach ($attachments as $attachment) {
+            $mail->addAttachment($attachment['path'], $attachment['name']);
+        }
+
         // Content
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body    = $message;
+
         $mail->send();
     } catch (Exception $e) {
-        throw new Exception($e);
+        error_log("Mail error: " . $mail->ErrorInfo);
+        throw new Exception($e->getMessage());
     }
 }
+
 
 
 function sendSendGridMail($config, $receiver_email, $receiver_name, $subject, $message, $general)

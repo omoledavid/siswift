@@ -36,6 +36,7 @@
                             <div class="form-group col-md-4">
                                 <label class="font-weight-bold">@lang('Encryption')</label>
                                 <select class="form-control" name="enc">
+                                    <option {{ $general->mail_config->enc ? 'selected' : '' }} value="ssl">{{ $general->mail_config->enc ?? 'Select' }}</option>
                                     <option value="ssl">@lang('SSL')</option>
                                     <option value="tls">@lang('TLS')</option>
                                 </select>

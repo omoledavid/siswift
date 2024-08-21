@@ -21,6 +21,6 @@ class Conversation extends Model
 
     public function seller()
     {
-        return $this->belongsTo(User::class, 'seller_id');
+        return $this->belongsTo(User::class, 'seller_id', 'seller_id');
     }
 }
