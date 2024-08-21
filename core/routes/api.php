@@ -85,6 +85,9 @@ Route::group([], function () {
         Route::get('shop-stats', 'ShopController@stat');
         Route::apiResource('messages', 'MessagesController');
 
+        //conversation
+        Route::apiResource('conversations', 'ConversationController');
+
         //orders
         Route::apiResource('order', 'OrderController');
         Route::get('orders/{type}', 'OrderController@pendingOrders');

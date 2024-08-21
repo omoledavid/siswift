@@ -4,31 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Textmagic\Services\Models\Messages;
 
 class Message extends Model
 {
-    use HasFactory;
-    protected $guarded = [];
-//    protected $table = 'conversations';
+    protected $fillable = ['conversation_id', 'user_id', 'message'];
 
-    public function getLastConversation()
+    public function conversation()
     {
-        return $this->conversations()->latest()->first();
+        return $this->belongsTo(Conversation::class);
     }
 
-    public function sender()
+    public function files()
     {
-        return $this->belongsTo(User::class, 'sender_id');
-    }
-
-    public function receiver()
-    {
-        return $this->belongsTo(User::class, 'receiver_id');
-    }
-
-    public function conversations(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Conversation::class);
+        return $this->hasMany(MessageFile::class);
     }
 }

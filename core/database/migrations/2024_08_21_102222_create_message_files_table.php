@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateConversationsTable extends Migration
+class CreateMessageFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateConversationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('conversations', function (Blueprint $table) {
+        Schema::create('message_files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sender_id');
-            $table->string('hash');
-            $table->text('message');
+            $table->foreignId('message_id')->constrained()->onDelete('cascade');
+            $table->string('file_path');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateConversationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('conversations');
+        Schema::dropIfExists('message_files');
     }
 }
