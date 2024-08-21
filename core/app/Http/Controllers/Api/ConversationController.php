@@ -93,18 +93,8 @@ class ConversationController extends Controller
 
         // Notify the other user
         $recipient = $request->user()->id == $conversation->buyer_id ? $conversation->seller : $conversation->buyer;
-        notify($recipient, 'DEPOSIT_COMPLETE', [
-            'method_name' => 'hello',
-            'method_currency' => 'hello',
-            'method_amount' => 'hello',
-            'amount' => 456,
-            'charge' => 12,
-            'currency' => 'hello',
-            'rate' => 6,
-            'trx' => 'idkj',
-            'order_id' => 3456
-        ]);
-//        $recipient->notify(new MessageReceivedNotification($message));
+
+        $recipient->notify(new MessageReceivedNotification($message));
 
         return response()->json([
             'status' => true,
