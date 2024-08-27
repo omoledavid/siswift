@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kyc;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class KycController extends Controller
 {
     // Display the user's KYC data or return an empty array if none is found
-    public function index()
+    public function index(): JsonResponse
     {
-        $kyc = Kyc::where('user_id', Auth::id())->first();
+        $kyc = Kyc::query()->where('user_id', Auth::id())->first();
         $progress = $this->calculateProgress($kyc);
 
         if (!$kyc) {
@@ -29,12 +30,11 @@ class KycController extends Controller
     }
 
     // Store the KYC selfie or ID files
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $request->validate([
             'selfie' => 'nullable|image|max:2048',
-            'id_front' => 'nullable|image|max:2048',
-            'id_back' => 'nullable|image|max:2048',
+            'id_card' => 'nullable|image|max:2048',
         ]);
 
         $kyc = Kyc::firstOrCreate(['user_id' => Auth::id()]);
@@ -61,9 +61,9 @@ class KycController extends Controller
     }
 
     // Display the specific KYC data or return an empty array if not found
-    public function show($id)
+    public function show($id): JsonResponse
     {
-        $kyc = Kyc::where('user_id', Auth::id())->find($id);
+        $kyc = Kyc::query()->where('user_id', Auth::id())->find($id);
 
         if (!$kyc) {
             return response()->json([
@@ -124,14 +124,13 @@ class KycController extends Controller
     }
 
     // Calculate the progress of KYC completion
-    private function calculateProgress($kyc)
+    private function calculateProgress($kyc): float|int
     {
-        $steps = 3;
+        $steps = 2;
         $completed = 0;
 
         if ($kyc && $kyc->selfie) $completed++;
-        if ($kyc && $kyc->id_front) $completed++;
-        if ($kyc && $kyc->id_back) $completed++;
+        if ($kyc && $kyc->id_card) $completed++;
 
         return ($completed / $steps) * 100;
     }

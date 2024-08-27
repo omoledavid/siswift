@@ -76,7 +76,9 @@ class SupportTicketController extends Controller
     {
         $reply = $this->replyTicket($request, $id, 'admin');
 
-        return redirect()->route('admin.ticket.view', $request->id)->withNotify($reply);
+        $notify[] = ['success', 'Update Successfully'];
+
+        return redirect()->route('admin.ticket.view', $request->id)->withNotify($notify);
     }
 
     public function ticketDelete(Request $request)
