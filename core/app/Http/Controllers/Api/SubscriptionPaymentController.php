@@ -26,18 +26,19 @@ class SubscriptionPaymentController extends Controller
         $request->validate([
             'plan_id' => ['required', Rule::exists('plans', 'id')->where('id', $request->plan_id)],
             'gateway' => ['required'],
-            'amount' => ['required'],
             'callback_url' => ['required', 'url'],
         ]);
         $user = auth()->user();
-        if($user->wallet->balance >= $request->amount ){
-            $user->wallet->withdraw($request->amount, [
+        $plan = app('rinvex.subscriptions.plan')->find($request->plan_id);
+        $amount = $plan->price;
+        if($user->wallet->balance >= $amount ){
+            $user->wallet->withdraw($amount, [
                 'description' => "Subscription Payment",
             ]);
-            $plan = app('rinvex.subscriptions.plan')->find($request->plan_id);
             $user->newPlanSubscription($plan->name, $plan);
             return response()->json([
-                'You\'ve successfully subscribed to '.$plan->name.'(NGN'.$request->amount.') plan from your wallet balance.',
+                'status' => true,
+                'You\'ve successfully subscribed to '.$plan->name.'(NGN '.$amount.') plan from your wallet balance.',
             ]);
         }
 
@@ -51,7 +52,7 @@ class SubscriptionPaymentController extends Controller
             $this->paymentService = new AutomaticPaymentService($gateway);
 
             $plan = Plan::where('id', $request->plan_id)->firstOrFail();
-            $payment = Payment::make($request->user(), $request->amount, 'paystack', $request->callback_url);
+            $payment = Payment::make($request->user(), $amount, 'paystack', $request->callback_url);
             $payment->plan_id = $plan->id;
             $payment->save();
 

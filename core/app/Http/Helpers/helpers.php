@@ -1154,9 +1154,17 @@ function canUse($feature){
         return false;
     }
 }
+
+/**
+ * @throws Exception
+ */
 function featureValue($feature){
     $user = auth()->user();
-    $plan_name = $user->subscription->name;
+    try {
+        $plan_name = $user->subscription->slug;
+    } catch (\Exception $e) {
+        throw new Exception('Kindly subscribe to plan first');
+    }
     $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
     if($data){
         return $data;

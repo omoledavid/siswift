@@ -7,12 +7,12 @@
             <div class="card custom--card chat-box">
                 <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
                     <h4 class="card-title mb-0">
-                        @foreach($messages as $message)
+                        @foreach($conversations as $message)
                             @if($loop->first)
-                                @if($message->sender_id != $user->id)
-                                    {{$message->sender->userfullname}}
+                                @if($message->user->id != $user->id)
+                                    {{$message->user->userfullname}}
                                 @else
-                                    {{$message->receiver->userfullname}}
+                                    {{$message->user->userfullname}}
                                 @endif
                             @endif
                         @endforeach
@@ -20,11 +20,11 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="ps-container">
-                        @foreach($messages as $message)
-                            @if($message->sender_id != $user->id)
+                        @foreach($conversations as $message)
+                            @if($message->user->id != $user->id)
                                 <div class="media media-chat">
                                     <img class="avatar"
-                                         src="{{ getImage(imagePath()['profile']['user']['path'].'/'.$message->sender->image,imagePath()['profile']['user']['size']) }}"
+                                         src="{{ getImage(imagePath()['profile']['user']['path'].'/'.$message->user->image,imagePath()['profile']['user']['size']) }}"
                                          alt="client">
                                     <div class="media-body">
                                         <p style="width:fit-content">{{!is_string($message->message) ? 'Escrow Initiated' : $message->message}}</p>
@@ -40,7 +40,7 @@
                             @else
                                 <div class="media media-chat media-chat-reverse">
                                     <img class="avatar"
-                                         src="{{ getImage(imagePath()['profile']['user']['path'].'/'.$message->receiver->image,imagePath()['profile']['user']['size']) }}"
+                                         src="{{ getImage(imagePath()['profile']['user']['path'].'/'.$message->user->image,imagePath()['profile']['user']['size']) }}"
                                          alt="client">
                                     <div class="media-body">
                                             <p style="float:right">{{!is_string($message->message) ? 'Escrow Initiated' : $message->message}}</p>

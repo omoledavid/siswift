@@ -1,10 +1,11 @@
-@props(['messages', 'user'])
-@forelse($messages as $message)
+@props(['conversations', 'user'])
+@forelse($conversations as $conversation)
     @php
+//    dd($conversation->lastMessage);
         // Retrieve the last message from the collection, if it exists
-         $lastMessage = $message->getLastConversation();
+         $lastMessage = $conversation->lastMessage;
     @endphp
-    @if($message->sender_id != $user->id)
+    @if($conversation->sender_id != $user->id)
         <li>
             <div class="chat-author">
                 <div class="thumb">
@@ -12,7 +13,7 @@
                 </div>
                 <div class="content">
                     <h6 class="title">
-                        <a href="{{route('admin.conversation.chat',  [$message->id, $user->id])}}">{{$message->sender->userfullname}}</a>
+                        <a href="{{route('admin.conversation.chat',  [$conversation->id, $user->id])}}">{{$lastMessage->user->userfullname}}</a>
                     </h6>
 
                     <span class="info">{{!is_string($lastMessage->message) ? 'Escrow Initiated' : Str::words($lastMessage->message, 8)}}</span>
@@ -35,9 +36,9 @@
                         $path = imagePath()['profile']['user']['path'];
                         $size = imagePath()['profile']['user']['size'];
 
-                        // Check if $message->receiver and $message->receiver->image are set and not null
-                        if (isset($message->receiver) && !is_null($message->receiver->image)) {
-                            $image = $message->receiver->image;
+                        // Check if $conversation->receiver and $conversation->receiver->image are set and not null
+                        if (isset($conversation->receiver) && !is_null($conversation->receiver->image)) {
+                            $image = $conversation->receiver->image;
                             $imagePath = $path . '/' . $image;
 
                             // Ensure path and size are valid before calling getImage
@@ -52,11 +53,11 @@
 
                     @endphp
                     <img src="{{($profile_image == null) ? '' : $profile_image  }}"
-                         alt="{{$message->receiver->userfullname}}">
+                         alt="{{$conversation->receiver->userfullname}}">
                 </div>
                 <div class="content">
                     <h5 class="name">
-                        <a href="{{route('admin.conversation.chat',  [$message->id, $user->id])}}">{{$message->receiver->userfullname}}</a>
+                        <a href="{{route('admin.conversation.chat',  [$conversation->id, $user->id])}}">{{$conversation->receiver->userfullname}}</a>
                     </h5>
 
                     <span class="info">{{!is_string($lastMessage->message) ? 'Escrow Initiated' : Str::words($lastMessage->message, 8)}}</span>

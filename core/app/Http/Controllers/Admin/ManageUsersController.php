@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
 use App\Models\Order;
@@ -118,14 +119,14 @@ class ManageUsersController extends Controller
     public function detail($id)
     {
         $pageTitle          = 'Customer\'s Detail';
-        $user               = User::findOrFail($id);
-        $totalDeposit       = Deposit::where('user_id', $user->id)->where('status', 1)->sum('amount');
-        $totalTransaction   = Transaction::where('wallet_id', $user->wallet->id)->count();
-        $totalOrders        = Order::where('user_id', $user->id)->where('payment_status', '!=', 0)->count();
-        $totalSold = OrderDetail::where('seller_id', $user->seller_id)->sum('base_price');
-        $totalWithdraw = Withdrawal::where('seller_id',$user->seller_id)->where('status',1)->sum('amount');
-        $totalProducts = Product::where('seller_id',$user->seller_id)->count();
-        $totalMessages = Message::where('user_id',$user->id)->count();
+        $user               = User::query()->findOrFail($id);
+        $totalDeposit       = Deposit::query()->where('user_id', $user->id)->where('status', 1)->sum('amount');
+        $totalTransaction   = Transaction::query()->where('wallet_id', $user->wallet->id)->count();
+        $totalOrders        = Order::query()->where('user_id', $user->id)->where('payment_status', '!=', 0)->count();
+        $totalSold = OrderDetail::query()->where('seller_id', $user->seller_id)->sum('base_price');
+        $totalWithdraw = Withdrawal::query()->where('seller_id',$user->seller_id)->where('status',1)->sum('amount');
+        $totalProducts = Product::query()->where('seller_id',$user->seller_id)->count();
+        $totalMessages = Conversation::query()->where('buyer_id',$user->id)->orWhere('seller_id', $user->id)->count();
         $countries = json_decode(file_get_contents(resource_path('views/partials/country.json')));
         return view('admin.users.detail', compact('pageTitle', 'user', 'totalDeposit', 'totalTransaction', 'countries', 'totalOrders', 'totalSold', 'totalWithdraw', 'totalProducts','totalMessages'));
     }
