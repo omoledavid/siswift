@@ -15,6 +15,8 @@ Route::group([], function () {
 	Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
 	Route::get('languages', 'BasicController@languages');
 	Route::get('language-data/{code}', 'BasicController@languageData');
+
+    //search
     Route::post('search', 'SearchController@search');
 
 
@@ -35,6 +37,9 @@ Route::group([], function () {
 
         //user review
 		Route::apiResource('review', 'ReviewController');
+
+        //user review
+		Route::apiResource('reply', 'ReplyController');
 
 		Route::post('pay', 'HandlePaymentController');
 		Route::post('direct-pay', 'OrderPaymentController');
@@ -104,6 +109,9 @@ Route::group([], function () {
 
         //wishlist
         Route::apiResource('wishlist', 'WishlistController');
+
+        //kyc
+        Route::apiResource('kyc', 'KycController');
 
         //plans
         Route::apiResource('subscription', 'SubscriptionController');

@@ -17,7 +17,7 @@ class SupportTicketController extends Controller
         return request()->user();
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         $seller = $this->seller();
         $tickets = SupportTicket::where('user_id', $seller->id)->orwhere('seller_id', $seller->id)

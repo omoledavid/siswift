@@ -92,6 +92,9 @@ class RegisterController extends Controller
         $response['user'] = $user;
         $response['token_type'] = 'Bearer';
         $notify[] = 'Registration successfull';
+        //subscription all user to basic plan
+        $plan = app('rinvex.subscriptions.plan')->find(1);
+        $user->newPlanSubscription($plan->name, $plan);
         return response()->json([
             'code'=>202,
             'status'=>'created',

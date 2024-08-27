@@ -346,6 +346,36 @@
                         </ul>
                     </div>
                 </li>
+                <li class="sidebar-menu-item sidebar-dropdown">
+                    <a href="javascript:void(0)" class="{{menuActive('admin.email.template*',3)}}">
+                        <i class="menu-icon la la-envelope-o"></i>
+                        <span class="menu-title">@lang('Email')</span>
+                    </a>
+                    <div class="sidebar-submenu {{menuActive('admin.email.template*',2)}} ">
+                        <ul>
+
+                            <li class="sidebar-menu-item {{menuActive('admin.email.template.global')}} ">
+                                <a href="{{route('admin.email.template.global')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Global Template')</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-menu-item {{menuActive(['admin.email.template.index','admin.email.template.edit'])}} ">
+                                <a href="{{ route('admin.email.template.index') }}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Email Templates')</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-menu-item {{menuActive('admin.email.template.setting')}} ">
+                                <a href="{{route('admin.email.template.setting')}}" class="nav-link">
+                                    <i class="menu-icon las la-dot-circle"></i>
+                                    <span class="menu-title">@lang('Email Configure')</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
                 <li class="sidebar-menu-item {{menuActive('admin.withdraw.method.index')}}">
                     <a href="{{route('admin.withdraw.method.index')}}" class="nav-link">
                         <i class="menu-icon lab la-amazon-pay"></i>

@@ -15,11 +15,14 @@ class CreateKycsTable extends Migration
     {
         Schema::create('kycs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->text('selfie')->nullable();
-            $table->text('nin')->nullable();
-            $table->text('extra')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->string('selfie')->nullable();
+            $table->string('id_front')->nullable();
+            $table->string('id_back')->nullable();
             $table->timestamps();
+
+            // Foreign key constraint
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

@@ -3,72 +3,104 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Review;
 use App\Models\UserReview;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
 {
-    public function index(){
-        $user = auth()->user();
-        $review = UserReview::where('seller_id', $user->seller_id)->orWhere('seller_id', $user->id)->paginate(10);
+    // Get all reviews for a specific user
+    public function index(): JsonResponse
+    {
+        $user = Auth::user();
+        $reviews = Review::where('reviewed_user_id', $user->id)
+            ->with('user', 'replies.user')
+            ->get();
+
+        if ($reviews->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No reviews yet'
+            ],404);
+        }
+
         return response()->json([
-            'reviews' => $review,
+            'success' => true,
+            'reviews' => $reviews
         ]);
     }
-    public function store(Request $request)
-    {
-        $user = auth()->user();
 
-        // Validate the request inputs
-        $validator = Validator::make($request->all(), [
-            'seller_id' => 'required', // Ensure the seller exists
-//            'seller_id' => 'required|exists:users,seller_id|exists:users,id', // Ensure the seller exists
-            'review' => 'required|string',
-            'rating' => 'required|min:1|max:5', // Assuming rating is an integer between 1 and 5
+    // Store a new review
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'reviewed_user_id' => 'required|exists:users,id',
+            'content' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
         ]);
 
-        // Check if validation fails
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'failed',
-                'errors' => $validator->errors()
-            ], 400);
-        }
+        $review = Review::create([
+            'user_id' => Auth::id(),
+            'reviewed_user_id' => $validated['reviewed_user_id'],
+            'content' => $validated['content'],
+            'rating' => $validated['rating'],
+        ]);
 
-        // Ensure the user is not reviewing themselves
-        if ($request->seller_id == $user->seller_id) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'You can\'t rate yourself!'
-            ], 403);
-        }
-
-        // Check if the user has already reviewed this seller
-        $reviewExist = UserReview::where('user_id', $user->id)
-            ->where('seller_id', $request->seller_id)
-            ->first();
-
-        if ($reviewExist) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'You already rated this seller!'
-            ], 409);
-        }
-
-        // Create a new review
-        $review = new UserReview();
-        $review->user_id = $user->id;
-        $review->seller_id = $request->seller_id;
-        $review->review = $request->review;
-        $review->rating = $request->rating;
-        $review->save();
-
-        // Return success response with the newly created review
         return response()->json([
-            'status' => 'success',
+            'status' => true,
             'review' => $review,
         ], 201);
     }
 
+    // Update an existing review
+    public function update(Request $request, $id): JsonResponse
+    {
+        $review = Review::query()->where('user_id', Auth::id())->find($id);
+
+        if (!$review) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Review not found'
+            ]);
+        }
+
+        $validated = $request->validate([
+            'content' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $review->update([
+            'content' => $validated['content'],
+            'rating' => $validated['rating'],
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Review updated successfully',
+            'review' => $review,
+        ]);
+    }
+
+    // Delete a review
+    public function destroy($id): JsonResponse
+    {
+        $review = Review::query()->where('user_id', Auth::id())->find($id);
+
+        if (!$review) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Review not found'
+            ], 404);
+        }
+
+        $review->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Review deleted successfully'
+        ]);
+    }
 }

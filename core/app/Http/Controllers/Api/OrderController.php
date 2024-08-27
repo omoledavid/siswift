@@ -14,7 +14,7 @@ class OrderController extends Controller
     {
         $user = auth()->user();
 //        $orders = Order::where('user_id', $user->id)->where('payment_status', '!=', 1)->paginate(10);
-        $orders = OrderDetail::PendingOrder()->get();
+        $orders = OrderDetail::PendingOrder()->orderBy('id', 'desc')->get();
 
         if ($orders->isEmpty()) {
             return response()->json(['message' => 'No data'], 200);

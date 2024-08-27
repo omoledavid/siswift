@@ -111,53 +111,52 @@ trait CartManager
 
             $hash = $this->generateHash($receiver->id, $sender->id);
 
-            // Check if a conversation already exists
-            $existingChat = Message::where('sender_id', $sender->id)
-                ->where('receiver_id', $receiver->id)
+
+            // Check if an existing conversation exists between the sender and receiver for the specific product
+            $existingChat = Conversation::query()->where('product_id', $product->id)
+                ->where('buyer_id', $sender->id)
+                ->where('seller_id', $receiver->id)
                 ->first();
 
             if (!$existingChat) {
                 // Create a new conversation if one does not exist
-                $conversation = Message::query()->create([
-                    'sender_id' => $sender->id,
-                    'receiver_id' => $receiver->id,
+                $conversation = Conversation::create([
+                    'product_id' => $product->id,
+                    'buyer_id' => $sender->id,
+                    'seller_id' => $receiver->id,
+                    'is_active' => true,
                 ]);
-
-                $messages = Conversation::query()->create([
-                    'sender_id' => $sender->id,
-                    'receiver_id' => $receiver->id,
-                    'hash' => $hash,
-                    'message' => [
+                $message = $conversation->messages()->create([
+                    'user_id' => $sender->id,
+                    'message' => json_encode([
                         'title' => 'offer',
                         'amount' => $request->offer_price,
                         'product' => $product,
                         'cart_id' => $cart->id,
-                        'note' => 'new conversation'
-                    ],
-                    'message_id' => $conversation->id,
+                    ]),
                 ]);
             } else {
-                // Append to the existing conversation
-                $messages = Conversation::query()->create([
-                    'sender_id' => $sender->id,
-                    'receiver_id' => $receiver->id,
-                    'hash' => $hash,
-                    'message' => [
+                $message = $existingChat->messages()->create([
+                    'user_id' => $sender->id,
+                    'message' => json_encode([
                         'title' => 'offer',
                         'amount' => $request->offer_price,
                         'cart_id' => $cart->id,
                         'product' => $product,
-                        'note' => 'conversation already exist'
-                    ],
-                    'message_id' => $existingChat->id, // Use the existing conversation ID
+                    ]),
                 ]);
             }
+//            return $existingChat;
+
+// Notify the receiver (seller or buyer) about the new message
+            $recipient = $sender->id == $existingChat->buyer_id ? $existingChat->seller : $existingChat->buyer;
+//            $recipient->notify(new MessageReceivedNotification($message));
             $cart->status = 0;
             $cart->save();
 
             return [
                 'cart' => $cart,
-                'messages' => $messages,
+                'messages' => $message,
                 'cart_status' => $cart->status,
             ];
         }else{

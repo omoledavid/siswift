@@ -75,7 +75,7 @@ trait ShopManager
             'social_links.*.name.required_with'   => 'All specification name is required',
             'social_links.*.icon.required_with'   => 'All specification icon is required',
             'social_links.*.link.required_with'   => 'All specification link is required',
-            'image.required'                      => 'Logo is required',
+            'image.required'                      => 'Image is required',
             'cover_image.required'                => 'Cover is required'
         ]);
 

@@ -64,7 +64,7 @@ class ProfileController extends Controller
 
         $notify = 'Profile updated successfully.';
         return response()->json([
-            'status' => 'success',
+            'status' => 'true',
             'message' => $notify,
             'profile' => $user
         ]);
