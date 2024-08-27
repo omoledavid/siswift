@@ -149,7 +149,7 @@ trait CartManager
 //            return $existingChat;
 
 // Notify the receiver (seller or buyer) about the new message
-            $recipient = $sender->id == $existingChat->buyer_id ? $existingChat->seller : $existingChat->buyer;
+//            $recipient = $sender->id == $existingChat->buyer_id ? $existingChat->seller : $existingChat->buyer;
 //            $recipient->notify(new MessageReceivedNotification($message));
             $cart->status = 0;
             $cart->save();
