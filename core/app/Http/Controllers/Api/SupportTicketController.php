@@ -37,4 +37,13 @@ class SupportTicketController extends Controller
             'data' => $savedTicket
         ]);
     }
+
+    public function show($id): JsonResponse
+    {
+        $ticket = SupportTicket::query()->where('id', $id)->firstOrFail();
+        return response()->json([
+            'status' => true,
+            'data' => $ticket
+        ]);
+    }
 }

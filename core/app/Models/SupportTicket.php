@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SupportTicket extends Model
 {
     protected $guarded = ['id'];
+    protected $with = ['supportMessage'];
 
     public function getFullnameAttribute()
     {
@@ -28,7 +29,7 @@ class SupportTicket extends Model
     }
 
     public function supportMessage(){
-        return $this->hasMany(SupportMessage::class);
+        return $this->hasMany(SupportMessage::class, 'supportticket_id');
     }
 
     public function statusBadge()
