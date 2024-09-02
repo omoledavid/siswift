@@ -75,7 +75,7 @@ trait OrderManager
             $od->product_id = $cart->product_id;
             $od->quantity = $cart->quantity;
             $od->base_price = $cart->offer_price;
-            $od->seller_id = $cart->product->seller_id;
+            $od->seller_id = $cart->product->seller_id ?? null;
             $od->save();
         }
 
