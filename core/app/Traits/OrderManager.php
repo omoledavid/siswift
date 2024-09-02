@@ -43,9 +43,12 @@ trait OrderManager
             $payment_status = 0;
         }
 
-        $carts_data = Cart::where('session_id', session('session_id'))->orWhere('user_id', auth()->user()->id ?? null)->with(['product' => function ($q) {
-            return $q->whereHas('categories')->whereHas('brand');
-        }, 'product.categories'])->get();
+        $carts_data = Cart::query()
+            ->where('session_id', session('session_id'))
+            ->orWhere('user_id', auth()->user()->id ?? null)
+            ->with('product') // Simple eager loading without conditions
+            ->get();
+
         $carts_array = $carts_data->toArray();
         $amounts = array_column($carts_array, 'offer_price');
         $total = array_sum($amounts);
