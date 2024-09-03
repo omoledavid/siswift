@@ -18,6 +18,7 @@ class ConversationController extends Controller
         $conversations = Conversation::where('buyer_id', $userId)
             ->orWhere('seller_id', $userId)
             ->with('messages.files')
+            ->with('seller')
             ->get();
 
         return response()->json([
@@ -56,7 +57,7 @@ class ConversationController extends Controller
     // Show a specific conversation
     public function show($id)
     {
-        $conversation = Conversation::with('messages.files')->findOrFail($id);
+        $conversation = Conversation::with('messages')->findOrFail($id);
 
         return response()->json([
             'status' => true,
