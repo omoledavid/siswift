@@ -35,6 +35,7 @@ class GeneralSettingController extends Controller
         $general->en = $request->en ? 1 : 0;
         $general->sv = $request->sv ? 1 : 0;
         $general->sn = $request->sn ? 1 : 0;
+        $general->al = $request->al ? 1 : 0;
         $general->force_ssl = $request->force_ssl ? 1 : 0;
         $general->secure_password = $request->secure_password ? 1 : 0;
         $general->registration = $request->registration ? 1 : 0;

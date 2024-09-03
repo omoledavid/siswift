@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Enums\ProductStatus;
 use App\Models\Brand;
+use App\Models\GeneralSetting;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductImage;
@@ -219,6 +220,8 @@ trait ProductManager
         } else {
             $request->merge(['image' => $product->main_image]);
         }
+        $generalSettings = GeneralSetting::query()->firstOrFail();
+        $autoApproval = $generalSettings->al;
 
 
         $product->seller_id = $user->seller_id;
@@ -230,6 +233,7 @@ trait ProductManager
         $product->description = $request->description;
         $product->base_price = $request->base_price;
         $product->ram = $request->ram;
+        $product->status = $autoApproval ? ProductStatus::ACTIVE : ProductStatus::PENDING;
         $product->condition = $request->condition;
         $product->sim = $request->sim;
         $product->state = $request->state;
