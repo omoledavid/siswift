@@ -47,7 +47,7 @@ trait OrderManager
         $carts_data = Cart::query()
             ->where('session_id', session('session_id'))
             ->orWhere('user_id', auth()->user()->id ?? null)
-            ->where('status', CartStatus::ACTIVE)
+            ->where('status', CartStatus::ACCEPTED)
             ->with('product') // Simple eager loading without conditions
             ->get();
 

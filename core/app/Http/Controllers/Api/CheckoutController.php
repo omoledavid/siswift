@@ -32,7 +32,7 @@ class CheckoutController extends Controller
         ]);
 
 
-        if (!Cart::query()->where('user_id', $request->user()->id)->where('status', CartStatus::ACTIVE)->exists()) {
+        if (!Cart::query()->where('user_id', $request->user()->id)->where('status', CartStatus::ACCEPTED)->exists()) {
             return response()->json([
                 'status' => 'failed',
                 'data' => 'cart is empty'
