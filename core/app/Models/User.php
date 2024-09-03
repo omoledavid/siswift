@@ -11,7 +11,6 @@ use MannikJ\Laravel\Wallet\Models\Transaction as ModelsTransaction;
 use MannikJ\Laravel\Wallet\Traits\HasWallet;
 use Rinvex\Subscriptions\Models\PlanSubscription;
 use Rinvex\Subscriptions\Traits\HasPlanSubscriptions;
-use Stripe\Review;
 
 /**
  * @property Wallet $wallet
@@ -195,7 +194,7 @@ class User extends Authenticatable
         return $this->hasMany(Withdrawal::class,'seller_id')->where('status','!=',0);
     }
     public function review(){
-        return $this->hasMany(UserReview::class);
+        return $this->hasMany(Review::class, 'reviewed_user_id');
     }
 
     public function bankAccounts()
