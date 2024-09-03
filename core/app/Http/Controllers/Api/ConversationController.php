@@ -17,7 +17,7 @@ class ConversationController extends Controller
 
         $conversations = Conversation::where('buyer_id', $userId)
             ->orWhere('seller_id', $userId)
-            ->with('messages.files')
+            ->with('messages.files', 'seller', 'buyer', 'product')
             ->with('seller')
             ->get();
 
@@ -57,7 +57,7 @@ class ConversationController extends Controller
     // Show a specific conversation
     public function show($id)
     {
-        $conversation = Conversation::with('messages')->findOrFail($id);
+        $conversation = Conversation::with('messages.files', 'seller', 'buyer', 'product')->findOrFail($id);
 
         return response()->json([
             'status' => true,
@@ -74,7 +74,7 @@ class ConversationController extends Controller
             'files.*' => 'file|max:2048', // Optional: max file size 2MB for each file
         ]);
 
-        $conversation = Conversation::findOrFail($id);
+        $conversation = Conversation::query()->findOrFail($id);
 
         if (!$conversation->is_active) {
             return response()->json(['message' => 'This conversation is closed.'], 403);

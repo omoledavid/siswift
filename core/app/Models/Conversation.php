@@ -20,9 +20,13 @@ class Conversation extends Model
         return $this->messages()->latest()->first();
     }
 
-    public function buyer()
+    public function buyer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'buyer_id');
+    }
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function seller(): BelongsTo
