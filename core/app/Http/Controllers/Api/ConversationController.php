@@ -6,19 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Product;
 use App\Notifications\MessageReceivedNotification;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ConversationController extends Controller
 {
     // List all conversations for the authenticated user
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $userId = $request->user()->id;
+        $user = auth()->user();
 
-        $conversations = Conversation::where('buyer_id', $userId)
-            ->orWhere('seller_id', $userId)
+        $conversations = Conversation::query()->where('buyer_id', $user->id)
+            ->orWhere('seller_id', $user->seller_id)
             ->with('messages.files', 'seller', 'buyer', 'product')
-            ->with('seller')
             ->get();
 
         return response()->json([
