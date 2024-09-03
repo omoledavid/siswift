@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\CartStatus;
 use App\Enums\ProductStatus;
 use App\Exceptions\CheckoutException;
 use App\Models\AppliedCoupon;
@@ -20,9 +21,9 @@ use App\Models\User;
 
 trait OrderManager
 {
-    public function checkout($request, $type)
+    public function checkout($request, $type): Order|bool
     {
-        $general = GeneralSetting::first();
+        $general = GeneralSetting::query()->first();
 
 
         /* Type 1 (Order for Customer) Type 2 (Order as Gift) */
@@ -46,6 +47,7 @@ trait OrderManager
         $carts_data = Cart::query()
             ->where('session_id', session('session_id'))
             ->orWhere('user_id', auth()->user()->id ?? null)
+            ->where('status', CartStatus::ACTIVE)
             ->with('product') // Simple eager loading without conditions
             ->get();
 

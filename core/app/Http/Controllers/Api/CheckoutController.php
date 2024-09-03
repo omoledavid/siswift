@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CartStatus;
 use App\Exceptions\CheckoutException;
 use App\Exceptions\Payment\GatewayError;
 use App\Http\Controllers\Controller;
@@ -31,7 +32,7 @@ class CheckoutController extends Controller
         ]);
 
 
-        if (!Cart::query()->where('user_id', $request->user()->id)->exists()) {
+        if (!Cart::query()->where('user_id', $request->user()->id)->where('status', CartStatus::ACTIVE)->exists()) {
             return response()->json([
                 'status' => 'failed',
                 'data' => 'cart is empty'
