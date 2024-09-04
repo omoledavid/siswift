@@ -22,20 +22,22 @@ protected $guarded = [];
     /**
      * @throws \Exception
      */
-    public static function start(User $buyer, Order $order)
+    public static function start(User $buyer, $orders)
     {
 
         try {
             DB::beginTransaction();
-            $escrow = static::query()->create([
-                'buyer_id' => $buyer->id,
-                'seller_id' => $order->seller_id,
-                'order_id' => $order->id,
-                'status' => EscrowStatus::Initiated
-            ]);
+            foreach ($orders as $order) {
+                $escrow = static::query()->create([
+                    'buyer_id' => $buyer->id,
+                    'seller_id' => $order->seller_id,
+                    'order_id' => $order->id,
+                    'status' => EscrowStatus::Initiated
+                ]);
 
-            $escrow->buyer->wallet->withdraw($order->amount);
-            $escrow->seller->escrow_wallet->deposit($order->amount);
+                $escrow->buyer->wallet->withdraw($order->amount);
+                $escrow->seller->escrow_wallet->deposit($order->amount);
+            }
 
             DB::commit();
             return $escrow;

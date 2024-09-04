@@ -48,9 +48,11 @@ class VerifyPaymentController extends Controller
             DB::transaction(function () use ($payment) {
                 $payment->verify();
 
-                if ($order = $payment->order) {
-                    $order->payment_status = 1;
-                    $order->save();
+                if ($orders = $payment->orders) {
+                    foreach ($orders as $order) {
+                        $order->payment_status = 1;
+                        $order->save();
+                    }
                 }elseif($plan_data = $payment->plan){
                     $user = User::find($payment->payable_id);
                     $plan = app('rinvex.subscriptions.plan')->find($plan_data->id);

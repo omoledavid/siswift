@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Enums\CartStatus;
+use App\Enums\OrderStatus;
 use App\Enums\ProductStatus;
 use App\Exceptions\CheckoutException;
 use App\Models\AppliedCoupon;
@@ -21,7 +22,7 @@ use App\Models\User;
 
 trait OrderManager
 {
-    public function checkout($request, $type): Order|bool
+    public function checkout($request, $type): \Illuminate\Database\Eloquent\Collection|bool|array
     {
         $general = GeneralSetting::query()->first();
 
@@ -73,7 +74,7 @@ trait OrderManager
             $order->user_id = auth()->user()->id;
             $order->order_type = $type;
             $order->payment_status = $payment_status ?? 0;
-            $order->total_amount = getAmount($cart_total);
+            $order->total_amount = getAmount($cart->offer_price * $cart->quantity);
             $order->save();
 
             $od = new OrderDetail();
@@ -82,6 +83,7 @@ trait OrderManager
             $od->quantity = $cart->quantity;
             $od->base_price = $cart->offer_price;
             $od->seller_id = $cart->product->seller_id ?? null;
+            $order->total_price = getAmount($cart->offer_price * $cart->quantity);
             $od->save();
         }
 
@@ -105,7 +107,8 @@ trait OrderManager
         foreach ($carts_data as $cart) {
             $cart->delete();
         }
+        $allOrders = Order::query()->where('user_id', auth()->user()->id)->where('status', OrderStatus::PENDING)->get();
 
-        return $order;
+        return $allOrders;
     }
 }

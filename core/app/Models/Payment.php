@@ -7,6 +7,7 @@ use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 /**
@@ -30,8 +31,8 @@ class Payment extends Model
     public static function make(User $user, float $money, string $gateway, string $callback_url, ?string $description = null, ?Order $order = null, ?Plan $plan = null): static | Model
     {
         return $user->payments()->create([
-//            'order_id' => $order->id,
-//            'plan_id' => $plan->id,
+            'order_id' => $order->id,
+            'plan_id' => $plan->id,
             'reference' => Str::uuid(),
             'amount' => $money,
             'status' => self::StatusPending,
@@ -63,9 +64,9 @@ class Payment extends Model
         return $this->morphTo();
     }
 
-    public function order()
+    public function orders(): HasMany
     {
-        return $this->belongsTo(Order::class);
+        return $this->hasMany(Order::class);
     }
     public function plan(){
         return $this->belongsTo(Plan::class);

@@ -49,7 +49,7 @@ class CheckoutController extends Controller
             }
 
 
-            if(!$order = $this->checkout($request, $request->type)){
+            if(!$orders = $this->checkout($request, $request->type)){
                 return response()->json([
                     'status' => 'error',
                     'message' => 'You don\'t have enough Money for this order',
@@ -59,7 +59,7 @@ class CheckoutController extends Controller
             if($request->get('escrow') == 1){
                 $escrow = Escrow::start(
                     $request->user(),
-                    $order
+                    $orders
                 );
 
                 User_notification::send($request->user(), 'Order placed');
@@ -67,7 +67,7 @@ class CheckoutController extends Controller
                 return response()->json([
                     'status' => 'success',
                     'message' => 'order created, Escrow system initiated',
-                    'data' => compact('order', 'escrow')
+                    'data' => compact('orders', 'escrow')
                 ]);
             }
 
@@ -80,7 +80,10 @@ class CheckoutController extends Controller
 
             $this->paymentService = new AutomaticPaymentService($gateway);
 
-            $payment = Payment::make($request->user(), $order->total_amount, 'paystack', $request->callback_url, order: $order);
+            // Sum up the total_amount from all orders
+            $totalAmount = $orders->sum('total_amount');
+
+            $payment = Payment::make($request->user(), $totalAmount, 'paystack', $request->callback_url, order: $orders);
 
             $paymentUrl = $this->paymentService->generatePaymentLink($payment);
 
@@ -88,13 +91,14 @@ class CheckoutController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'data' => compact('paymentUrl', 'order')
+                'data' => compact('paymentUrl', 'orders')
             ]);
+
         } catch (CheckoutException $e) {
             return response(status: 400)->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
-                'data' => $order
+                'data' => $orders
             ]);
         }
     }
