@@ -109,13 +109,12 @@ trait CartManager
                 return response()->json(['message' => 'Seller wasn\'t found'], 404);
             }
 
-            $hash = $this->generateHash($receiver->id, $sender->id);
 
 
             // Check if an existing conversation exists between the sender and receiver for the specific product
             $existingChat = Conversation::query()->where('product_id', $product->id)
                 ->where('buyer_id', $sender->id)
-                ->where('seller_id', $receiver->id)
+                ->where('seller_id', $receiver->seller_id)
                 ->first();
 
             if (!$existingChat) {
@@ -123,7 +122,7 @@ trait CartManager
                 $conversation = Conversation::create([
                     'product_id' => $product->id,
                     'buyer_id' => $sender->id,
-                    'seller_id' => $receiver->id,
+                    'seller_id' => $receiver->seller_id,
                     'is_active' => true,
                 ]);
                 $message = $conversation->messages()->create([
