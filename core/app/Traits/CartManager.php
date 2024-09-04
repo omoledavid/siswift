@@ -131,7 +131,7 @@ trait CartManager
                         'title' => 'offer',
                         'amount' => $request->offer_price,
                         'product' => $product,
-                        'cart_id' => $cart->id,
+                        'cart' => $cart,
                     ]),
                 ]);
             } else {
@@ -140,7 +140,7 @@ trait CartManager
                     'message' => json_encode([
                         'title' => 'offer',
                         'amount' => $request->offer_price,
-                        'cart_id' => $cart->id,
+                        'cart' => $cart,
                         'product' => $product,
                     ]),
                 ]);
