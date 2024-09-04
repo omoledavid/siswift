@@ -29,7 +29,7 @@ class OrderController extends Controller
     public function show(OrderDetail $order){
         return response()->json([
             'order' => $order,
-            'order detail' => $order->order
+            'order_detail' => $order->order
         ]);
     }
     public function pendingOrders($type, $status = null) {

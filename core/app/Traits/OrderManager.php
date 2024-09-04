@@ -66,15 +66,15 @@ trait OrderManager
             $cart_total = $cart->offer_price * $cart->quantity;
         }
 
-        $order = new Order();
-        $order->order_number = getTrx();
-        $order->user_id = auth()->user()->id;
-        $order->order_type = $type;
-        $order->payment_status = $payment_status ?? 0;
-        $order->save();
-
 
         foreach ($carts_data as $cart) {
+            $order = new Order();
+            $order->order_number = getTrx();
+            $order->user_id = auth()->user()->id;
+            $order->order_type = $type;
+            $order->payment_status = $payment_status ?? 0;
+            $order->save();
+
             $od = new OrderDetail();
             $od->order_id = $order->id;
             $od->product_id = $cart->product_id;

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Review;
 use App\Rules\FileTypeValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,9 +12,11 @@ class ProfileController extends Controller
 {
     public function index(){
         $user = auth()->user();
+        $reviews = Review::where('user_id', $user->id)->with('user')->get();
         return response()->json([
             'status' => 'sucess',
-            'profile' => $user
+            'profile' => $user,
+            'reviews' => $reviews
         ]);
     }
     public function update(Request $request) {
