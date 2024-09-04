@@ -72,6 +72,7 @@ trait OrderManager
             $order = new Order();
             $order->order_number = getTrx();
             $order->user_id = auth()->user()->id;
+            $order->seller_id = $cart->product->seller_id ?? null;
             $order->order_type = $type;
             $order->payment_status = $payment_status ?? 0;
             $order->total_amount = getAmount($cart->offer_price * $cart->quantity);
