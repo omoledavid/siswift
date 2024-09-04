@@ -82,10 +82,10 @@ trait OrderManager
             $od->base_price = $cart->offer_price;
             $od->seller_id = $cart->product->seller_id ?? null;
             $od->save();
-        }
-
         $order->total_amount = getAmount($cart_total);
         $order->save();
+        }
+
         session()->put('order_number', $order->order_number);
 
         $product = Product::where('id', $cart->product_id)->first();
