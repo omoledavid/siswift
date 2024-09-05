@@ -383,7 +383,7 @@ class UserController extends Controller
     }
     public function notifications(){
         $user = auth()->user();
-        $notifications = User_notification::where('user_id', $user->id)->orderBy('id','desc')->limit(5)->get();
+        $notifications = User_notification::where('user_id', $user->id)->orderBy('id','desc')->get();
         if(count($notifications) === 0){
             return response()->json([
                 'message'=>'No notifications',
