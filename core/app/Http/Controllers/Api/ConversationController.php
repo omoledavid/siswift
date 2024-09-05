@@ -19,6 +19,7 @@ class ConversationController extends Controller
         $conversations = Conversation::query()->where('buyer_id', $user->id)
             ->orWhere('seller_id', $user->seller_id)
             ->with('messages.files', 'seller', 'buyer', 'product')
+            ->orderBy('id', 'desc')
             ->get();
 
         return response()->json([
