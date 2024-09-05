@@ -12,11 +12,12 @@ class User_notification extends Model
 
     protected $guarded = [];
 
-    public static function send(User $user, string $content): Model|Builder
+    public static function send(User $user, string $content, ? int $id): Model|Builder
     {
         return static::query()->create([
            'user_id' => $user->id,
            'title' => $content,
+            'click_url' => 'https://siswift.com/app/order/'.$id
         ]);
     }
 

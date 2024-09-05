@@ -62,7 +62,9 @@ class CheckoutController extends Controller
                     $orders
                 );
 
-                User_notification::send($request->user(), 'Order placed');
+                foreach ($orders as $order) {
+                    User_notification::send($request->user(), 'Order placed', $order->id);
+                }
 
                 return response()->json([
                     'status' => 'success',
@@ -87,7 +89,9 @@ class CheckoutController extends Controller
 
             $paymentUrl = $this->paymentService->generatePaymentLink($payment);
 
-            User_notification::send($request->user(), 'Order placed');
+            foreach ($orders as $order) {
+                User_notification::send($request->user(), 'Order placed', $order->id);
+            }
 
             return response()->json([
                 'status' => 'success',
