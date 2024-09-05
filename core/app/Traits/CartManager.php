@@ -116,6 +116,7 @@ trait CartManager
                 ->where('buyer_id', $sender->id)
                 ->where('seller_id', $receiver->seller_id)
                 ->first();
+            dd($cart);
 
             if (!$existingChat) {
                 // Create a new conversation if one does not exist

@@ -22,7 +22,7 @@ protected $guarded = [];
     /**
      * @throws \Exception
      */
-    public static function start(User $buyer, $orders)
+    public static function start(User $buyer, $orders): Model|\Illuminate\Database\Eloquent\Builder
     {
 
         try {
@@ -35,8 +35,8 @@ protected $guarded = [];
                     'status' => EscrowStatus::Initiated
                 ]);
 
-                $escrow->buyer->wallet->withdraw($order->amount);
-                $escrow->seller->escrow_wallet->deposit($order->amount);
+                $escrow->buyer?->wallet?->withdraw($order->amount);
+                $escrow->seller?->escrow_wallet?->deposit($order->amount);
             }
 
             DB::commit();

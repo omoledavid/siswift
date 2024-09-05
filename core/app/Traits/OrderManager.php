@@ -72,7 +72,7 @@ trait OrderManager
             $order = new Order();
             $order->order_number = getTrx();
             $order->user_id = auth()->user()->id;
-            $order->seller_id = $cart->product->seller_id ?? null;
+            $order->seller_id = $cart->product->seller_id;
             $order->order_type = $type;
             $order->payment_status = $payment_status ?? 0;
             $order->total_amount = getAmount($cart->offer_price * $cart->quantity);
@@ -83,7 +83,7 @@ trait OrderManager
             $od->product_id = $cart->product_id;
             $od->quantity = $cart->quantity;
             $od->base_price = $cart->offer_price;
-            $od->seller_id = $cart->product->seller_id ?? null;
+            $od->seller_id = $cart->product->seller_id;
             $order->total_price = getAmount($cart->offer_price * $cart->quantity);
             $od->save();
         }
