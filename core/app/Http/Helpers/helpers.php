@@ -1166,9 +1166,7 @@ function featureValue($feature){
         throw new Exception('Kindly subscribe to plan first');
     }
     $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
-    if($data){
-        return $data;
-    }
+    return $data;
 
 }
 

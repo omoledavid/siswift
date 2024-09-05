@@ -261,7 +261,12 @@ trait CartManager
 //        }
 
         if ($cart) {
-            $request->quantity > 0 ? $cart->quantity  += $request->quantity : $cart->quantity  += max($request->quantity, ($cart->quantity * -1) + 1);
+            // Update the quantity, making sure it doesn't go below 1
+            if ($request->quantity > 0) {
+                $cart->quantity += $request->quantity;
+            } else {
+                $cart->quantity = max($cart->quantity - $request->quantity, 1);
+            }
             if ($request->offer_price) $cart->offer_price   = $request->offer_price;
             if (isset($stock_qty) && $cart->quantity > $stock_qty) {
                 return response()->json(['error' => 'Sorry, You have already added maximum amount of stock']);
