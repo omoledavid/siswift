@@ -411,7 +411,9 @@ class UserController extends Controller
         $notification->read_status = 1;
         $notification->save();
         return response()->json([
+            'status' => true,
             'message'=>'Notification marked as read',
+            'data' => $notification,
         ]);
     }
 }
