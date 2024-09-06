@@ -93,6 +93,8 @@ Route::group([], function () {
         //conversation
         Route::apiResource('conversations', 'ConversationController');
 
+        Route::get('conversations/message/{id}', 'ConversationController@message');
+
         //orders
         Route::apiResource('order', 'OrderController');
         Route::get('orders/{type}', 'OrderController@pendingOrders');

@@ -99,7 +99,7 @@ class TransactionController extends Controller
         if ((int)$escrow->seller_id === (int)request()->user()->seller_id) {
             $escrow->confirm();
             return response()->json([
-                'status' => 'success',
+                'status' => true,
                 'message' => 'Escrow Accepted',
                 'data' => $escrow
             ]);

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CartStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
+use App\Models\Message;
 use App\Models\Product;
 use App\Notifications\MessageReceivedNotification;
 use Illuminate\Http\JsonResponse;
@@ -118,5 +120,18 @@ class ConversationController extends Controller
             'status' => true,
             'message' => 'Conversation closed successfully.'
         ], 200);
+    }
+
+    public function message($id)
+    {
+        $user = auth()->user();
+        $message = Message::query()->where('id', $id)->first();
+        $msg = json_decode($message->message);
+        $val = $msg->cart->status = CartStatus::ACCEPTED;
+        return response()->json([
+            'status' => true,
+            'message' => 'Offer Accepted.',
+            'CartStatus' => $val,
+        ]);
     }
 }
