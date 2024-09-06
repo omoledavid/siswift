@@ -125,6 +125,7 @@ class ConversationController extends Controller
 
     public function message($id)
     {
+        // Get the authenticated user
         $user = auth()->user();
 
         // Retrieve the message by ID
@@ -143,31 +144,26 @@ class ConversationController extends Controller
 
         // Check if the decoded message contains cart data
         if (isset($msg->cart)) {
-            // Find the related cart using the ID from the decoded message
-            $cart = Cart::query()->find($msg->cart->id);
+            // Update the cart's status within the JSON message
+            $msg->cart->status = CartStatus::ACCEPTED;
 
-            if (!$cart) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Cart not found.'
-                ], 404);
+            // Optionally, you could also update the cart model if it exists in your database
+            $cart = Cart::find($msg->cart->id);
+            if ($cart) {
+                $cart->status = CartStatus::ACCEPTED;
+                $cart->save();
             }
 
-            // Update the cart status
-            $cart->status = CartStatus::ACCEPTED;
-            $cart->save();
-
-            // Update the message if necessary (for example, update the JSON message)
-            $msg->cart->status = CartStatus::ACCEPTED;
+            // Save the updated message content back to the message
             $message->message = json_encode($msg);
             $message->save();
 
-            // Respond with success
+            // Respond with the updated cart status and message
             return response()->json([
                 'status' => true,
                 'message' => 'Offer Accepted.',
-                'CartStatus' => $cart->status,
-                'cart' => $cart
+                'CartStatus' => $msg->cart->status,
+                'cart' => $msg->cart
             ]);
         } else {
             return response()->json([
@@ -176,5 +172,6 @@ class ConversationController extends Controller
             ], 400);
         }
     }
+
 
 }
