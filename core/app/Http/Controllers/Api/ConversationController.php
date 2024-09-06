@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\CartStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\Product;
@@ -125,13 +126,55 @@ class ConversationController extends Controller
     public function message($id)
     {
         $user = auth()->user();
+
+        // Retrieve the message by ID
         $message = Message::query()->where('id', $id)->first();
+
+        // Ensure the message exists
+        if (!$message) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Message not found.'
+            ], 404);
+        }
+
+        // Decode the message content (assuming it's JSON)
         $msg = json_decode($message->message);
-        $val = $msg->cart->status = CartStatus::ACCEPTED;
-        return response()->json([
-            'status' => true,
-            'message' => 'Offer Accepted.',
-            'CartStatus' => $val,
-        ]);
+
+        // Check if the decoded message contains cart data
+        if (isset($msg->cart)) {
+            // Find the related cart using the ID from the decoded message
+            $cart = Cart::query()->find($msg->cart->id);
+
+            if (!$cart) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cart not found.'
+                ], 404);
+            }
+
+            // Update the cart status
+            $cart->status = CartStatus::ACCEPTED;
+            $cart->save();
+
+            // Update the message if necessary (for example, update the JSON message)
+            $msg->cart->status = CartStatus::ACCEPTED;
+            $message->message = json_encode($msg);
+            $message->save();
+
+            // Respond with success
+            return response()->json([
+                'status' => true,
+                'message' => 'Offer Accepted.',
+                'CartStatus' => $cart->status,
+                'cart' => $cart
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Cart data not found in the message.'
+            ], 400);
+        }
     }
+
 }
