@@ -16,7 +16,7 @@ class ChatController extends Controller
         $user = User::find($id);
         $pageTitle = "Chats of ". $user->userfullname;
         $messages = Message::query()->where('user_id', $user->id)->with('conversation')->latest()->get();
-        $conversations = Conversation::query()->where('buyer_id', $user->id)->orWhere('seller_id', $user->id)->latest()->get();
+        $conversations = Conversation::query()->where('buyer_id', $user->id)->orWhere('seller_id', $user->seller_id)->latest()->get();
         return view('admin.message.index', compact('pageTitle', 'messages','user', 'conversations'));
     }
     public function chat($conversionId, $user): View
