@@ -83,13 +83,12 @@ trait CartManager
 //        }
 
         if ($cart) {
-            $request->quantity > 0 ? $cart->quantity  += $request->quantity : $cart->quantity  += max($request->quantity, ($cart->quantity * -1) + 1);
+            $cart->quantity  = $request->quantity;
             if ($request->offer_price) $cart->offer_price   = $request->offer_price;
             if (isset($stock_qty) && $cart->quantity > $stock_qty) {
                 return response()->json(['error' => 'Sorry, You have already added maximum amount of stock']);
             }
 
-            $cart->save();
         } else {
             $cart = new Cart();
             $cart->user_id    = auth()->user()->id ?? null;
@@ -98,9 +97,12 @@ trait CartManager
             $cart->product_id = $request->product_id;
             $cart->quantity   = max($request->quantity, 1);
             if ($request->offer_price) $cart->offer_price   = $request->offer_price;
-            $cart->save();
         }
+        $cart->status = CartStatus::ACCEPTED;
+        $cart->save();
         if ($product->base_price !== $request->offer_price) {
+            $cart->status = CartStatus::PENDING;
+            $cart->save();
 
             $sender = auth()->user();
             $receiverSellerId = $product->seller_id;
@@ -151,8 +153,6 @@ trait CartManager
 // Notify the receiver (seller or buyer) about the new message
 //            $recipient = $sender->id == $existingChat->buyer_id ? $existingChat->seller : $existingChat->buyer;
 //            $recipient->notify(new MessageReceivedNotification($message));
-            $cart->status = CartStatus::REJECTED;
-            $cart->save();
 
             return [
                 'cart' => $cart,
