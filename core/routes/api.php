@@ -103,7 +103,7 @@ Route::group([], function () {
         Route::get('orders/{type}/{status}', 'OrderController@pendingOrders');
 
         //offer to accept or reject
-        Route::post('offer/{type}', 'CartController@offer');
+        Route::post('offer/{type}/{id}', 'CartController@offer');
 
         //user
         Route::get('notifications', 'UserController@notifications');

@@ -125,8 +125,6 @@ class ConversationController extends Controller
 
     public function message($id)
     {
-        // Get the authenticated user
-        $user = auth()->user();
 
         // Retrieve the message by ID
         $message = Message::query()->where('id', $id)->first();
