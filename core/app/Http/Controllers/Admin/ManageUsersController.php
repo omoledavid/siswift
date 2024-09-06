@@ -126,7 +126,7 @@ class ManageUsersController extends Controller
         $totalSold = OrderDetail::query()->where('seller_id', $user->seller_id)->sum('base_price');
         $totalWithdraw = Withdrawal::query()->where('seller_id',$user->seller_id)->where('status',1)->sum('amount');
         $totalProducts = Product::query()->where('seller_id',$user->seller_id)->count();
-        $totalMessages = Conversation::query()->where('buyer_id',$user->id)->orWhere('seller_id', $user->id)->count();
+        $totalMessages = Conversation::query()->where('buyer_id',$user->id)->orWhere('seller_id', $user->seller_id)->count();
         $countries = json_decode(file_get_contents(resource_path('views/partials/country.json')));
         return view('admin.users.detail', compact('pageTitle', 'user', 'totalDeposit', 'totalTransaction', 'countries', 'totalOrders', 'totalSold', 'totalWithdraw', 'totalProducts','totalMessages'));
     }

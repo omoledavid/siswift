@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\CartStatus;
 use App\Models\AssignProductAttribute;
 use App\Models\Cart;
 use App\Models\Conversation;
@@ -150,7 +151,7 @@ trait CartManager
 // Notify the receiver (seller or buyer) about the new message
 //            $recipient = $sender->id == $existingChat->buyer_id ? $existingChat->seller : $existingChat->buyer;
 //            $recipient->notify(new MessageReceivedNotification($message));
-            $cart->status = 0;
+            $cart->status = CartStatus::REJECTED;
             $cart->save();
 
             return [
