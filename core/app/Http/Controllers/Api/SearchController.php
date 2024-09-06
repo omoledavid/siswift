@@ -12,7 +12,7 @@ class SearchController extends Controller
     public function search(Request $request)
     {
         // Initialize the query builder
-        $query = Product::query();
+        $query = Product::query()->where('status', ProductStatus::ACTIVE);
 
         // Filter by brand
         if ($request->has('brand') && $request->brand != '') {
