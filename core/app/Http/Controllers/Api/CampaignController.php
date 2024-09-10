@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Campaign;
 use App\Models\Plan;
+use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CampaignController extends Controller
@@ -22,23 +24,28 @@ class CampaignController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validatedData = $request->validate([
-           'product_id' => ['required', 'exists:products,id'],
+            'product_id' => ['required', 'exists:products,id'],
         ]);
 
         $validatedData['clicks'] = [];
         $validatedData['message'] = [];
         $validatedData['user_id'] = $request->user()->id;
-        $campaignExist = Campaign::where('product_id', $validatedData['product_id'])->where('user_id', $validatedData['user_id'])->first();
+        $campaignExist = Campaign::query()->where('product_id', $validatedData['product_id'])->where('user_id', $validatedData['user_id'])->first();
         if ($campaignExist) {
             return response()->json(['You already boosted this product'], 400);
         }
         $campaign = Campaign::query()->create($validatedData);
+
+        $product = Product::query()->where('id', $validatedData['product_id'])->first();
+
+        $product->is_featured = 1;
+        $product->save();
 
 
         return response()->json([
@@ -50,7 +57,7 @@ class CampaignController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -61,8 +68,8 @@ class CampaignController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, Campaign $campaign)
@@ -88,14 +95,16 @@ class CampaignController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
     }
-    public function campaignData(){
+
+    public function campaignData()
+    {
         $user = auth()->user();
         $campaigns = Campaign::where('user_id', $user->id)->get();
         return response()->json([
