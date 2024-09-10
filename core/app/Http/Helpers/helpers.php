@@ -816,6 +816,10 @@ function imagePath()
         'size' => '200x150',
     ];
 
+    $data['messages'] = [
+        'path' => 'assets/images/messages',
+    ];
+
     return $data;
 }
 

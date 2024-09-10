@@ -91,17 +91,18 @@ class ConversationController extends Controller
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
-                $filePath = $file->store('uploads/messages', 'public');
-                $message->files()->create(['file_path' => $filePath]);
+                $location = imagePath()['messages']['path'];
+                $filename = uploadImage($file, $location,);
+                $message->files()->create(['file_path' => $filename]);
             }
         }
 
         // Notify the other user
-        $recipient = $request->user()->id == $conversation->buyer_id ? $conversation->seller : $conversation->buyer;
-        notify($recipient, 'RECEIVED_MESSAGE', [
-            'user_name' => $recipient->fullname,
-            'buyer_name' => $request->user()->fullname,
-        ]);
+//        $recipient = $request->user()->id == $conversation->buyer_id ? $conversation->seller : $conversation->buyer;
+//        notify($recipient, 'RECEIVED_MESSAGE', [
+//            'user_name' => $recipient->fullname,
+//            'buyer_name' => $request->user()->fullname,
+//        ]);
 //        $recipient->notify(new MessageReceivedNotification($message));
 
         return response()->json([
