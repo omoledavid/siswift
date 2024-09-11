@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Feature;
 use App\Enums\ProductStatus;
+use App\Models\ProductView;
 use App\Traits\ShopManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,12 @@ use Laravel\Ui\Presets\React;
 class ProductController extends Controller
 {
     use ProductManager, ShopManager;
+
+    public function __construct()
+    {
+        $this->middleware('web');
+    }
+
 
     protected function seller()
     {
@@ -57,13 +64,30 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        $user = auth()->user();
+        $viewedProduct = ProductView::query()->where('user_id', $user->id)
+            ->where('product_id', $product->id)
+            ->exists();
+        if(!$viewedProduct)
+        {
+            $product->views += 1;
+            $product->save();
+
+            ProductView::create([
+                'user_id' => $user->id,
+                'product_id' => $product->id
+            ]);
+        }
+        // Fetch suggested products
         $suggestedProduct = Product::where('status', ProductStatus::ACTIVE)->orderBy('sold', 'desc')->get();
+
         return response()->json([
             'status' => 'success',
             'data' => $product,
             'suggest' => $suggestedProduct
         ]);
     }
+
 
     public function sellerProducts()
     {
@@ -251,26 +275,61 @@ class ProductController extends Controller
             'product' => $product
         ]);
     }
+
     public function stats($id): JsonResponse
     {
+        // Find the product by ID, or fail if not found
+        $product = Product::findOrFail($id);
+
+        // Get the current month start and end dates
+        $currentMonthStart = now()->startOfMonth();
+        $currentMonthEnd = now()->endOfMonth();
+
+        // Get the last month start and end dates
+        $lastMonthStart = now()->subMonth()->startOfMonth();
+        $lastMonthEnd = now()->subMonth()->endOfMonth();
+
+        // All-time stats (from the product columns directly)
+        $allStats = [
+            'views' => $product->views,
+            'chats' => $product->chats,
+            'sold' => $product->sold,
+        ];
+
+        // This month stats (assuming you store timestamps for views, chats, and sold events)
+        $thisMonthStats = [
+            'views' => $product->where('id', $id)
+                ->whereBetween('updated_at', [$currentMonthStart, $currentMonthEnd])
+                ->sum('views'),
+            'chats' => $product->where('id', $id)
+                ->whereBetween('updated_at', [$currentMonthStart, $currentMonthEnd])
+                ->sum('chats'),
+            'sold' => $product->where('id', $id)
+                ->whereBetween('updated_at', [$currentMonthStart, $currentMonthEnd])
+                ->sum('sold'),
+        ];
+
+        // Last month stats
+        $lastMonthStats = [
+            'views' => $product->where('id', $id)
+                ->whereBetween('updated_at', [$lastMonthStart, $lastMonthEnd])
+                ->sum('views'),
+            'chats' => $product->where('id', $id)
+                ->whereBetween('updated_at', [$lastMonthStart, $lastMonthEnd])
+                ->sum('chats'),
+            'sold' => $product->where('id', $id)
+                ->whereBetween('updated_at', [$lastMonthStart, $lastMonthEnd])
+                ->sum('sold'),
+        ];
+
+        // Return the stats as JSON
         return response()->json([
             'status' => true,
-            'all_stats' => [
-                'views' => 0,
-                'charts' => 0,
-                'sold' => 0,
-            ],
-            'this_month' => [
-                'views' => 0,
-                'charts' => 0,
-                'sold' => 0,
-            ],
-            'last_month' => [
-                'views' => 0,
-                'charts' => 0,
-                'sold' => 0,
-            ]
-
+            'all_stats' => $allStats,
+            'this_month' => $thisMonthStats,
+            'last_month' => $lastMonthStats,
         ]);
     }
+
+
 }

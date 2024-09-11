@@ -34,6 +34,7 @@ class ConversationController extends Controller
     // Start a new conversation
     public function store(Request $request)
     {
+        // Validate the incoming request
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
@@ -41,15 +42,21 @@ class ConversationController extends Controller
         $productId = $request->product_id;
         $buyerId = $request->user()->id;
 
-        // Retrieve the seller_id using the product_id
+        // Retrieve the product and seller_id
         $product = Product::findOrFail($productId);
-        $sellerId = $product->seller_id; // Assuming that the product has a user_id field for the seller
+        $sellerId = $product->seller_id; // Ensure that seller_id exists on the product
 
+        // Check if a conversation already exists, and create it if it doesn't
         $conversation = Conversation::firstOrCreate([
             'product_id' => $productId,
             'buyer_id' => $buyerId,
             'seller_id' => $sellerId,
         ]);
+
+        // Only increment the chat count if this is a new conversation
+        if ($conversation->wasRecentlyCreated) {
+            $product->increment('chats');
+        }
 
         return response()->json([
             'status' => true,
@@ -92,7 +99,7 @@ class ConversationController extends Controller
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 $location = imagePath()['messages']['path'];
-                $filename = uploadImage($file, $location,);
+                $filename = uploadImage($file, $location);
                 $message->files()->create(['file_path' => $filename]);
             }
         }
