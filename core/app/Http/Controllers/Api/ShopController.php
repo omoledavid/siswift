@@ -62,7 +62,7 @@ class ShopController extends Controller
         $seller = auth()->user();
         $order['pending']       = OrderDetail::pendingOrder()->where('seller_id',$seller->id)->count();
         $order['processing']    = OrderDetail::processingOrder()->where('seller_id',$seller->id)->count();
-        $order['delivered']     = OrderDetail::deliveredOrder()->where('seller_id',$seller->id)->count();
+        $order['delivered']     = OrderDetail::completedOrder()->where('seller_id',$seller->id)->count();
         $order['cancelled']     = OrderDetail::cancelledOrder()->where('seller_id',$seller->id)->count();
         $product['approved']    = Product::active()->where('seller_id',$seller->id)->count();
         $product['pending']     = Product::pending()->where('seller_id',$seller->id)->count();
