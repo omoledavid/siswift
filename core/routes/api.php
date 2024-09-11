@@ -26,6 +26,7 @@ Route::group([], function () {
         //products
 		Route::apiResource('products', 'ProductController');
 		Route::get('seller-products', 'ProductController@sellerProducts');
+        Route::get('stats/{id}', 'ProductController@stats');
 
         //delist
         Route::get('delist/{id}', 'ProductController@delist');

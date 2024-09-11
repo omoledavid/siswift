@@ -63,7 +63,7 @@ class PlanController extends Controller
 
     public function update($id)
     {
-        $pageTitle = "Create Plan";
+        $pageTitle = "Edit Plan";
         $plan = app('rinvex.subscriptions.plan')->find($id);
 
         // Transform the features collection into an associative array
@@ -74,7 +74,10 @@ class PlanController extends Controller
 
     public function updatePlan(Request $request)
     {
+        // Find the plan by ID
         $plan = app('rinvex.subscriptions.plan')->find($request->plan_id);
+
+        // Update the plan details
         $plan->update([
             'name' => $request->get('name'),
             'description' => $request->get('description'),
@@ -86,11 +89,55 @@ class PlanController extends Controller
             'trial_interval' => $request->get('trial_interval'),
             'sort_order' => $request->get('order'),
             'currency' => 'NGN',
-            'type' => $request->type
+            'type' => $request->type,
         ]);
+
+        // Loop through the plan's features and update their values based on slug
+        foreach ($plan->features as $feature) {
+            switch ($feature->name) {
+                case 'photo_upload':
+                    $feature->update(['value' => $request->get('photo_upload')]);
+                    break;
+                case 'visibility':
+                    $feature->update(['value' => $request->get('visibility')]);
+                    break;
+                case 'analytics':
+                    $feature->update(['value' => $request->get('analytics')]);
+                    break;
+                case 'promote_listing':
+                    $feature->update(['value' => $request->get('promote_listing')]);
+                    break;
+                case 'highlights':
+                    $feature->update(['value' => $request->get('highlights')]);
+                    break;
+                case 'ad_free':
+                    $feature->update(['value' => $request->get('ad_free')]);
+                    break;
+                case 'support':
+                    $feature->update(['value' => $request->get('support')]);
+                    break;
+                case 'whatsapp':
+                    $feature->update(['value' => $request->get('whatsapp')]);
+                    break;
+                case 'extra_no':
+                    $feature->update(['value' => $request->get('extra_no')]);
+                    break;
+                case 'promotion':
+                    $feature->update(['value' => $request->get('promotion')]);
+                    break;
+                case 'social':
+                    $feature->update(['value' => $request->get('social')]);
+                    break;
+                case 'manager':
+                    $feature->update(['value' => $request->get('manager')]);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Success notification
         $notify[] = ['success', 'Plan detail has been updated'];
         return redirect()->route('admin.plan.index')->withNotify($notify);
     }
-
-
 }

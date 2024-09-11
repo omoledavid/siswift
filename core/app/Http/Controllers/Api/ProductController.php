@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\Feature;
 use App\Enums\ProductStatus;
 use App\Traits\ShopManager;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
 use App\Traits\ProductManager;
@@ -248,6 +249,28 @@ class ProductController extends Controller
             'status' => true,
             'message' => 'Product has been relisted',
             'product' => $product
+        ]);
+    }
+    public function stats($id): JsonResponse
+    {
+        return response()->json([
+            'status' => true,
+            'all_stats' => [
+                'views' => 0,
+                'charts' => 0,
+                'sold' => 0,
+            ],
+            'this_month' => [
+                'views' => 0,
+                'charts' => 0,
+                'sold' => 0,
+            ],
+            'last_month' => [
+                'views' => 0,
+                'charts' => 0,
+                'sold' => 0,
+            ]
+
         ]);
     }
 }

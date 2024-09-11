@@ -125,7 +125,7 @@
                     </div>
                 </div>
                 {{-- feature for plans --}}
-                {{-- <div class="card p-2 my-3">
+                <div class="card p-2 my-3">
                     <div class="card-header">
                         <h5 class="card-title mb-0">@lang('Plan features')</h5>
                     </div>
@@ -249,7 +249,7 @@
                         </div>
 
                     </div>
-                </div> --}}
+                </div>
                 <button type="submit" class="btn btn-block btn--success mt-3">Update</button>
             </form>
         </div>

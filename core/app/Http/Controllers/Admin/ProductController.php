@@ -8,6 +8,7 @@ use App\Models\ProductImage;
 use App\Models\ProductReview;
 use App\Models\ProductStock;
 use App\Rules\FileTypeValidate;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\ProductManager;
@@ -216,5 +217,6 @@ class ProductController extends Controller
 
         return redirect()->back()->withNotify($storeImages);
     }
+
 
 }
