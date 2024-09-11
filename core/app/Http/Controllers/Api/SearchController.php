@@ -25,6 +25,10 @@ class SearchController extends Controller
                 $q->where('category_id', $request->category);
             });
         }
+        //Filter by is_featured
+        if ($request->has('is_featured') && $request->category != '') {
+            $query->where('is_featured', 1);
+        }
 
         // Filter by location
         if ($request->has('state') && $request->state != '') {
