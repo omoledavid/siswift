@@ -31,6 +31,7 @@ class CampaignController extends Controller
     {
         $validatedData = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
+            'plan_id' => ['required', 'exists:plans,id'],
         ]);
 
         $validatedData['clicks'] = [];
@@ -46,6 +47,13 @@ class CampaignController extends Controller
 
         $product->is_featured = 1;
         $product->save();
+        $plan = Plan::query()->find($request->get('plan_id'));
+
+        $campaign->update([
+            'plan_id' => $request->get('plan_id'),
+            'start_date' => now(),
+            'end_date' => now()->add($plan->invoice_period, $plan->invoice_interval)
+        ]);
 
 
         return response()->json([
@@ -72,7 +80,7 @@ class CampaignController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Campaign $campaign)
+    public function update(Request $request, Campaign $campaign): JsonResponse
     {
         $request->validate([
             'plan_id' => ['required', 'exists:plans,id'],
