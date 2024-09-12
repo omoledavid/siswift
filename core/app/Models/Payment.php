@@ -31,8 +31,8 @@ class Payment extends Model
     public static function make(User $user, float $money, string $gateway, string $callback_url, ?string $description = null, ?Order $order = null, ?Plan $plan = null): static | Model
     {
         return $user->payments()->create([
-            'order_id' => $order->id,
-            'plan_id' => $plan->id,
+            'order_id' => $order->id ?? null,
+            'plan_id' => $plan->id ?? null,
             'reference' => Str::uuid(),
             'amount' => $money,
             'status' => self::StatusPending,
