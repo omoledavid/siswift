@@ -14,6 +14,7 @@ use App\Models\GeneralSetting;
 use App\Lib\GoogleAuthenticator;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Facades\Log;
 
 function sellerSidebarVariation()
 {
@@ -1162,16 +1163,22 @@ function canUse($feature){
 /**
  * @throws Exception
  */
-function featureValue($feature){
+function featureValue($feature)
+{
     $user = auth()->user();
     try {
         $plan_name = $user->subscription->slug;
     } catch (\Exception $e) {
+        Log::error('Subscription Error:', ['message' => $e->getMessage()]);
         throw new Exception('Kindly subscribe to plan first');
     }
-    $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
-    return $data;
 
+    $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
+
+    Log::info('Feature Value Retrieved:', ['feature' => $feature, 'data' => $data]);
+
+    return $data;
 }
+
 
 
