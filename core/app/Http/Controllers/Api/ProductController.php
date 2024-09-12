@@ -14,7 +14,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Traits\ProductVariantManager;
-use Illuminate\Support\Facades\Log;
 use Laravel\Ui\Presets\React;
 
 class ProductController extends Controller
@@ -139,7 +138,7 @@ class ProductController extends Controller
 
     private function getValidatedMaxPhotos($featureValue)
     {
-        $maxPhotos = $this->featureVal($featureValue);
+        $maxPhotos = featureValue($featureValue);
 
         // Ensure the value is an integer and is greater than 0
         return is_numeric($maxPhotos) && $maxPhotos > 0 ? (int) $maxPhotos : 0;
@@ -351,26 +350,6 @@ class ProductController extends Controller
             'this_month' => $thisMonthStats,
             'last_month' => $lastMonthStats,
         ]);
-    }
-    public function featureVal($feature)
-    {
-        $user = auth()->user();
-
-        try {
-            $plan_name = $user->subscription->plan_id;
-            Log::info('Plan Name Retrieved:', ['plan_name' => $plan_name]);
-        } catch (\Exception $e) {
-            Log::error('Subscription Error:', ['message' => $e->getMessage()]);
-            throw new \Exception('Kindly subscribe to plan first');
-        }
-        $plan = app('rinvex.subscriptions.plan')->find($plan_name);
-
-//    $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
-        $data = $plan->getFeatureBySlug($feature)->value;
-
-        Log::info('Feature Value Retrieved:', ['feature' => $feature, 'data' => $data]);
-
-        return $data;
     }
 
 

@@ -1167,22 +1167,47 @@ function featureValue($feature)
 {
     $user = auth()->user();
 
+    if (!$user) {
+        Log::error('User Not Authenticated');
+        throw new Exception('User not authenticated');
+    }
+
     try {
+        // Ensure subscription exists and has a valid plan_id
+        if (!$user->subscription || !$user->subscription->plan_id) {
+            throw new Exception('Subscription or Plan ID not found');
+        }
+
         $plan_name = $user->subscription->plan_id;
         Log::info('Plan Name Retrieved:', ['plan_name' => $plan_name]);
     } catch (\Exception $e) {
         Log::error('Subscription Error:', ['message' => $e->getMessage()]);
         throw new Exception('Kindly subscribe to plan first');
     }
+
+    // Ensure that the plan object is retrieved correctly
     $plan = app('rinvex.subscriptions.plan')->find($plan_name);
 
-//    $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
-    $data = $plan->getFeatureBySlug($feature)->value;
+    if (!$plan) {
+        Log::error('Plan Not Found:', ['plan_id' => $plan_name]);
+        throw new Exception('Plan not found');
+    }
+
+    // Ensure that the feature and its value are correctly accessed
+    $feature = $plan->getFeatureBySlug($feature);
+
+    if (!$feature) {
+        Log::error('Feature Not Found:', ['feature_slug' => $feature]);
+        throw new Exception('Feature not found');
+    }
+
+    $data = $feature->value;
 
     Log::info('Feature Value Retrieved:', ['feature' => $feature, 'data' => $data]);
 
     return $data;
 }
+
 
 
 
