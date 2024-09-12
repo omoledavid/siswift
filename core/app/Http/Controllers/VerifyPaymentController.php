@@ -39,37 +39,45 @@ class VerifyPaymentController extends Controller
 
             $this->paymentService = new AutomaticPaymentService($gateway);
 
-
             if (!$this->paymentService->confirmPayment($payment)) {
                 throw new GatewayError('Invalid payment reference');
             }
 
-
+            // Use DB transaction to handle payment verification and subsequent actions
             DB::transaction(function () use ($payment) {
                 $payment->verify();
 
-                if ($orders = $payment->orders) {
-                    foreach ($orders as $order) {
+                // Sequential check for orders, plan data, and fallback to wallet deposit
+                if ($payment?->order_id != null) {
+                    // If there are orders, update the payment status for each
+                    foreach ($payment->orders as $order) {
                         $order->payment_status = 1;
                         $order->save();
                     }
-                }elseif($plan_data = $payment->plan){
+                } elseif ($payment?->plan_id != null) {
+                    // If there's a plan, subscribe the user to the plan
                     $user = User::find($payment->payable_id);
-                    $plan = app('rinvex.subscriptions.plan')->find($plan_data->id);
+                    $plan = app('rinvex.subscriptions.plan')->find($payment->plan->id);
                     $user->newPlanSubscription($plan->name, $plan);
                 } else {
+                    // If neither orders nor plan exist, deposit the payment into the wallet
                     $payment->payable->wallet->deposit($payment->amount, [
                         'description' => $payment->data['description'],
-                        'payment_reference' => $payment->reference
+                        'payment_reference' => $payment->reference,
                     ]);
                 }
 
             });
+
+            // Redirect to success callback URL after transaction is successful
             return $this->redirectToCallbackUrl($payment, 'success');
+
         } catch (GatewayError $e) {
+            // Handle any gateway error and redirect to failure callback URL
             return $this->redirectToCallbackUrl($payment, 'failed');
         }
     }
+
 
     private function redirectToCallbackUrl($payment, $status)
     {
