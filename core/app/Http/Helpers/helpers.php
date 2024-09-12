@@ -1171,6 +1171,7 @@ function featureValue($feature){
     }
     $plan = \Rinvex\Subscriptions\Models\Plan::where('id', $plan_name)->first();
     $data = $plan->getFeatureBySlug($feature)->value;
+    dd($data);
     return $data;
 }
 
