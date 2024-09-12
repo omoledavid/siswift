@@ -12,6 +12,7 @@ use App\Models\SmsTemplate;
 use App\Models\EmailTemplate;
 use App\Models\GeneralSetting;
 use App\Lib\GoogleAuthenticator;
+use Illuminate\Support\Facades\Log;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -1162,16 +1163,37 @@ function canUse($feature){
 /**
  * @throws Exception
  */
-function featureValue($feature){
+function featureValue($feature) {
     $user = auth()->user();
-    try {
-        $plan_name = $user->subscription->slug;
-        $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
-    } catch (\Exception $e) {
-        throw new Exception('Kindly subscribe to plan first');
-    }
-    return $data;
 
+    Log::info('Authenticated User:', ['user' => $user]);
+
+    try {
+        $plan_name = $user->subscription->plan_id;
+        Log::info('Plan Name Retrieved:', ['plan_name' => $plan_name]);
+
+        // Ensure that plan_name is not null or empty
+        if (!$plan_name) {
+            throw new Exception('Plan name is missing');
+        }
+
+        $plan = app('rinvex.subscriptions.plan')->find($plan_name);
+
+        // Check if plan is retrieved successfully
+        if (!$plan) {
+            throw new Exception('Plan not found');
+        }
+
+        $data = $plan->getFeatureBySlug($feature)?->value;
+
+        Log::info('Feature Value Retrieved:', ['feature' => $feature, 'data' => $data]);
+
+        return $data;
+    } catch (\Exception $e) {
+        Log::error('Feature Value Error:', ['message' => $e->getMessage()]);
+        throw $e;
+    }
 }
+
 
 
