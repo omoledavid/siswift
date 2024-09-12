@@ -1170,7 +1170,7 @@ function featureValue($feature){
         throw new Exception('Kindly subscribe to plan first');
     }
     $plan = \Rinvex\Subscriptions\Models\Plan::where('id', $plan_name)->first();
-    $data = $plan->getFeatureBySlug($feature)->value;
+    $data = $plan->getFeatureBySlug($feature);
     dd($data);
     return $data;
 }
