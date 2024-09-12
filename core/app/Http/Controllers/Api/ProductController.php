@@ -104,8 +104,8 @@ class ProductController extends Controller
     {
         $user = auth()->user();
 
-        // Get the maximum number of photos allowed
-        $maxPhotos = featureValue(Feature::UPLOAD->value);
+        // Get the maximum number of photos allowed and ensure it's a number
+        $maxPhotos = $this->getValidatedMaxPhotos(Feature::UPLOAD->value);
 
         // Count the number of photos in the request
         $photoCount = is_array($request->photos) ? count($request->photos) : 0;
@@ -135,6 +135,15 @@ class ProductController extends Controller
             'data' => $data
         ]);
     }
+
+    private function getValidatedMaxPhotos($featureValue)
+    {
+        $maxPhotos = featureValue($featureValue);
+
+        // Ensure the value is an integer and is greater than 0
+        return is_numeric($maxPhotos) && $maxPhotos > 0 ? (int) $maxPhotos : 0;
+    }
+
 
 
     public function update(Request $request, Product $product)
