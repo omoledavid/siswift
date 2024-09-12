@@ -103,27 +103,39 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-        $valData = 4;
+
+        // Get the maximum number of photos allowed
+        $maxPhotos = featureValue(Feature::UPLOAD->value);
+
+        // Count the number of photos in the request
         $photoCount = is_array($request->photos) ? count($request->photos) : 0;
-        if ($photoCount > $valData) {
+
+        // Check if the number of photos exceeds the allowed limit
+        if ($photoCount > $maxPhotos) {
             return response()->json([
                 'status' => 'failed',
-                'message' => "You can only upload". $valData. " photos at a time",
+                'message' => "You can only upload {$maxPhotos} photos at a time",
             ], 400);
-        };
+        }
+
+        // Store the product and check if the creation was successful
         $data = $this->storeProduct($request, null, $this->id());
+
         if (!$data) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Create shop to continue',
             ]);
         }
+
+        // Return a success response with the created product data
         return response()->json([
             'status' => 'success',
             'message' => 'Product created successfully',
             'data' => $data
         ]);
     }
+
 
     public function update(Request $request, Product $product)
     {
