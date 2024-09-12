@@ -103,12 +103,12 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-        $valData = featureValue(Feature::UPLOAD->value);
+        $valData = 4;
         $photoCount = is_array($request->photos) ? count($request->photos) : 0;
         if ($photoCount > $valData) {
             return response()->json([
                 'status' => 'failed',
-                'message' => "You can only upload". $valData. " photos at a time 45",
+                'message' => "You can only upload". $valData. " photos at a time",
             ], 400);
         };
         $data = $this->storeProduct($request, null, $this->id());
