@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Feature;
 use App\Enums\ProductStatus;
+use App\Models\Plan;
 use App\Models\ProductView;
 use App\Traits\ShopManager;
 use Illuminate\Http\JsonResponse;
@@ -15,6 +16,7 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Traits\ProductVariantManager;
 use Laravel\Ui\Presets\React;
+use Rinvex\Subscriptions\Models\PlanFeature;
 
 class ProductController extends Controller
 {

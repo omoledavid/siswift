@@ -1165,14 +1165,13 @@ function canUse($feature){
 function featureValue($feature){
     $user = auth()->user();
     try {
-        $plan_name = $user->subscription->plan_id;
+        $plan_name = $user->subscription->slug;
+        $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
     } catch (\Exception $e) {
         throw new Exception('Kindly subscribe to plan first');
     }
-    $plan = \Rinvex\Subscriptions\Models\Plan::where('id', $plan_name)->first();
-    $data = $plan->getFeatureBySlug($feature);
-    dd($data);
     return $data;
+
 }
 
 
