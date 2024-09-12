@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Feature;
 use App\Enums\ProductStatus;
-use App\Models\Plan;
 use App\Models\ProductView;
 use App\Traits\ShopManager;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +15,6 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Traits\ProductVariantManager;
 use Laravel\Ui\Presets\React;
-use Rinvex\Subscriptions\Models\PlanFeature;
 
 class ProductController extends Controller
 {
@@ -105,48 +103,27 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
-
-        // Get the maximum number of photos allowed and ensure it's a number
-        $maxPhotos = $this->getValidatedMaxPhotos(Feature::UPLOAD->value);
-
-        // Count the number of photos in the request
+        $valData = featureValue(Feature::UPLOAD->value);
         $photoCount = is_array($request->photos) ? count($request->photos) : 0;
-
-        // Check if the number of photos exceeds the allowed limit
-        if ($photoCount > $maxPhotos) {
+        if ($photoCount > $valData) {
             return response()->json([
                 'status' => 'failed',
-                'message' => "You can only upload {$maxPhotos} photos at a time",
+                'message' => "You can only upload $valData photos at a time",
             ], 400);
-        }
-
-        // Store the product and check if the creation was successful
+        };
         $data = $this->storeProduct($request, null, $this->id());
-
         if (!$data) {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Create shop to continue',
             ]);
         }
-
-        // Return a success response with the created product data
         return response()->json([
             'status' => 'success',
             'message' => 'Product created successfully',
             'data' => $data
         ]);
     }
-
-    private function getValidatedMaxPhotos($featureValue)
-    {
-        $maxPhotos = featureValue($featureValue);
-
-        // Ensure the value is an integer and is greater than 0
-        return is_numeric($maxPhotos) && $maxPhotos > 0 ? (int) $maxPhotos : 0;
-    }
-
-
 
     public function update(Request $request, Product $product)
     {
