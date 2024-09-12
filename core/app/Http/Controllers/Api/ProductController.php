@@ -108,7 +108,7 @@ class ProductController extends Controller
         if ($photoCount > $valData) {
             return response()->json([
                 'status' => 'failed',
-                'message' => "You can only upload". $valData. " photos at a time",
+                'message' => "You can only upload". $valData. " photos at a time 45",
             ], 400);
         };
         $data = $this->storeProduct($request, null, $this->id());
