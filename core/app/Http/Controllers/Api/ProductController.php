@@ -105,7 +105,7 @@ class ProductController extends Controller
         $user = auth()->user();
 
         // Get the maximum number of photos allowed and ensure it's a number
-        $maxPhotos = $this->getValidatedMaxPhotos('photo-upload');
+        $maxPhotos = $this->getValidatedMaxPhotos(Feature::UPLOAD->value);
 
         // Count the number of photos in the request
         $photoCount = is_array($request->photos) ? count($request->photos) : 0;

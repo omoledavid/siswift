@@ -1166,8 +1166,10 @@ function canUse($feature){
 function featureValue($feature)
 {
     $user = auth()->user();
+
     try {
         $plan_name = $user->subscription->slug;
+        Log::info('Plan Name Retrieved:', ['plan_name' => $plan_name]);
     } catch (\Exception $e) {
         Log::error('Subscription Error:', ['message' => $e->getMessage()]);
         throw new Exception('Kindly subscribe to plan first');
@@ -1179,6 +1181,7 @@ function featureValue($feature)
 
     return $data;
 }
+
 
 
 
