@@ -22,7 +22,7 @@ class ChatController extends Controller
     public function chat($conversionId, $user): View
     {
         $pageTitle = "Chat List";
-        $user =User::query()->findOrFail($user);
+        $user = User::query()->findOrFail($user);
         $conversations = Conversation::query()->find($conversionId)->messages()->get();
         return view('admin.message.view', compact('pageTitle','conversations', 'user'));
     }

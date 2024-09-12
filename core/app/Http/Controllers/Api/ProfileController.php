@@ -12,7 +12,7 @@ class ProfileController extends Controller
 {
     public function index(){
         $user = auth()->user();
-        $reviews = Review::where('user_id', $user->id)->with('user')->get();
+        $reviews = Review::where('user_id', $user->id)->with('user', 'replies')->get();
         return response()->json([
             'status' => 'sucess',
             'profile' => $user,

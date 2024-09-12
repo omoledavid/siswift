@@ -28,10 +28,10 @@
                                          alt="client">
                                     <div class="media-body">
                                         <p style="width:fit-content">{{!is_string($message->message) ? 'Escrow Initiated' : $message->message}}</p>
-                                        @if(!empty($message->file))
+                                        @if(!empty($message->files))
                                             <div class="media-chat-thumb text-end">
                                                 <img
-                                                    src="{{getImage(imagePath()['message']['path'].'/'. $message->file)}}"
+                                                    src="{{getImage(imagePath()['message']['path'].'/'. $message->files)}}"
                                                     alt="item-banner">
                                             </div>
                                         @endif
@@ -43,14 +43,16 @@
                                          src="{{ getImage(imagePath()['profile']['user']['path'].'/'.$message->user->image,imagePath()['profile']['user']['size']) }}"
                                          alt="client">
                                     <div class="media-body">
-                                            <p style="float:right">{{!is_string($message->message) ? 'Escrow Initiated' : $message->message}}</p>
-
-                                        @if(!empty($message->file))
-                                            <div class="media-chat-thumb text-end">
+                                        <p style="float:right">{{!is_string($message->message) ? 'Escrow Initiated' : $message->message}}
+                                        </p>
+                                        @if(!empty($message->files))
+                                            @foreach($message->files as $messageImage)
+                                                <br>
                                                 <img
-                                                    src="{{getImage(imagePath()['message']['path'].'/'. $message->file)}}"
+                                                    style="width: 150px; border-radius: 10px; float: right;"
+                                                    src="{{getImage(imagePath()['messages']['path'].'/'. $messageImage->file_path)}}"
                                                     alt="item-banner">
-                                            </div>
+                                            @endforeach
                                         @endif
                                     </div>
                                 </div>
