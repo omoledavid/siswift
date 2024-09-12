@@ -1168,14 +1168,16 @@ function featureValue($feature)
     $user = auth()->user();
 
     try {
-        $plan_name = $user->subscription->slug;
+        $plan_name = $user->subscription->plan_id;
         Log::info('Plan Name Retrieved:', ['plan_name' => $plan_name]);
     } catch (\Exception $e) {
         Log::error('Subscription Error:', ['message' => $e->getMessage()]);
         throw new Exception('Kindly subscribe to plan first');
     }
+    $plan = app('rinvex.subscriptions.plan')->find($plan_name);
 
-    $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
+//    $data = $user->planSubscription($plan_name)->getFeatureValue($feature);
+    $data = $plan->getFeatureBySlug($feature)->value;
 
     Log::info('Feature Value Retrieved:', ['feature' => $feature, 'data' => $data]);
 
