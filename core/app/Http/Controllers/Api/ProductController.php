@@ -79,7 +79,7 @@ class ProductController extends Controller
             ]);
         }
         // Fetch suggested products
-        $suggestedProduct = Product::where('status', ProductStatus::ACTIVE)->orderBy('sold', 'desc')->get();
+        $suggestedProduct = Product::query()->where('status', ProductStatus::ACTIVE)->orderBy('sold', 'desc')->get();
 
         return response()->json([
             'status' => 'success',
