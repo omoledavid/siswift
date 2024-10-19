@@ -85,7 +85,7 @@ class CheckoutController extends Controller
             // Sum up the total_amount from all orders
             $totalAmount = $orders->sum('total_amount');
 
-            $payment = Payment::make($request->user(), $totalAmount, 'paystack', $request->callback_url, order: $orders);
+            $payment = Payment::make($request->user(), $totalAmount, 'paystack', $request->callback_url, 'online payment', $orders);
 
             $paymentUrl = $this->paymentService->generatePaymentLink($payment);
 

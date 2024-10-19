@@ -20,6 +20,7 @@ class ConversationController extends Controller
         $user = auth()->user();
 
         $conversations = Conversation::query()->where('buyer_id', $user->id)
+            ->where('is_active', true)
             ->orWhere('seller_id', $user->seller_id)
             ->with('messages.files', 'seller', 'buyer', 'product')
             ->orderBy('id', 'desc')
