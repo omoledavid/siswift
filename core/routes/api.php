@@ -1,49 +1,51 @@
 <?php
 
+use App\Http\Controllers\Api\DisputeController;
+use App\Http\Controllers\Api\RefundController;
 use App\Http\Controllers\Api\SubscriptionPaymentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/clear', function () {
-	\Illuminate\Support\Facades\Artisan::call('optimize:clear');
+    \Illuminate\Support\Facades\Artisan::call('optimize:clear');
 });
 
 Route::group([], function () {
-	Route::get('general-setting', 'BasicController@generalSetting');
+    Route::get('general-setting', 'BasicController@generalSetting');
     Route::get('banks', 'BasicController@banks');
     Route::post('verify-account-number', 'BasicController@verifyAccountNumber');
-	Route::get('all-products', 'BasicController@allProducts');
-	Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
-	Route::get('languages', 'BasicController@languages');
-	Route::get('language-data/{code}', 'BasicController@languageData');
+    Route::get('all-products', 'BasicController@allProducts');
+    Route::get('unauthenticate', 'BasicController@unauthenticate')->name('unauthenticate');
+    Route::get('languages', 'BasicController@languages');
+    Route::get('language-data/{code}', 'BasicController@languageData');
 
     //search
     Route::post('search', 'SearchController@search');
 
 
 
-	Route::group(['middleware' => 'auth.api:sanctum'], function () {
+    Route::group(['middleware' => 'auth.api:sanctum'], function () {
         Route::get('user/{id}', 'BasicController@user');
         //products
-		Route::apiResource('products', 'ProductController');
-		Route::get('seller-products', 'ProductController@sellerProducts');
+        Route::apiResource('products', 'ProductController');
+        Route::get('seller-products', 'ProductController@sellerProducts');
         Route::get('stats/{id}', 'ProductController@stats');
 
         //delist
         Route::get('delist/{id}', 'ProductController@delist');
         Route::get('relist/{id}', 'ProductController@relist');
 
-		Route::apiResource('carts', 'CartController');
-		Route::apiResource('checkout', 'CheckoutController');
-		Route::apiResource('rate', 'RateController');
+        Route::apiResource('carts', 'CartController');
+        Route::apiResource('checkout', 'CheckoutController');
+        Route::apiResource('rate', 'RateController');
 
         //user review
-		Route::apiResource('review', 'ReviewController');
+        Route::apiResource('review', 'ReviewController');
 
         //user review
-		Route::apiResource('reply', 'ReplyController');
+        Route::apiResource('reply', 'ReplyController');
 
-		Route::post('pay', 'HandlePaymentController');
-		Route::post('direct-pay', 'OrderPaymentController');
+        Route::post('pay', 'HandlePaymentController');
+        Route::post('direct-pay', 'OrderPaymentController');
 
         //kyc
         Route::apiResource('kyc', 'KycController');
@@ -65,8 +67,8 @@ Route::group([], function () {
 
         //withdraw
         Route::resource('bank_accounts', 'BankAccountController');
-//        Route::post('withdraw-detail', 'TransactionController@withdrawDetails');
-//        Route::post('withdraw', 'TransactionController@withdraw');
+        //        Route::post('withdraw-detail', 'TransactionController@withdrawDetails');
+        //        Route::post('withdraw', 'TransactionController@withdraw');
         Route::post('withdraw', 'WithdrawalController@store');
 
         //escrow
@@ -121,46 +123,53 @@ Route::group([], function () {
 
         //subscription payment
         Route::post('subscription-payment', 'SubscriptionPaymentController');
-	});
+
+        //Dispute & Refund
+        Route::post('/orders/refund', [RefundController::class, 'refund']);
+        Route::post('/orders/{order}/refund', [RefundController::class, 'requestRefund']);
+        Route::put('/refunds/{refund}/approve', [RefundController::class, 'approveRefund']);
+        Route::put('/refunds/{refund}/reject', [RefundController::class, 'rejectRefund']);
+
+        // Dispute routes
+        Route::post('/orders/{order}/dispute', [DisputeController::class, 'createDispute']);
+        Route::post('/disputes/{dispute}/reply', [DisputeController::class, 'replyToDispute']);
+    });
 
 
-	Route::namespace('Auth')->group(function () {
-		Route::post('login', 'LoginController@login');
+    Route::namespace('Auth')->group(function () {
+        Route::post('login', 'LoginController@login');
         Route::post('logout', 'LoginController@logout');
-		Route::post('register', 'RegisterController@register');
+        Route::post('register', 'RegisterController@register');
 
 
-		Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');
-		Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
+        Route::post('password/email', 'ForgotPasswordController@sendResetCodeEmail');
+        Route::post('password/verify-code', 'ForgotPasswordController@verifyCode');
 
-		Route::post('password/reset', 'ResetPasswordController@reset');
-	});
+        Route::post('password/reset', 'ResetPasswordController@reset');
+    });
 
 
-	Route::middleware('auth.api:sanctum')->name('user.')->prefix('user')->group(function () {
+    Route::middleware('auth.api:sanctum')->name('user.')->prefix('user')->group(function () {
         Route::post('change-password', 'UserController@submitPassword');
-		Route::get('logout', 'Auth\LoginController@logout');
-		Route::get('authorization', 'AuthorizationController@authorization')->name('authorization');
-		Route::get('resend-verify', 'AuthorizationController@sendVerifyCode')->name('send.verify.code');
-		Route::post('verify-email', 'AuthorizationController@emailVerification')->name('verify.email');
-		Route::post('verify-sms', 'AuthorizationController@smsVerification')->name('verify.sms');
-		Route::post('verify-g2fa', 'AuthorizationController@g2faVerification')->name('go2fa.verify');
+        Route::get('logout', 'Auth\LoginController@logout');
+        Route::get('authorization', 'AuthorizationController@authorization')->name('authorization');
+        Route::get('resend-verify', 'AuthorizationController@sendVerifyCode')->name('send.verify.code');
+        Route::post('verify-email', 'AuthorizationController@emailVerification')->name('verify.email');
+        Route::post('verify-sms', 'AuthorizationController@smsVerification')->name('verify.sms');
+        Route::post('verify-g2fa', 'AuthorizationController@g2faVerification')->name('go2fa.verify');
 
-		Route::middleware(['checkStatusApi'])->group(function () {
-			Route::get('dashboard', function () {
-				return auth()->user();
-			});
+        Route::middleware(['checkStatusApi'])->group(function () {
+            Route::get('dashboard', function () {
+                return auth()->user();
+            });
 
-			Route::post('profile-setting', 'UserController@submitProfile');
+            Route::post('profile-setting', 'UserController@submitProfile');
 
-			// Withdraw
-			Route::get('withdraw/methods', 'UserController@withdrawMethods');
-			Route::post('withdraw/store', 'UserController@withdrawStore');
-			Route::post('withdraw/confirm', 'UserController@withdrawConfirm');
-			Route::get('withdraw/history', 'UserController@withdrawLog');
-
-
-
-		});
-	});
+            // Withdraw
+            Route::get('withdraw/methods', 'UserController@withdrawMethods');
+            Route::post('withdraw/store', 'UserController@withdrawStore');
+            Route::post('withdraw/confirm', 'UserController@withdrawConfirm');
+            Route::get('withdraw/history', 'UserController@withdrawLog');
+        });
+    });
 });

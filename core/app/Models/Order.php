@@ -88,5 +88,13 @@ class Order extends Model
     public function escrow(){
         return $this->hasOne(Escrow::class);
     }
+    public function refunds()
+    {
+        return $this->hasMany(Refund::class);
+    }
+    public function disputes()
+    {
+        return $this->hasMany(Dispute::class);
+    }
 
 }
