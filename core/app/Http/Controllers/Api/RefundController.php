@@ -54,7 +54,7 @@ class RefundController extends Controller
     {
         return response()->json([
             'status' => true,
-            'data' => $refund->load('disputes', 'disputes.replies')
+            'data' => $refund->load('disputes', 'disputes.replies', 'seller')
         ]);
     }
 
@@ -71,7 +71,7 @@ class RefundController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $refund->load('disputes', 'disputes.replies')
+            'data' => $refund->load('disputes', 'disputes.replies', 'seller')
         ]);
     }
 }
