@@ -125,7 +125,8 @@ Route::group([], function () {
         Route::post('subscription-payment', 'SubscriptionPaymentController');
 
         //Dispute & Refund
-        Route::post('/orders/refund', [RefundController::class, 'refund']);
+        Route::get('/order-refund', [RefundController::class, 'refund']);
+        Route::get('/refund/{refund}', [RefundController::class, 'show']);
         Route::post('/orders/{order}/refund', [RefundController::class, 'requestRefund']);
         Route::put('/refunds/{refund}/approve', [RefundController::class, 'approveRefund']);
         Route::put('/refunds/{refund}/reject', [RefundController::class, 'rejectRefund']);

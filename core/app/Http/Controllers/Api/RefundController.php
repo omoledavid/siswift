@@ -22,6 +22,8 @@ class RefundController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric',
+            'desc' => 'nullable|string',
+            'add_info' => 'nullable|string',
             'reason' => 'required|string|max:255',
         ]);
 
@@ -37,16 +39,25 @@ class RefundController extends Controller
             'amount' => $request->amount,
             'user_id' => auth()->id(),
             'reason' => $request->reason,
+            'desc' => $request->desc,
+            'add_info' => $request->add_info,
             'status' => RefundStatus::PENDING,
         ]);
 
         return response()->json($refund, 201);
     }
+    public function show(Refund $refund)
+    {
+        return response()->json([
+            'status' => true,
+            'data' => $refund->load('disputes', 'disputes.replies')
+        ]);
+    }
 
     public function approveRefund($refundId)
     {
         $refund = Refund::findOrFail($refundId);
-        $refund->update(['status' => 'approved']);
+        $refund->update(['status' => RefundStatus::APPROVE]);
 
         return response()->json($refund);
     }
@@ -54,7 +65,7 @@ class RefundController extends Controller
     public function rejectRefund($refundId)
     {
         $refund = Refund::findOrFail($refundId);
-        $refund->update(['status' => 'rejected']);
+        $refund->update(['status' => RefundStatus::REJECTED]);
 
         return response()->json($refund);
     }
