@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Refund extends Model
 {
     use HasFactory;
-    protected $fillable = ['order_id', 'amount','user_id', 'reason', 'status'];
+    protected $fillable = ['order_id', 'amount','user_id', 'reason', 'status', 'desc', 'add_info', 'conclusion'];
 
     public function disputes()
     {

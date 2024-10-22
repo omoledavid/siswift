@@ -128,8 +128,7 @@ Route::group([], function () {
         Route::get('/order-refund', [RefundController::class, 'refund']);
         Route::get('/refund/{refund}', [RefundController::class, 'show']);
         Route::post('/orders/{order}/refund', [RefundController::class, 'requestRefund']);
-        Route::put('/refunds/{refund}/approve', [RefundController::class, 'approveRefund']);
-        Route::put('/refunds/{refund}/reject', [RefundController::class, 'rejectRefund']);
+        Route::put('/refunds/{refund}/close', [RefundController::class, 'closeRefund']);
 
         // Dispute routes
         Route::post('/orders/{order}/dispute', [DisputeController::class, 'createDispute']);

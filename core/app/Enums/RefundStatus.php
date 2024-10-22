@@ -5,7 +5,6 @@ namespace App\Enums;
 enum RefundStatus: int
 {
 
-    case PENDING = 0;
-    case APPROVE = 1;
-    case REJECTED = 2;
+    case OPEN = 0;
+    case CLOSE = 1;
 }

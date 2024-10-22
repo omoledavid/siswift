@@ -15,7 +15,8 @@ class AddColumntToRefunds extends Migration
     {
         Schema::table('refunds', function (Blueprint $table) {
             $table->string('desc')->nullable()->after('reason');
-            $table->string('add_info')->nullable()->after('reason');
+            $table->string('add_info')->nullable()->after('desc');
+            $table->string('conclusion')->nullable()->after('add_info');
         });
     }
 
@@ -27,7 +28,7 @@ class AddColumntToRefunds extends Migration
     public function down()
     {
         Schema::table('refunds', function (Blueprint $table) {
-            $table->dropColumn('desc', 'add_info');
+            $table->dropColumn('desc', 'add_info', 'conclusion');
         });
     }
 }
