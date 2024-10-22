@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Refund extends Model
 {
     use HasFactory;
-    protected $fillable = ['order_id', 'amount','user_id', 'reason', 'status', 'desc', 'add_info', 'conclusion'];
+    protected $fillable = ['order_id', 'amount','user_id', 'reason', 'status', 'desc', 'add_info', 'conclusion', 'seller_id'];
 
     public function disputes()
     {
@@ -22,11 +22,12 @@ class Refund extends Model
 
     public function buyer()
     {
-        return $this->hasOneThrough(User::class, Order::class, 'id', 'id', 'order_id', 'buyer_id');
+        return $this->hasOneThrough(User::class, Order::class, 'id', 'id', 'order_id', 'user_id');
     }
 
     public function seller()
     {
-        return $this->hasOneThrough(User::class, Order::class, 'id', 'id', 'order_id', 'seller_id');
+        return $this->belongsTo(User::class, 'seller_id', 'seller_id');
     }
+
 }

@@ -12,7 +12,7 @@ class RefundController extends Controller
 {
     public function refund()
     {
-        $refund = Refund::where('user_id', auth()->id())->with('disputes', 'disputes.replies')->get();
+        $refund = Refund::where('user_id', auth()->id())->with('disputes', 'disputes.replies', 'buyer', 'seller')->get();
         return response()->json([
             'status' => true,
             'data' => $refund
@@ -22,6 +22,7 @@ class RefundController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric',
+            'seller_id' => 'required|exists:users,seller_id',
             'desc' => 'nullable|string',
             'add_info' => 'nullable|string',
             'conclusion' => 'nullable|string',
@@ -39,6 +40,7 @@ class RefundController extends Controller
             'order_id' => $order->id,
             'amount' => $request->amount,
             'user_id' => auth()->id(),
+            'seller_id' => $request->seller_id,
             'reason' => $request->reason,
             'desc' => $request->desc,
             'add_info' => $request->add_info,
