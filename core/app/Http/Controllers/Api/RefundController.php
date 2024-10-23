@@ -12,7 +12,8 @@ class RefundController extends Controller
 {
     public function refund()
     {
-        $refund = Refund::where('user_id', auth()->id())->with('disputes', 'disputes.replies', 'buyer', 'seller')->get();
+        $user = auth()->user();
+        $refund = Refund::where('user_id', $user->id)->orWhere('seller_id', $user->seller_id)->with('disputes', 'disputes.replies', 'buyer', 'seller')->get();
         return response()->json([
             'status' => true,
             'data' => $refund
