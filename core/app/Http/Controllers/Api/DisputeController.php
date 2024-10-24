@@ -17,12 +17,12 @@ class DisputeController extends Controller
 {
     $request->validate([
         'reason' => 'required|string|max:255',
+        'refund_id' => 'required|int|max:255',
         'image' => 'nullable|image|max:2048',
         'video' => 'nullable|mimes:mp4,mov,avi,wmv|max:10000',
     ]);
 
     $order = Order::findOrFail($orderId);
-    $refund = Refund::where('order_id', $order->id)->first(); // Assuming only one refund per order
 
     // Ensure the user is either the buyer or seller
     if (auth()->id() !== $order->user_id && auth()->id() !== $order->seller_id) {
@@ -38,15 +38,19 @@ class DisputeController extends Controller
     $fullVideoPath = $videoPath ? url(Storage::url($videoPath)) : null; // Create the full URL
 
     $dispute = Dispute::create([
+        'user_id' => auth()->id(),
         'order_id' => $order->id,
-        'refund_id' => $refund->id, // Link dispute to the refund
+        'refund_id' => $request->refund_id, // Link dispute to the refund
         'reason' => $request->reason,
         'status' => DisputeStatus::OPEN,
         'image' => $fullImagePath,
         'video' => $fullVideoPath,
     ]);
 
-    return response()->json($dispute, 201);
+    return response()->json([
+        'status' => true,
+        'data' => $dispute->load('user', 'order', ),
+    ], 201);
 }
 
 

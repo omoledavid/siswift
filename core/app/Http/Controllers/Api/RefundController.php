@@ -13,7 +13,7 @@ class RefundController extends Controller
     public function refund()
     {
         $user = auth()->user();
-        $refund = Refund::where('user_id', $user->id)->orWhere('seller_id', $user->seller_id)->with('disputes', 'disputes.replies', 'buyer', 'seller', 'order')->get();
+        $refund = Refund::where('user_id', $user->id)->orWhere('seller_id', $user->seller_id)->with('disputes', 'disputes.replies','disputes.user', 'buyer', 'seller', 'order')->orderBy('id', 'desc')->get();
         return response()->json([
             'status' => true,
             'data' => $refund
@@ -55,7 +55,7 @@ class RefundController extends Controller
     {
         return response()->json([
             'status' => true,
-            'data' => $refund->load('disputes', 'disputes.replies', 'seller', 'buyer', 'order')
+            'data' => $refund->load('disputes', 'disputes.replies','disputes.user', 'seller', 'buyer', 'order')
         ]);
     }
 
@@ -72,7 +72,7 @@ class RefundController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $refund->load('disputes', 'disputes.replies', 'seller', 'buyer', 'order')
+            'data' => $refund->load('disputes', 'disputes.replies','disputes.user', 'seller', 'buyer', 'order')
         ]);
     }
 }

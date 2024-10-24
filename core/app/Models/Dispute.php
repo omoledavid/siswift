@@ -8,19 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Dispute extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'order_id',
+        'user_id',
         'refund_id', // Include the refund_id in fillable properties
         'reason',
         'status',
         'image',
         'video',
     ];
+    protected $casts = ['refund_id' => 'integer'];
 
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function buyer()
