@@ -29,18 +29,35 @@ class Payment extends Model
     ];
 
     public static function make(
-        User $user, 
-        float $money, 
-        string $gateway, 
-        string $callback_url, 
-        ?string $description = null, 
+        User $user,
+        float $money,
+        string $gateway,
+        string $callback_url,
+        ?string $description = null,
         $orders = [], // Accept an array of orders
-        ?Plan $plan = null
-    ): array
+        ?Plan $plan = null,
+        bool $deposit = false,
+    )
     {
         $payments = [];
         $ref = Str::uuid();
-    
+        if($deposit){
+            $payment = $user->payments()->create([
+                'order_id' => $order->id ?? null, // Set order ID if available
+                'plan_id' => $plan->id ?? null, // Set plan ID if available
+                'reference' => $ref,
+                'amount' => $money,
+                'status' => self::StatusPending,
+                'gateway' => $gateway,
+                'data' => [
+                    'callback_url' => $callback_url,
+                    'description' => $description,
+                ],
+            ]);
+            return $payment;
+
+        }
+
         // Loop through each order and create a payment
         foreach ($orders as $order) {
             $payment = $user->payments()->create([
@@ -55,13 +72,13 @@ class Payment extends Model
                     'description' => $description,
                 ],
             ]);
-    
+
             $payments[] = $payment;
         }
-    
+
         return $payments; // Return the array of created payments
     }
-    
+
 
     public function scopeOnlyPending(Builder $query)
     {

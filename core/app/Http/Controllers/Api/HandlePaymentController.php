@@ -46,7 +46,7 @@ class HandlePaymentController extends Controller
         $this->paymentService = new AutomaticPaymentService($gateway);
 
         try {
-            $payment = Payment::make($request->user(), $request->amount, 'paystack', $request->callback_url, $request->description);
+            $payment = Payment::make($request->user(), $request->amount, 'paystack', $request->callback_url, $request->description, deposit:true );
             $paymentUrl = $this->paymentService->generatePaymentLink($payment);
             return response()->json([
                 'status' => 'success',
