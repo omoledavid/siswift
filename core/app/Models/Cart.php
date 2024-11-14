@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Cart extends Model
 {
-    protected $guarded  = ['id'];
-    protected $casts    = ['attributes'=>'array'];
+    protected $guarded = ['id'];
+    protected $casts = [
+        'attributes' => 'array',
+        'offer_price' => 'float',
+    ];
 
     public function product(): BelongsTo
     {
@@ -24,6 +27,6 @@ class Cart extends Model
     {
         $cart = self::where('session_id', $session_id)->get();
 
-        self::where('session_id', $session_id)->update(['user_id'=>$user_id]);
+        self::where('session_id', $session_id)->update(['user_id' => $user_id]);
     }
 }

@@ -11,6 +11,9 @@ class Order extends Model
     protected $guarded = ['id'];
 
     protected $with = ['seller', 'products'];
+    protected $casts = [
+        'total_amount' => 'float',
+    ];
 
 
     public function appliedCoupon()

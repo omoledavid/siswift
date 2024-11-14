@@ -50,9 +50,11 @@ class VerifyPaymentController extends Controller
                 // Sequential check for orders, plan data, and fallback to wallet deposit
                 if ($payment?->order_id != null) {
                     // If there are orders, update the payment status for each
-                    foreach ($payment->orders as $order) {
-                        $order->payment_status = 1;
-                        $order->save();
+                    if ($payment->orders()->exists()) {
+                        foreach ($payment->orders as $order) {
+                            $order->payment_status = 1;
+                            $order->save();
+                        }
                     }
                 } elseif ($payment?->plan_id != null) {
                     // If there's a plan, subscribe the user to the plan

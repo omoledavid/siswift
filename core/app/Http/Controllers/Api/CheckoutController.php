@@ -24,6 +24,8 @@ class CheckoutController extends Controller
 
     public function store(Request $request)
     {
+//        $orders = Payment::where('id', 21)->with('orders')->get();
+//        return response()->json($orders);
         $request->validate([
             'type' => ['required', 'numeric'],
             'escrow' => ['required', 'boolean'],

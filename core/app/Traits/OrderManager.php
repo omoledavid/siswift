@@ -22,94 +22,98 @@ use App\Models\User;
 
 trait OrderManager
 {
-    public function checkout($request, $type): \Illuminate\Database\Eloquent\Collection|bool|array
+    public function checkout($request, $type)
     {
-        $general = GeneralSetting::query()->first();
-
-
-        /* Type 1 (Order for Customer) Type 2 (Order as Gift) */
-
-        $request->validate([
-            'address' => 'required|max:50',
-            'payment' => 'required|in:1,2'
-        ]);
-
-        if ($request->payment == 2) {
-
-            $payment_status = 2;
-
-            if (!$general->cod) {
-                throw new CheckoutException('Cash on delivery is not available now');
-            }
-        } else {
-            $payment_status = 0;
+        $user = auth()->user();
+        if (!$user) {
+            throw new CheckoutException('User is not authenticated');
         }
 
-        $carts_data = Cart::query()
-            ->where('session_id', session('session_id'))
-            ->orWhere('user_id', auth()->user()->id ?? null)
-            ->where('status', CartStatus::ACCEPTED)
-            ->with('product') // Simple eager loading without conditions
-            ->get();
+        $general = GeneralSetting::first();
+        $request->validate(['address' => 'required|max:50', 'payment' => 'required|in:1,2']);
 
-        $carts_array = $carts_data->toArray();
-        $amounts = array_column($carts_array, 'offer_price');
-        $total = array_sum($amounts);
-        $balance = auth()->user()->wallet->balance;
-        if ($total >= $balance) {
-            return false;
+        $payment_status = $this->getPaymentStatus($request->payment, $general);
+
+        $carts = $this->getCartsForSessionOrUser($user->id);
+        $totalAmount = $carts->sum(fn($cart) => $cart->offer_price * $cart->quantity);
+
+        if ($totalAmount > $user->wallet->balance) {
+            throw new CheckoutException('Insufficient funds in wallet');
         }
 
-
-        $cart_total = 0;
-
-        foreach ($carts_data as $cart) {
-            $cart_total = $cart->offer_price * $cart->quantity;
+        $allOrders = collect();
+        foreach ($carts as $cart) {
+            $order = $this->createOrderForCart($cart, $user->id, $type, $payment_status);
+            $allOrders->push($order);
+            $this->updateProductInventory($cart);
         }
 
-
-        foreach ($carts_data as $cart) {
-            $order = new Order();
-            $order->order_number = getTrx();
-            $order->user_id = auth()->user()->id;
-            $order->seller_id = $cart->product->seller_id;
-            $order->order_type = $type;
-            $order->payment_status = $payment_status ?? 0;
-            $order->total_amount = getAmount($cart->offer_price * $cart->quantity);
-            $order->save();
-
-            $od = new OrderDetail();
-            $od->order_id = $order->id;
-            $od->product_id = $cart->product_id;
-            $od->quantity = $cart->quantity;
-            $od->base_price = $cart->offer_price;
-            $od->seller_id = $cart->product->seller_id;
-            $order->total_price = getAmount($cart->offer_price * $cart->quantity);
-            $od->save();
-        }
-
-        session()->put('order_number', $order->order_number);
-
-        $product = Product::where('id', $cart->product_id)->first();
-        $product->track_inventory -= $cart->quantity;
-        if ($product->track_inventory == 0) {
-            $product->status = ProductStatus::DELIST;
-
-        }
-        $product->save();
-
-        //Remove coupon from session
-        if (session('coupon')) {
-            session()->forget('coupon');
-        }
-
-        $carts_data = Cart::where('session_id', session('session_id'))->orWhere('user_id', auth()->user()->id ?? null)->get();
-
-        foreach ($carts_data as $cart) {
-            $cart->delete();
-        }
-        $allOrders = Order::query()->where('user_id', auth()->user()->id)->where('status', OrderStatus::PENDING)->get();
+        $this->clearSessionData();
+//        $this->clearCartData($user->id);
 
         return $allOrders;
     }
+
+    private function getPaymentStatus(int $payment, $general): int
+    {
+        if ($payment === 2 && !$general->cod) {
+            throw new CheckoutException('Cash on delivery is currently unavailable');
+        }
+        return $payment === 2 ? 2 : 0;
+    }
+
+    private function getCartsForSessionOrUser($userId)
+    {
+        return Cart::query()
+            ->where('session_id', session('session_id'))
+            ->orWhere('user_id', $userId)
+            ->where('status', CartStatus::ACCEPTED)
+            ->with('product')
+            ->get();
+    }
+
+    private function createOrderForCart($cart, $userId, $type, $payment_status)
+    {
+        $order = Order::create([
+            'order_number' => getTrx(),
+            'user_id' => $userId,
+            'seller_id' => $cart->product->seller_id,
+            'order_type' => $type,
+            'payment_status' => $payment_status,
+            'total_amount' => getAmount($cart->offer_price * $cart->quantity),
+        ]);
+
+        OrderDetail::create([
+            'order_id' => $order->id,
+            'product_id' => $cart->product_id,
+            'quantity' => $cart->quantity,
+            'base_price' => $cart->offer_price,
+            'seller_id' => $cart->product->seller_id,
+        ]);
+
+        return $order;
+    }
+
+    private function updateProductInventory($cart)
+    {
+        $product = Product::find($cart->product_id);
+        $product->track_inventory -= $cart->quantity;
+        if ($product->track_inventory <= 0) {
+            $product->status = ProductStatus::DELIST;
+        }
+        $product->save();
+    }
+
+    private function clearSessionData()
+    {
+        session()->forget('coupon');
+    }
+
+    private function clearCartData($userId)
+    {
+        Cart::where('session_id', session('session_id'))
+            ->orWhere('user_id', $userId)
+            ->delete();
+    }
 }
+

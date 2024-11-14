@@ -16,7 +16,8 @@ class Product extends Model
         'extra_descriptions' => 'array',
         'specification' => 'array',
         'meta_keywords' => 'array',
-        'bulk_price' => 'array'
+        'bulk_price' => 'array',
+        'offer_price' => 'float'
     ];
 
     public function categories()
