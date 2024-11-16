@@ -35,8 +35,8 @@ class OrderController extends Controller
     public function pendingOrders($type, $status = null) {
         $user = auth()->user();
 
-        if ($status === 'seller') {
-            $query = OrderDetail::where('seller_id', $user->seller_id);
+        if ($status === 'seller' && $user->seller_id) {
+            $query = OrderDetail::query()->where('seller_id', $user->seller_id);
 
             switch ($type) {
                 case 'pending':
