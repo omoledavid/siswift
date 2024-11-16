@@ -84,7 +84,7 @@ class ShopController extends Controller
                 'last_thirty_days' => $sale['last_thirty_days'],
             ],
             'ads' => 0,
-            'ads duration' => 0
+            'ads_duration' => 0
 
         ]);
     }
