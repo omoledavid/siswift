@@ -49,7 +49,7 @@ trait OrderManager
         }
 
         $this->clearSessionData();
-//        $this->clearCartData($user->id);
+        $this->clearCartData($user->id);
 
         return $allOrders;
     }
