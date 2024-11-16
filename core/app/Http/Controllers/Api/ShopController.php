@@ -76,7 +76,7 @@ class ShopController extends Controller
             'Proccessing' => $order['processing'],
             'Delivered' => $order['delivered'],
             'Cancelled' => $order['cancelled'],
-            'pending order' => $product['pending'],
+            'pending_order' => $product['pending'],
             'total_sold' => $product['total_sold'],
             'sales' => [
                 'last_seven_days' => $sale['last_seven_days'],
