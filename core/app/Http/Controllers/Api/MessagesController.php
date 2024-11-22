@@ -27,7 +27,7 @@ class MessagesController extends Controller
     {
         $request->validate([
             'receiver_id' => ['required', 'exists:users,id'],
-            'message' => ['required', 'string']
+            'message' => ['nullable', 'string']
         ]);
 
         $hash = $this->generateHash($request->get('receiver_id'), $request->user()->id);
