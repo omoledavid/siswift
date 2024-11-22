@@ -48,9 +48,7 @@ class SearchController extends Controller
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('model', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('specification', 'like', '%' . $searchTerm . '%');
+                $q->where('name', 'like', '%' . $searchTerm . '%');
             });
         }
         // Apply sorting
