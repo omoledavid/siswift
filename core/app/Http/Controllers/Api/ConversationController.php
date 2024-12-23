@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\CartStatus;
+use App\Events\ChatMessageSent;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Conversation;
@@ -80,6 +81,7 @@ class ConversationController extends Controller
     // Send a message in a conversation
     public function update(Request $request, $id)
     {
+        $user = auth()->user();
         // Validate the incoming request data
         $request->validate([
             'message' => 'required|string|max:1000',
@@ -104,6 +106,8 @@ class ConversationController extends Controller
                 $message->files()->create(['file_path' => $filename]);
             }
         }
+
+        event(new ChatMessageSent($message, $user));
 
         // Notify the other user
 //        $recipient = $request->user()->id == $conversation->buyer_id ? $conversation->seller : $conversation->buyer;
