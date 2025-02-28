@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\CartStatus;
+use App\Events\MessageSent;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Conversation;
@@ -112,6 +113,8 @@ class ConversationController extends Controller
 //            'buyer_name' => $request->user()->fullname,
 //        ]);
 //        $recipient->notify(new MessageReceivedNotification($message));
+        // Dispatch event to broadcast the message
+        broadcast(new MessageSent($message->load('files')))->toOthers();
 
         return response()->json([
             'status' => true,
