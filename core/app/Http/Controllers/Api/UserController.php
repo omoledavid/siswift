@@ -94,14 +94,17 @@ class UserController extends Controller
             $password = Hash::make($request->password);
             $user->password = $password;
             $user->save();
-            $notify[] = 'Password changes successfully';
         } else {
-            $notify[] = 'The password doesn\'t match!';
+            return response()->json([
+                'code'=>400,
+                'status'=>'fail',
+                'message'=>'The password doesn\'t match!',
+            ], 400);
         }
         return response()->json([
             'code'=>200,
             'status'=>'ok',
-            'message'=>['error'=>$notify],
+            'message'=>'Password changes successfully'
         ]);
 	}
 
