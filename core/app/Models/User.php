@@ -25,7 +25,7 @@ class User extends Authenticatable
      */
 
     protected $guarded = ['id'];
-    protected $with = ['review', 'subscription'];
+    protected $with = ['review', 'subscription', 'products'];
     protected $appends = ['wallet', 'escrow_wallet'];
 //    protected $appends = ['wallet', 'escrow_wallet'];
 
