@@ -74,6 +74,7 @@ class PlanController extends Controller
 
     public function updatePlan(Request $request)
     {
+        dd($request->all());
         // Find the plan by ID
         $plan = app('rinvex.subscriptions.plan')->find($request->plan_id);
 
