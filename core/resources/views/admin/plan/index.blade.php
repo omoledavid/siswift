@@ -12,6 +12,7 @@
                                     <th scope="col">@lang('Name')</th>
                                     <th scope="col">@lang('Duration')</th>
                                     <th>@lang('Price')</th>
+                                    <th>@lang('Type')</th>
                                     <th>@lang('order')</th>
                                     <th scope="col">@lang('Action')</th>
                                 </tr>
@@ -24,6 +25,7 @@
                                         <td>
                                             {{ showAmount($plan->price) }} {{ $general->cur_text }}
                                         </td>
+                                        <td> {{$plan->type}}</td>
                                         <td> {{$plan->sort_order}}</td>
                                         <td>
                                             <a class="btn btn-sm btn-outline--primary modalShow me-2" href="{{ route('admin.plan.edit', $plan->id) }}"> Edit</a>

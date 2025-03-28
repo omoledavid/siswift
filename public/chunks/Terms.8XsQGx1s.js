@@ -1,1 +1,0 @@
-import{T as s}from"./Terms.fozbzrlv.js";import{_ as o,b as t,e as r,d as c,r as n,o as a}from"../entry/index.wkIW-Yay.js";const m={components:{Terms:s}},_={class:"container my-6"},p=c("h1",{class:"font-semibold text-2xl mb-4"},"Terms of Service:",-1);function d(i,f,l,u,x,T){const e=n("terms",!0);return a(),t("div",_,[p,r(e)])}const b=o(m,[["render",d]]);export{b as default};
