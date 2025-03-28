@@ -38,7 +38,7 @@ class SubscriptionPaymentController extends Controller
             $user->newPlanSubscription($plan->name, $plan);
             return response()->json([
                 'status' => true,
-                'You\'ve successfully subscribed to '.$plan->name.'(NGN '.$amount.') plan from your wallet balance.',
+                'message' => 'You\'ve successfully subscribed to '.$plan->name.'(NGN '.$amount.') plan from your wallet balance.',
             ]);
         }
 
