@@ -137,7 +137,7 @@
                             </div>
                             <div class="col-md-8">
                                 <input type="number" class="form-control" placeholder="@lang('Type Here')..."
-                                    value="{{$features['photo_upload']}}" name="photo_upload" />
+                                    value="{{$features['photo_upload'] ?? null}}" name="photo_upload" />
                             </div>
                         </div>
                         <div class="col-md-6 d-flex mb-3">
