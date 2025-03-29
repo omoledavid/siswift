@@ -52,7 +52,7 @@ class SubscriptionPaymentController extends Controller
             $this->paymentService = new AutomaticPaymentService($gateway);
 
             $plan = Plan::where('id', $request->plan_id)->firstOrFail();
-            $payment = Payment::make($request->user(), $amount, 'paystack', $request->callback_url);
+            $payment = Payment::make($request->user(), $amount, 'paystack', callback_url:$request->callback_url, description: 'Subscription payment', plan:$plan, sub:true);
             $payment->plan_id = $plan->id;
             $payment->save();
 

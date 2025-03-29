@@ -38,6 +38,7 @@ class Payment extends Model
         $orders = [], // Accept an array of orders
         ?Plan $plan = null,
         bool $deposit = false,
+        bool $sub = false,
     )
     {
         $payments = [];
@@ -57,6 +58,20 @@ class Payment extends Model
             ]);
             return $payment;
 
+        }elseif($sub){
+            $payment = $user->payments()->create([
+                'order_id' => $order->id ?? null, // Set order ID if available
+                'plan_id' => $plan->id ?? null, // Set plan ID if available
+                'reference' => $ref,
+                'amount' => $money,
+                'status' => self::StatusPending,
+                'gateway' => $gateway,
+                'data' => [
+                    'callback_url' => $callback_url,
+                    'description' => $description,
+                ],
+            ]);
+            return $payment;
         }
 
         // Loop through each order and create a payment
